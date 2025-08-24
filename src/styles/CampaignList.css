@@ -1,0 +1,158 @@
+/* ============================ */
+
+/* Campaign List Container      */
+
+/* ============================ */
+:root {
+  --bg-light: #fff;
+  --text-light: #1f2937;
+  --accent-color1: #1e40af;
+  --accent-color2: #2563eb;
+  --accent-color3: #22c55e;
+  --input-bg-light: #fff;
+  --input-text-light: #1f2937;
+  --option-bg-light: #fff;
+  --option-text-light: #1f2937;
+  --hover-bg-light: #f3f4f6;
+}
+
+body.dark-mode {
+  --bg-light: #111;
+  --text-light: #f1f1f1;
+  --accent-color1: #60a5fa;
+  --accent-color2: #facc15;
+  --accent-color3: #4ade80;
+  --input-bg-light: #222;
+  --input-text-light: #fff;
+  --option-bg-light: #222;
+  --option-text-light: #fff;
+  --hover-bg-light: #222;
+}
+
+.campaign-list-container {
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgb(0 0 0 / 8%);
+  color: var(--text-light);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 40px auto;
+  max-width: 1000px;
+  padding: 30px 20px;
+  transition: all 0.3s ease;
+}
+
+/* Heading */
+.campaign-list-container h2 {
+  color: var(--accent-color1);
+  font-size: 28px;
+  letter-spacing: 0.5px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* Search Box & Input */
+.campaign-search,
+input,
+select {
+  background-color: var(--input-bg-light);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: var(--input-text-light);
+  display: block;
+  font-size: 14px;
+  margin: 0 auto 20px;
+  max-width: 400px;
+  outline: none;
+  padding: 10px 15px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.campaign-search:focus,
+input:focus,
+select:focus {
+  border-color: var(--accent-color2);
+  box-shadow: 0 0 5px var(--accent-color2);
+}
+
+/* datalist / option */
+option {
+  background-color: var(--option-bg-light);
+  color: var(--option-text-light);
+  transition: all 0.3s ease;
+}
+
+/* Table Styles */
+.campaign-table {
+  border-collapse: collapse;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.campaign-table th,
+.campaign-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 16px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+/* Table header */
+.campaign-table th {
+  background-color: var(--bg-light);
+  color: var(--accent-color1);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Hover effect for row */
+.campaign-table tr:hover {
+  background-color: var(--hover-bg-light);
+  transform: scale(1.01);
+  transition: all 0.3s ease;
+}
+
+/* Table data */
+.campaign-table td {
+  color: var(--text-light) !important; /* Dark/light mode text */
+  font-size: 14px;
+  transition: color 0.3s ease;
+  vertical-align: middle;
+}
+
+/* Empty state message */
+.campaign-list-container p {
+  color: var(--text-light);
+  font-size: 16px;
+  font-style: italic;
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* Loading text */
+.loading {
+  color: var(--accent-color2);
+  font-size: 16px;
+  margin-top: 50px;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media screen and (width <= 900px) {
+  .campaign-table th,
+  .campaign-table td {
+    font-size: 13px;
+    padding: 12px 10px;
+  }
+}
+
+@media screen and (width <= 600px) {
+  .campaign-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

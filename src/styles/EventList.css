@@ -1,0 +1,143 @@
+/* ==================== GLOBAL RESET FOR EVENT LIST ==================== */
+.eventlist-container * {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* ==================== ROOT VARIABLES ==================== */
+:root {
+  --eventlist-bg: #f0fdf4;
+  --eventlist-card: #fff;
+  --eventlist-text: #065f46;
+  --eventlist-accent: #10b981;
+  --eventlist-border: #d1fae5;
+  --eventlist-hover: #d1fae5;
+  --eventlist-btn-bg: #10b981;
+  --eventlist-btn-text: #fff;
+  --eventlist-btn-hover: #059669;
+}
+
+/* Dark mode */
+body.dark-mode {
+  --eventlist-bg: #111827;
+  --eventlist-card: #1f2937;
+  --eventlist-text: #d1fae5;
+  --eventlist-accent: #34d399;
+  --eventlist-border: #374151;
+  --eventlist-hover: #065f46;
+  --eventlist-btn-bg: #34d399;
+  --eventlist-btn-text: #111827;
+  --eventlist-btn-hover: #10b981;
+}
+
+/* ==================== CONTAINER ==================== */
+.eventlist-container {
+  background-color: var(--eventlist-bg);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 6%);
+  color: var(--eventlist-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 40px auto;
+  max-width: 900px;
+  padding: 25px;
+}
+
+/* Headings */
+.eventlist-heading {
+  color: var(--eventlist-accent);
+  font-size: 28px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* Table */
+.eventlist-table {
+  border-collapse: collapse;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.eventlist-th, .eventlist-td {
+  border-bottom: 1px solid var(--eventlist-border);
+  font-size: 14px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.eventlist-th {
+  background-color: var(--eventlist-card);
+  color: var(--eventlist-accent);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.eventlist-tr:hover {
+  background-color: var(--eventlist-hover);
+  transform: scale(1.01);
+}
+
+.eventlist-td {
+  color: var(--eventlist-text);
+}
+
+/* Buttons */
+.eventlist-btn {
+  background-color: var(--eventlist-btn-bg);
+  border: none;
+  border-radius: 6px;
+  color: var(--eventlist-btn-text);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 14px;
+  transition: background-color 0.3s ease;
+}
+
+.eventlist-btn:hover {
+  background-color: var(--eventlist-btn-hover);
+}
+
+/* Notifications */
+.eventlist-notification {
+  background-color: var(--eventlist-accent);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  text-align: center;
+}
+
+/* Empty & Loading States */
+.eventlist-empty,
+.eventlist-loading,
+.eventlist-not-authorized {
+  color: var(--eventlist-text);
+  font-style: italic;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Responsive */
+@media screen and (width <= 700px) {
+  .eventlist-table th, .eventlist-table td {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .eventlist-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}
+
+@media screen and (width <= 500px) {
+  .eventlist-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

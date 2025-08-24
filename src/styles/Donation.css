@@ -1,0 +1,122 @@
+/* =================== GLOBAL RESET =================== */
+* {
+  box-sizing: border-box;
+  font-family: Poppins, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* =================== CONTAINER =================== */
+.donation-form-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 10%);
+  margin: 40px auto;
+  max-width: 600px;
+  padding: 30px;
+}
+
+.donation-form-container h2 {
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* =================== FORM =================== */
+.donation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.donation-form label {
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.donation-form input,
+.donation-form select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 5px;
+  outline: none;
+  padding: 10px 12px;
+  transition: border 0.3s;
+}
+
+.donation-form input:focus,
+.donation-form select:focus {
+  border-color: #007bff;
+}
+
+/* =================== BUTTON =================== */
+.donation-form button {
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 10px;
+  padding: 12px 15px;
+  transition: background 0.3s;
+}
+
+.donation-form button:hover {
+  background-color: #0056b3;
+}
+
+/* =================== UPI QR BLOCK =================== */
+.upi-block {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.upi-block img {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  height: 200px;
+  object-fit: contain;
+  padding: 10px;
+  width: 200px;
+}
+
+/* =================== RAZORPAY BUTTON =================== */
+.pay-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+/* =================== NOTIFICATION =================== */
+.notification {
+  background-color: #ffeb3b;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  color: #333;
+  font-size: 14px;
+  padding: 12px 18px;
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 9999;
+}
+
+/* =================== RESPONSIVE =================== */
+@media (width <= 640px) {
+  .donation-form-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .upi-block img {
+    height: 150px;
+    width: 150px;
+  }
+}

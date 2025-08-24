@@ -1,0 +1,371 @@
+/* Base Styles */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --light-gray: #f8f9fa;
+  --medium-gray: #e9ecef;
+  --dark-gray: #6c757d;
+  --border-color: #dee2e6;
+}
+
+.manage-users-container {
+  /* margin-top: 5%; */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: calc(410px + 120px); /* Table height + header height */
+  margin: 2rem auto;
+  max-width: 1360px;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Fixed Header */
+.mu-header {
+  margin-top: 5%;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.mu-title {
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.mu-controls {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.mu-search {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  flex: 1;
+  font-size: 0.9rem;
+  max-width: 410px;
+  padding: 0.5rem 1rem;
+}
+
+.mu-stats {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.mu-badge {
+  background-color: var(--primary-color);
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+}
+
+.mu-badge-muted {
+  background-color: var(--medium-gray);
+  color: var(--secondary-color);
+}
+
+.mu-badge-warning {
+  background-color: var(--warning-color);
+  color: var(--secondary-color);
+}
+
+/* Table Wrapper - Scrollable Area */
+.users-table-wrapper {
+  height: 450px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.users-table {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+/* Fixed Table Header */
+.users-table thead {
+  background-color: var(--secondary-color);
+  color: rgb(250 248 248);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.users-table th {
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.users-table td {
+  border-bottom: 1px solid var(--border-color);
+  color: black;
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+
+/* Table Body Styles */
+.users-table tbody tr:hover {
+  background-color: var(--light-gray);
+}
+
+/* Avatar */
+.avatar-initials{
+  align-items: center;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 600;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+
+
+.avatar img.profile-pic {
+  border-radius: 50%;
+  height: 40px;
+  object-fit: cover;
+  width: 40px;
+}
+
+
+
+
+
+
+/* Name/Email Column */
+.name {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.email {
+  color: var(--dark-gray);
+  font-size: 0.8rem;
+}
+
+/* Status Tags */
+.tag {
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+}
+
+.tag-active {
+  background-color: rgb(40 167 69 / 10%);
+  color: var(--success-color);
+}
+
+.tag-blocked {
+  background-color: rgb(220 53 69 / 10%);
+  color: var(--danger-color);
+}
+
+/* Action Buttons */
+.user-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  background-color: rgb(52 152 219 / 10%);
+  color: var(--primary-color);
+}
+
+.edit-btn:hover {
+  background-color: rgb(52 152 219 / 20%);
+}
+
+.delete-btn {
+  background-color: rgb(220 53 69 / 10%);
+  color: var(--danger-color);
+}
+
+.delete-btn:hover {
+  background-color: rgb(220 53 69 / 20%);
+}
+
+.block-btn {
+  background-color: rgb(255 193 7 / 10%);
+  color: var(--warning-color);
+}
+
+.block-btn:hover {
+  background-color: rgb(255 193 7 / 20%);
+}
+
+.unblock-btn {
+  background-color: rgb(40 167 69 / 10%);
+  color: var(--success-color);
+}
+
+.unblock-btn:hover {
+  background-color: rgb(40 167 69 / 20%);
+}
+
+/* Edit Mode Styles */
+.user-edit {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.input {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.input-checkbox {
+  align-items: center;
+  display: flex;
+  font-size: 0.9rem;
+  gap: 0.5rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-save {
+  background-color: var(--success-color);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.btn-cancel {
+  background-color: var(--medium-gray);
+  border: none;
+  border-radius: 4px;
+  color: var(--secondary-color);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+/* Messages */
+.mu-msg, .mu-error {
+  padding: 1rem;
+  text-align: center;
+}
+
+.mu-error {
+  color: var(--danger-color);
+}
+
+.mu-undo {
+  align-items: center;
+  background-color: rgb(220 53 69 / 10%);
+  color: var(--danger-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+}
+
+.btn-undo {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (width <= 768px) {
+  .mu-controls {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  
+  .mu-search {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .users-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .users-table {
+    min-width: 800px;
+  }
+}
+
+
+
+.manage-users-container.dark-mode {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.manage-users-container.dark-mode .users-table {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.manage-users-container.dark-mode .users-table th,
+.manage-users-container.dark-mode .users-table td {
+  border-color: #444;
+}
+
+.manage-users-container.dark-mode .mu-header {
+  background-color: #2c2c2c;
+}
+
+.manage-users-container.dark-mode .input,
+.manage-users-container.dark-mode select {
+  background-color: #333;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+
+
+.manage-users-container.app-notification {
+  background: #74cf88;
+  border-left: 5px solid #81c784;
+  color: #e0e0e0;
+}
+
+.manage-users-container.progress-bar {
+  background: #81c784;
+}

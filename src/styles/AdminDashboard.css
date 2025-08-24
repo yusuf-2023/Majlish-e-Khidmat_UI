@@ -1,0 +1,430 @@
+/* ============ Root / Theme ============ */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  font-family: 'Courier New', Courier, monospace;
+
+}
+.admin-dashboard {
+  --bg: #f5f7fb;
+  --card: #fff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #4f46e5;
+  --primary-600: #4338ca;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  background: var(--bg);
+  box-sizing: border-box;
+  color: var(--text);
+  min-height: 100%;
+  width: 100%;
+}
+
+.admin-dashboard.dark {
+  --bg: #0b1220;
+  --card: #0f172a;
+  --text: #e5e7eb;
+  --muted: #a1a1aa;
+  --border: #1f2937;
+  --primary: #6366f1;
+  --primary-600: #4f46e5;
+  --success: #34d399;
+  --danger: #f87171;
+  --warning: #fbbf24;
+}
+
+/* Headings */
+.admin-dashboard h2 {
+
+
+ 
+}
+
+/* ============ Cards / Containers ============ */
+.dashboard-grid {
+  gap: 20px;
+}
+
+.chart-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 6%);
+  overflow: visible; /* important: so controls aren't clipped */
+  padding: 12px;
+  position: relative;
+}
+
+.chart-container.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart-wrapper {
+  height: 260px;
+  position: relative;
+}
+
+/* Allow chart interactivity but keep controls on top */
+.chart-wrapper canvas {
+  display: block;
+  height: 100% !important;
+  pointer-events: auto;
+  width: 100% !important;
+  z-index: 1;
+}
+
+/* Controls must always be clickable */
+.chart-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 2; /* keeps above any canvas */
+}
+
+/* ============ Buttons ============ */
+button,
+.tab-btn,
+.chart-btn,
+.refresh-btn,
+.export-btn,
+.theme-btn {
+  appearance: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.92rem;
+  line-height: 1;
+  padding: 8px 12px;
+  transition: transform .06s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+button:hover,
+.tab-btn:hover,
+.chart-btn:hover,
+.refresh-btn:hover,
+.export-btn:hover,
+.theme-btn:hover {
+  box-shadow: 0 8px 16px rgb(0 0 0 / 10%);
+  transform: translateY(-1px);
+}
+
+button:active,
+.tab-btn:active,
+.chart-btn:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Primary style utility */
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-600); }
+
+/* Chart toggle buttons */
+.chart-btn {
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.chart-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 6px 14px rgb(79 70 229 / 35%);
+  color: #fff;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tab-btn {
+  background: transparent;
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* Control bar */
+.control-bar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.control-bar input[type="text"] {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  max-width: 360px;
+  min-width: 220px;
+  outline: none;
+  padding: 10px 12px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.control-bar input[type="text"]::placeholder {
+  color: var(--muted);
+}
+
+.control-bar input[type="text"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 20%);
+}
+
+/* Small info row beneath chart */
+.chart-info {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.chart-info .info-item {
+  align-items: center;
+  background: rgb(99 102 241 / 6%);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+}
+
+.admin-dashboard.dark .chart-info .info-item {
+  background: rgb(99 102 241 / 10%);
+}
+
+.info-label { color: var(--muted); }
+.info-value { font-weight: 700; }
+
+/* Sort section */
+.sort-section {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Bulk actions */
+.bulk-actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.bulk-actions select {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 8px 10px;
+}
+
+/* Undo alert */
+.undo-alert {
+  align-items: center;
+  background: rgb(16 185 129 / 8%);
+  border: 1px solid rgb(16 185 129 / 22%);
+  border-radius: 10px;
+  color: var(--text);
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+}
+
+.undo-alert button {
+  background: var(--success);
+  border-color: transparent;
+  color: #0b1220;
+}
+
+.admin-dashboard.dark .undo-alert button {
+  color: #081018;
+}
+
+/* Loading / Error */
+.loading-animation {
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.error-text {
+  color: var(--danger) !important;
+  margin-top: 8px;
+}
+
+/* ============ Data Grid / List ============ */
+.data-grid {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 6%);
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.data-item {
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 40px 1fr 1fr 220px;
+  padding: 10px 8px;
+}
+
+.admin-dashboard.dark .data-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.data-item.header {
+  background: rgb(99 102 241 / 8%);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.admin-dashboard.dark .data-item.header {
+  background: rgb(99 102 241 / 12%);
+}
+
+.data-item:last-child {
+  border-bottom: 0;
+}
+
+.data-item input[type="text"],
+.data-item input[type="email"] {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.data-item.selected {
+  background: rgb(99 102 241 / 6%);
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-actions button {
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.card-actions button:nth-child(1) { /* Edit / Choose */
+  border-color: var(--primary);
+}
+
+.card-actions button:nth-child(2) { /* Save */
+  background: var(--success);
+  border-color: var(--success);
+  color: #063a2c;
+}
+
+.card-actions button:nth-child(3) { /* Cancel / Delete */
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+/* ============ Pagination ============ */
+.pagination-bar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pagination-bar span {
+  color: var(--muted);
+}
+
+.pagination-bar button {
+  min-width: 64px;
+}
+
+/* ============ Totals ============ */
+.total-info {
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+/* ============ Form / Inputs ============ */
+input[type="checkbox"] {
+  accent-color: var(--primary);
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+}
+
+/* ============ Focus states (Accessibility) ============ */
+button:focus-visible,
+.tab-btn:focus-visible,
+.chart-btn:focus-visible,
+.control-bar input[type="text"]:focus-visible,
+.data-item input:focus-visible,
+.bulk-actions select:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 35%);
+  outline-offset: 2px;
+}
+
+/* ============ Responsive ============ */
+@media (width <= 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important; /* override inline grid */
+  }
+
+  .chart-container.full-width {
+    grid-column: auto;
+  }
+}
+
+@media (width <= 640px) {
+  .data-item,
+  .data-item.header {
+    font-size: 0.92rem;
+    grid-template-columns: 28px 1fr 1fr 160px;
+  }
+
+  .card-actions button {
+    padding: 6px 8px;
+  }
+
+  .control-bar input[type="text"] {
+    min-width: 180px;
+  }
+}

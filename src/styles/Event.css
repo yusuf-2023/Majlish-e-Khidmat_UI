@@ -1,0 +1,151 @@
+/* ==================== GLOBAL RESET FOR EVENT PAGE ==================== */
+.event-container * {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* ==================== ROOT VARIABLES ==================== */
+:root {
+  --event-bg: #f0fdf4;
+  --event-card: #fff;
+  --event-text: #065f46;
+  --event-accent: #10b981; /* green accent */
+  --event-border: #d1fae5;
+  --event-hover: #d1fae5;
+  --event-input-bg: #f9fafb;
+  --event-input-text: #065f46;
+  --event-input-border: #a7f3d0;
+  --event-btn-bg: #10b981;
+  --event-btn-text: #fff;
+  --event-btn-hover: #059669;
+}
+
+/* Dark mode */
+body.dark-mode {
+  --event-bg: #0f172a;
+  --event-card: #1f2937;
+  --event-text: #d1fae5;
+  --event-accent: #22c55e;
+  --event-border: #374151;
+  --event-hover: #065f46;
+  --event-input-bg: #111827;
+  --event-input-text: #d1fae5;
+  --event-input-border: #22c55e;
+  --event-btn-bg: #22c55e;
+  --event-btn-text: #111;
+  --event-btn-hover: #16a34a;
+}
+
+/* ==================== CONTAINER ==================== */
+.event-container {
+  background-color: var(--event-bg);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 6%);
+  color: var(--event-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 40px auto;
+  max-width: 700px;
+  padding: 25px;
+}
+
+/* Headings */
+.event-container h2 {
+  color: var(--event-accent);
+  font-size: 28px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* ==================== FORM ==================== */
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.event-input,
+.event-textarea {
+  background-color: var(--event-input-bg);
+  border: 1px solid var(--event-input-border);
+  border-radius: 8px;
+  color: var(--event-input-text);
+  font-size: 14px;
+  outline: none;
+  padding: 12px 15px;
+  resize: none;
+  width: 100%;
+}
+
+.event-input:focus,
+.event-textarea:focus {
+  border-color: var(--event-accent);
+  box-shadow: 0 0 5px var(--event-accent);
+}
+
+/* Textarea height */
+.event-textarea {
+  min-height: 100px;
+}
+
+/* ==================== BUTTON ==================== */
+.event-button {
+  background-color: var(--event-btn-bg);
+  border: none;
+  border-radius: 8px;
+  color: var(--event-btn-text);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 18px;
+  transition: background-color 0.3s ease;
+}
+
+.event-button:hover {
+  background-color: var(--event-btn-hover);
+}
+
+/* ==================== DETAILS VIEW ==================== */
+.event-details p {
+  font-size: 15px;
+  margin: 10px 0;
+}
+
+.event-details strong {
+  color: var(--event-accent);
+}
+
+/* ==================== NOTIFICATION ==================== */
+.event-notification {
+  background-color: var(--event-accent);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  text-align: center;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media screen and (width <= 600px) {
+  .event-container {
+    padding: 15px;
+  }
+
+  .event-form {
+    gap: 12px;
+  }
+
+  .event-input,
+  .event-textarea {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .event-button {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+}

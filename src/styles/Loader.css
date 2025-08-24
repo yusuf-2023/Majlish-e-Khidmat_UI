@@ -1,0 +1,30 @@
+.spinner-container {
+  align-items: center;
+  color: var(--success);
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  gap: var(--spacing-sm);
+  height: 60vh;
+  justify-content: center;
+}
+
+.simple-loader {
+  animation: spin 1s linear infinite;
+  border: 3px solid #e0e0e0;
+  border-radius: 50%;
+  border-top: 3px solid #2e7d32;
+  height: 40px;
+  width: 40px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Dark mode support */
+body.dark-mode .simple-loader {
+  border: 3px solid #444;
+  border-top: 3px solid #a5d6a7;
+}

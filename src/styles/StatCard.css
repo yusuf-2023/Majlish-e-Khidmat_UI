@@ -1,0 +1,28 @@
+/* src/styles/StatCard.css */
+.stat-card {
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  min-width: 140px;
+  padding: var(--spacing-lg);
+  text-align: center;
+  transition: transform var(--transition-fast) ease,
+              box-shadow var(--transition-fast) ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 12px 30px rgb(16 24 40 / 12%);
+  transform: translateY(-6px);
+}
+
+.stat-number {
+  color: #0f172a; /* dark */
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  color: #475569;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}

@@ -1,0 +1,205 @@
+/* ===== Common Form Container ===== */
+.form-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
+  color: #0f172a; /* text default for light mode */
+  font-family: Arial, sans-serif;
+  margin: 70px auto;
+  max-width: 400px;
+  padding: 30px 25px;
+  text-align: center;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark Mode Support */
+body.dark-mode .form-container {
+  background: #1e1e1e;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 50%);
+  color: #e0e0e0;
+}
+
+/* Heading */
+.form-container h2 {
+  color: #2e7d32;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .form-container h2 {
+  color: #81c784;
+}
+
+/* ===== Input Fields ===== */
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="text"] {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #0f172a;
+  font-size: 15px;
+  margin: 10px 0;
+  padding: 12px 14px;
+  transition: 0.3s ease;
+  width: 100%;
+}
+
+body.dark-mode .form-container input[type="email"],
+body.dark-mode .form-container input[type="password"],
+body.dark-mode .form-container input[type="text"] {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  color: #e0e0e0;
+}
+
+.form-container input:focus {
+  border-color: #43a047;
+  box-shadow: 0 0 6px rgb(67 160 71 / 30%);
+  outline: none;
+}
+
+/* ===== Password Toggle Button ===== */
+.password-container {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.password-container input {
+  flex: 1;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  color: #43a047;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .toggle-password {
+  color: #81c784;
+}
+
+.toggle-password:hover {
+  color: #2e7d32;
+}
+
+body.dark-mode .toggle-password:hover {
+  color: #66bb6a;
+}
+
+/* ===== Options Row (Remember Me & Forgot Link) ===== */
+.options {
+  align-items: center;
+  color: #0f172a;
+  display: flex;
+  font-size: 0.9rem;
+  justify-content: space-between;
+  margin: 12px 0;
+}
+
+body.dark-mode .options {
+  color: #e0e0e0;
+}
+
+.options label {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+}
+
+.forgot-link {
+  color: #43a047;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+body.dark-mode .forgot-link {
+  color: #81c784;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== Submit Button ===== */
+.form-container button[type="submit"] {
+  background: #43a047;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  padding: 12px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+body.dark-mode .form-container button[type="submit"] {
+  background: #81c784;
+  color: #1e1e1e;
+}
+
+.form-container button[type="submit"]:hover {
+  background: #2e7d32;
+  transform: translateY(-1px);
+}
+
+body.dark-mode .form-container button[type="submit"]:hover {
+  background: #66bb6a;
+}
+
+.form-container button[type="submit"]:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* ===== Bottom Link (Register or Back to Login) ===== */
+.register-link {
+  color: #0f172a;
+  font-size: 0.9rem;
+  margin-top: 18px;
+}
+
+body.dark-mode .register-link {
+  color: #e0e0e0;
+}
+
+.register-link a {
+  color: #43a047;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+body.dark-mode .register-link a {
+  color: #81c784;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive Design ===== */
+@media (width <= 480px) {
+  .form-container {
+    margin: 40px 15px;
+    padding: 20px;
+  }
+
+  .form-container h2 {
+    font-size: 22px;
+  }
+}

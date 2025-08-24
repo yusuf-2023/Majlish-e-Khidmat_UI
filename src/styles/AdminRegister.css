@@ -1,0 +1,173 @@
+/* ===== Wrapper (Banner + Form) ===== */
+.admin-register-wrapper {
+  background: linear-gradient(135deg, #f1f8e9, #aed581);
+  display: flex;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+/* ===== Banner (Left side) ===== */
+.admin-register-banner {
+  align-items: center;
+  background: url("https://img.freepik.com/free-vector/green-technology-background_23-2148172364.jpg")
+    center/cover no-repeat;
+  color: #fff;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px;
+  position: relative;
+  text-align: center;
+}
+
+.admin-register-banner::before {
+  background: rgb(0 0 0 / 30%);
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+
+.admin-register-banner h1,
+.admin-register-banner p {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-register-banner h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.admin-register-banner p {
+  font-size: 1.2rem;
+  max-width: 300px;
+}
+
+/* ===== Form Container (Right side) ===== */
+.admin-register-form-container {
+  background: #fff;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 0 0 20px rgb(0 0 0 / 10%);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px 40px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.admin-register-form-container h2 {
+  color: #2e7d32;
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* ===== Double Row Layout ===== */
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row input,
+.form-row select {
+  border: 1px solid #a5d6a7;
+  border-radius: 6px;
+  flex: 1;
+  font-size: 14px;
+  padding: 7px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+  border-color: #43a047;
+  box-shadow: 0 0 5px rgb(67 160 71 / 30%);
+  outline: none;
+}
+
+/* ===== Button ===== */
+.admin-register-form-container button {
+  background: #43a047;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  padding: 12px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.admin-register-form-container button:hover {
+  background: #2e7d32;
+  transform: translateY(-1px);
+}
+
+/* ===== DARK MODE STYLES ===== */
+.dark-mode .admin-register-wrapper {
+  background: linear-gradient(135deg, #1b1b1b, #2a2a2a);
+}
+
+.dark-mode .admin-register-form-container {
+  background: #2e2e2e;
+  color: #e0e0e0;
+}
+
+.dark-mode .admin-register-form-container h2 {
+  color: #81c784;
+}
+
+.dark-mode .form-row input,
+.dark-mode .form-row select {
+  background: #3a3a3a;
+  border: 1px solid #555;
+  color: #e0e0e0;
+}
+
+.dark-mode .form-row input:focus,
+.dark-mode .form-row select:focus {
+  border-color: #81c784;
+  box-shadow: 0 0 5px rgb(129 199 132 / 40%);
+}
+
+.dark-mode .admin-register-form-container button {
+  background: #388e3c;
+}
+
+.dark-mode .admin-register-form-container button:hover {
+  background: #2e7d32;
+}
+
+/* ===== Responsive ===== */
+@media (width <= 768px) {
+  .admin-register-wrapper {
+    flex-direction: column;
+  }
+
+  .admin-register-banner {
+    border-radius: 0 0 20px 20px;
+    padding: 30px;
+  }
+
+  .admin-register-form-container {
+    border-radius: 20px;
+    padding: 30px 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

@@ -1,0 +1,214 @@
+/* ================= VOLUNTEER REGISTER PAGE ================= */
+.volunteer-register-page {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
+  width: 100%;
+}
+
+.volunteer-register-left {
+  align-items: center;
+  background: url("/child1.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 65%;
+}
+
+.volunteer-register-headline {
+  color: #fff;
+  margin-top: 28%;
+  padding: 28px;
+  text-align: center;
+}
+
+.volunteer-register-headline h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-shadow: 0 3px 8px rgb(0 0 0 / 50%);
+}
+
+.volunteer-animated-message {
+  animation: fadeInOut 3s ease-in-out infinite;
+  color: #f0f0f0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.volunteer-register-right {
+  align-items: center;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease;
+  width: 35%;
+}
+
+/* ================= SMALLER FORM CONTAINER ================= */
+.volunteer-register-form-container {
+  background: #fffefe;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
+  max-width: 380px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  width: 85%;
+}
+
+.volunteer-register-form-container h2 {
+  color: #222;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* ================= FORM LABEL & INPUT SIDE BY SIDE ================= */
+.volunteer-form-row {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.volunteer-form-label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  text-align: left;
+  width: 30%;
+}
+
+.volunteer-form-input,
+.volunteer-form-select,
+.volunteer-form-file {
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #000;
+  font-size: 13px;
+  height: 34px;
+  outline: none;
+  padding: 6px 10px;
+  transition: all 0.3s ease;
+  width: 65%;
+}
+
+.volunteer-form-input:focus,
+.volunteer-form-select:focus,
+.volunteer-form-file:focus {
+  background: #fff;
+  border-color: #128318;
+  box-shadow: 0 0 8px rgb(0 123 255 / 30%);
+  color: #000;
+}
+
+/* ================= SUBMIT BUTTON ================= */
+.volunteer-submit-btn {
+  background: linear-gradient(45deg,#359931,#2da852);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+  overflow: hidden;
+  padding: 10px;
+  position: relative;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.volunteer-submit-btn::after {
+  background: rgb(255 255 255 / 20%);
+  content: '';
+  height: 100%;
+  left: -50%;
+  position: absolute;
+  top: 0;
+  transform: skewX(-25deg);
+  transition: all 0.5s ease;
+  width: 50%;
+}
+
+.volunteer-submit-btn:hover::after { left: 150%; }
+.volunteer-submit-btn:hover { transform: translateY(-2px) scale(1.02); }
+
+/* ================= DARK MODE ================= */
+body.dark-mode .volunteer-register-right {
+  background: #1e1e1e;
+}
+
+body.dark-mode .volunteer-register-form-container {
+  background: #1f1f1f;
+  box-shadow: 0 8px 25px rgb(0 0 0 / 50%);
+  color: #fff;
+}
+
+body.dark-mode .volunteer-register-form-container h2 {
+  color: #fff;
+}
+
+body.dark-mode .volunteer-form-label {
+  color: #fff;
+}
+
+body.dark-mode .volunteer-form-input,
+body.dark-mode .volunteer-form-select,
+body.dark-mode .volunteer-form-file {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+body.dark-mode .volunteer-form-input:focus,
+body.dark-mode .volunteer-form-select:focus,
+body.dark-mode .volunteer-form-file:focus {
+  background: #333;
+  border-color: #4caf50;
+  box-shadow: 0 0 8px rgb(76 175 80 / 30%);
+}
+
+body.dark-mode .volunteer-submit-btn {
+  background: linear-gradient(45deg,#2b8a2b,#1f6f1f);
+  color: #fff;
+}
+
+/* ================= IMAGE PREVIEW STYLE ================= */
+.volunteer-form-row img {
+  border: 2px solid #128318;
+  border-radius: 50%;
+  height: 50px;
+  margin-left: 10px;
+  object-fit: cover;
+  width: 50px;
+}
+
+/* ================= RESPONSIVE UPDATES ================= */
+@media (width <= 992px){
+  .volunteer-register-page { flex-direction: column; }
+  .volunteer-register-left { height: 280px; width: 100%; }
+  .volunteer-register-right { padding: 20px; width: 100%; }
+  .volunteer-register-form-container { margin: auto; max-width: 400px; width: 90%; }
+  .volunteer-form-row { align-items: flex-start; flex-direction: column; }
+  .volunteer-form-label { margin-bottom: 6px; text-align: left; width: 100%; }
+  .volunteer-form-input, .volunteer-form-select, .volunteer-form-file { width: 100%; }
+}
+
+@media (width <= 576px){
+  .volunteer-register-form-container { padding: 20px 15px; width: 95%; }
+  .volunteer-register-form-container h2 { font-size: 16px; }
+  .volunteer-form-input, .volunteer-form-select, .volunteer-form-file { font-size: 12px; height: 32px; padding: 6px 8px; }
+  .volunteer-submit-btn { font-size: 12px; padding: 8px; }
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fade-in-out {
+  0%,100%{opacity:0;}
+  10%,90%{opacity:1;}
+}

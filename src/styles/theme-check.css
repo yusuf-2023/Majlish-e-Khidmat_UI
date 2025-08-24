@@ -1,0 +1,117 @@
+/* Theme Check Template */
+.theme-check {
+  /* For light mode */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .theme-check {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Container and Section Standardization */
+.page-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-md);
+}
+
+/* Standard sections */
+.section-default {
+  padding: var(--space-2xl) 0;
+}
+
+/* Layout patterns */
+.layout-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.layout-split {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+/* Card components */
+.content-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  transition: all var(--transition-normal);
+}
+
+[data-theme="dark"] .content-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-dark);
+}
+
+.content-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Text styles */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* Background variations */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-accent {
+  background-color: var(--bg-accent);
+}
+
+/* Border styles */
+.border-light {
+  border: 1px solid var(--border-light);
+}
+
+[data-theme="dark"] .border-light {
+  border-color: var(--border-dark);
+}
+
+/* Shadow variations */
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-container {
+    padding: var(--space-xl) var(--space-md);
+  }
+  
+  .layout-split {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: var(--space-lg) var(--space-sm);
+  }
+}
