@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import { registerUser } from "../../api/user/userApi";
 import "../../styles/UserRegister.css";
-import { useNavigate } from "react-router-dom";
+import "../../styles/Login.css";
+import { Link, useNavigate } from "react-router-dom";
 import Notification from "../../components/Notification";
-import { FaHandsHelping, FaUtensils, FaBook, FaMedkit, FaUsers, FaRegSmile } from "react-icons/fa";
+import {
+  FaHandsHelping,
+  FaUtensils,
+  FaBook,
+  FaMedkit,
+  FaUsers,
+  FaRegSmile,
+} from "react-icons/fa";
 
 function UserRegister() {
   const [formData, setFormData] = useState({
@@ -13,7 +21,7 @@ function UserRegister() {
     phone: "",
     address: "",
     dob: "",
-    gender: ""
+    gender: "",
   });
 
   const [showNotification, setShowNotification] = useState(false);
@@ -28,7 +36,7 @@ function UserRegister() {
     { icon: <FaBook />, text: "Educational Support" },
     { icon: <FaMedkit />, text: "Medical Aid" },
     { icon: <FaUsers />, text: "Community Welfare" },
-    { icon: <FaRegSmile />, text: "Disaster Relief" }
+    { icon: <FaRegSmile />, text: "Disaster Relief" },
   ];
 
   const [currentTopic, setCurrentTopic] = useState(0);
@@ -43,7 +51,7 @@ function UserRegister() {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -75,16 +83,18 @@ function UserRegister() {
         phone: "",
         address: "",
         dob: "",
-        gender: ""
+        gender: "",
       });
 
       setTimeout(() => {
         setShowNotification(false);
-        navigate("/user/login");
+        navigate("/auth/login");
       }, 2000);
     } catch (err) {
       console.error("User registration failed:", err);
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
+      setError(
+        err.response?.data?.message || "Registration failed. Please try again."
+      );
     }
   };
 
@@ -114,46 +124,65 @@ function UserRegister() {
         <div className="user-register-right">
           <div className="user-register-form">
             <h2>Create Account</h2>
+            <p className="form-subtitle">Join Majlish-e-Khidmat to continue</p>
             {error && <p className="error-message">{error}</p>}
 
             <form onSubmit={handleSubmit}>
-              <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="name">Full Name</label>
                 <input
+                  id="name"
                   name="name"
-                  placeholder="Full Name"
+                  placeholder="Your full name"
                   value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
                   onChange={handleChange}
                   required
                 />
               </div>
 
-              <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
                 <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  autoComplete="email"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  placeholder="Create a strong password"
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  autoComplete="new-password"
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="phone">Phone</label>
                 <input
+                  id="phone"
                   name="phone"
-                  placeholder="Phone"
+                  placeholder="Optional"
                   value={formData.phone}
                   onChange={handleChange}
                 />
               </div>
 
-              <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="gender">Gender</label>
                 <select
+                  id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
@@ -164,7 +193,12 @@ function UserRegister() {
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="dob">Date of Birth</label>
                 <input
+                  id="dob"
                   type="date"
                   name="dob"
                   value={formData.dob}
@@ -172,8 +206,10 @@ function UserRegister() {
                 />
               </div>
 
-              <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="address">Address</label>
                 <input
+                  id="address"
                   name="address"
                   placeholder="Address"
                   value={formData.address}
@@ -181,8 +217,19 @@ function UserRegister() {
                 />
               </div>
 
-              <button type="submit">Register</button>
+              <div className="options">
+                <label>
+                  <input type="checkbox" required /> I agree to the Terms
+                </label>
+              </div>
+
+              <button type="submit">Create account</button>
             </form>
+
+            <p className="register-link">
+              Already have an account?{" "}
+              <Link to="/auth/login">Create an account</Link>
+            </p>
           </div>
         </div>
       </div>

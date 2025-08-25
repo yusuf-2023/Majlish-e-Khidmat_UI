@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { verifyOtpAndResetPassword } from "../api/password/passwordService"; // Use verifyOtpAndResetPassword to match backend
+import { verifyOtpAndResetPassword } from "../../api/password/passwordService"; // Use verifyOtpAndResetPassword to match backend
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/styles/Login.css";
 

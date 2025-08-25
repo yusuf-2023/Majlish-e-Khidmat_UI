@@ -25,7 +25,7 @@ function AdminNavbar() {
     logoutUser();
     setIsDropdownOpen(false);
     setIsSidebarOpen(false);
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   const toggleSidebar = () => {
@@ -70,7 +70,7 @@ function AdminNavbar() {
             </div>
           )}
           <div className="navbar-logo">
-            <Link to="/admin/home" className="logo-link">
+            <Link to="/admin/dashboard" className="logo-link">
               <img src="/WhiteLion1.png" alt="Logo" className="logo-img" />
               <span className="logo-text">Majlish-e-Khidmat</span>
             </Link>
@@ -81,10 +81,7 @@ function AdminNavbar() {
           <ul className="navbar-links">
             {isLoggedIn ? (
               <>
-                <li><Link to="/admin/home">Home</Link></li>
-                <li><Link to="/admin/features">Features</Link></li>
-                <li><Link to="/admin/about">About</Link></li>
-                <li><Link to="/admin/contact">Contact</Link></li>
+                <li><Link to="/admin/dashboard">Home</Link></li>
                 <li><Link to="/admin/campaign/list">Campaigns</Link></li>
                 <li><Link to="/admin/events/list">Events</Link></li>
                 <li><Link to="/admin/inventory/list">Inventory</Link></li>
@@ -92,9 +89,9 @@ function AdminNavbar() {
               </>
             ) : (
               <>
-                <li><Link to="/user/register">User Register</Link></li>
-                <li><Link to="/login">Login</Link></li>
-                <li><Link to="/admin/register">Admin Register</Link></li>
+                <li><Link to="/auth/register/user">User Register</Link></li>
+                <li><Link to="/auth/login">Login</Link></li>
+                <li><Link to="/auth/register/admin">Admin Register</Link></li>
               </>
             )}
           </ul>

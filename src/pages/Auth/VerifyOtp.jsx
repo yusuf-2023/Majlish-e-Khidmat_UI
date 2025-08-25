@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { verifyOtpAndResetPassword } from "../api/password/passwordService";
+import { verifyOtpAndResetPassword } from "../../api/password/passwordService";
 // API call import karo
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/styles/Login.css";

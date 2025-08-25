@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { sendOtp } from "../api/password/passwordService";
+import { sendOtp } from "../../api/password/passwordService";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/styles/Login.css";

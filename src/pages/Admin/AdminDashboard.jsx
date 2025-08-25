@@ -19,10 +19,11 @@ import {
 import { getAllVolunteers } from "../../api/Volunteer/volunteerApi";
 import { getAllEvents } from "../../api/event/eventApi";
 import { getAllCampaigns } from "../../api/Campaign/campaignApi";
+import { fetchStats } from "../../api/stats/statsApi";
+import { uploadAdminProfilePic } from "../../api/admin/adminApi";
+import { uploadUserProfilePic } from "../../api/user/userApi";
 
 // Components
-import AdminLayout from "../../components/layouts/AdminLayout";
-import DashboardStats from "../../components/DashboardStats";
 
 
 Chart.register(...registerables, ChartDataLabels);
@@ -131,7 +132,8 @@ const AdminDashboard = () => {
       try {
         const s = await fetchStats();
         statsObj = s?.data || s || {};
-      } catch (e) {
+      } catch (error) {
+        console.error("fetchStats failed:", error);
         // fallback: compute counts (we already fetched volunteers); fetch events & campaigns for counts
         const [evRes, campRes] = await Promise.all([
           getAllEvents().catch((er) => {
@@ -541,7 +543,7 @@ const AdminDashboard = () => {
     }
   }, [state.bulkAction, state.selectedIds, state.activeTab, state.admins, state.users, fetchEverything]);
 
-  const toggleDarkMode = useCallback(() => setState((p) => ({ ...p, darkMode: !p.darkMode })), []);
+  // const toggleDarkMode = useCallback(() => setState((p) => ({ ...p, darkMode: !p.darkMode })), []);
   const changeChartType = useCallback((type) => setState((p) => ({ ...p, chartType: type })), []);
   const changeUserAdminChartType = useCallback((type) => setState((p) => ({ ...p, userAdminChartType: type })), []);
   const changeGrowthChartType = useCallback((type) => setState((p) => ({ ...p, growthChartType: type })), []);

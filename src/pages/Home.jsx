@@ -8,7 +8,7 @@ import { getAllEvents } from "../api/event/eventApi";
 import StatCard from "../components/StatCard";
 import "../styles/home.css";
 
-function Home({ darkMode }) {
+function Home() {
   const [stats, setStats] = useState({
     activeVolunteers: 0,
     totalUsers: 0,
@@ -224,7 +224,7 @@ function Home({ darkMode }) {
     } catch (err) {
       console.error("Error loading home data:", err);
     } finally {
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) return;  // eslint-disable-line
       setLoading(false);
       // small delay to avoid rapid state flip-flop
       setTimeout(() => mountedRef.current && setRefreshing(false), 300);
@@ -632,7 +632,6 @@ function Home({ darkMode }) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "1rem",
         }}
       >
         <div>

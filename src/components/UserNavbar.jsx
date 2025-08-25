@@ -10,7 +10,7 @@ function UserNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [role, setRole] = useState(null);
+  
 
   const isLoggedIn = !!localStorage.getItem("accessToken");
 
@@ -21,14 +21,14 @@ function UserNavbar() {
         const decoded = jwtDecode(token);
         setUserName(decoded.name || "User Name");
         setUserImage(decoded.profileImage || null);
-        setRole(decoded.role || "user");
+        
       } catch (error) {
         console.error("Invalid token", error);
       }
     } else {
       setUserName(null);
       setUserImage(null);
-      setRole(null);
+      
     }
   }, [isLoggedIn]);
 
@@ -36,10 +36,9 @@ function UserNavbar() {
     localStorage.clear();
     setUserName(null);
     setUserImage(null);
-    setRole(null);
     setIsDropdownOpen(false);
     setIsSidebarOpen(false);
-    navigate("/user/login");
+    navigate("/auth/login");
   };
 
   const getInitials = (name) => {
@@ -92,26 +91,17 @@ function UserNavbar() {
                 <li>
                   <Link to="/">Home</Link>
                 </li>
-                <li>
-                  <Link to="/admin/features">Features</Link>
-                </li>
-                <li>
-                  <Link to="/admin/about">About</Link>
-                </li>
-                <li>
-                  <Link to="/admin/contact">Contact</Link>
-                </li>
               </>
             ) : (
               <>
                 <li>
-                  <Link to="/user/register">User Register</Link>
+                  <Link to="/auth/register/user">User Register</Link>
                 </li>
                 <li>
-                  <Link to="/login">Login</Link>
+                  <Link to="/auth/login">Login</Link>
                 </li>
                 <li>
-                  <Link to="/admin/register">Admin Register</Link>
+                  <Link to="/auth/register/admin">Admin Register</Link>
                 </li>
               </>
             )}
@@ -159,7 +149,7 @@ function UserNavbar() {
                   Edit Profile
                 </Link>
                 <Link
-                  to="/donation"
+                  to="/user/donation"
                   className="dropdown-item"
                   onClick={() => setIsDropdownOpen(false)}
                 >
@@ -179,19 +169,19 @@ function UserNavbar() {
         <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
           <ul>
             <li>
-              <Link to="/activities" onClick={() => setIsSidebarOpen(false)}>
+              <Link to="/user/activities" onClick={() => setIsSidebarOpen(false)}>
                 📋 Activities
               </Link>
             </li>
             <li>
-              <Link to="/donation" onClick={() => setIsSidebarOpen(false)}>
+              <Link to="/user/donation" onClick={() => setIsSidebarOpen(false)}>
                 💰 Donate
               </Link>
             </li>
 
             <li>
               <Link
-                to="/volunteer/register"
+                to="/admin/volunteers/add"
                 onClick={() => setIsSidebarOpen(false)}
               >
                 ✍️ Volunteer Register
@@ -200,7 +190,7 @@ function UserNavbar() {
 
             <li>
               <Link
-                to="/volunteer/list"
+                to="/admin/volunteers/list"
                 onClick={() => setIsSidebarOpen(false)}
               >
                 🤝 Volunteer List
@@ -208,23 +198,13 @@ function UserNavbar() {
             </li>
 
             <li>
-              <Link to="/campaign/list" onClick={() => setIsSidebarOpen(false)}>
+              <Link to="/user/campaign/list" onClick={() => setIsSidebarOpen(false)}>
                 🎯 Campaigns
               </Link>
             </li>
-            {role === "admin" && (
-              <li>
-                <Link
-                  to="/campaign/form"
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  📝 Create Campaign
-                </Link>
-              </li>
-            )}
 
             <li>
-              <Link to="/feedback" onClick={() => setIsSidebarOpen(false)}>
+              <Link to="/user/feedback" onClick={() => setIsSidebarOpen(false)}>
                 💬 Feedback
               </Link>
             </li>

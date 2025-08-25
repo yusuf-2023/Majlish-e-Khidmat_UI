@@ -1,13 +1,15 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import Login from "../pages/Login";
-import AdminRegister from "../pages/Admin/AdminRegister";
-import UserRegister from "../pages/User/UserRegister";
-import ForgotPassword from "../pages/ForgotPassword";
-import VerifyOtp from "../pages/VerifyOtp";
+import AuthLayout from "../layout/AuthLayout";
+import Login from "../pages/Auth/Login";
+import AdminRegister from "../pages/Auth/AdminRegister";
+import UserRegister from "../pages/Auth/UserRegister";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
+import VerifyOtp from "../pages/Auth/VerifyOtp";
 
 const AuthRoutes = {
   path: "auth",
+  element: <AuthLayout />,
   children: [
     {
       path: "",

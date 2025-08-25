@@ -1,12 +1,14 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Outlet, useLoaderData, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 
 const MainLayout = () => {
   const { role } = useAuth();
   const { darkMode } = useLoaderData();
+  const location = useLocation();
+  const isAuthRoute = location.pathname.startsWith("/auth");
 
   return (
     <div
@@ -14,13 +16,13 @@ const MainLayout = () => {
         darkMode ? "dark-mode" : ""
       }`}
     >
-      <Header darkMode={darkMode} />
+      {!isAuthRoute && <Header darkMode={darkMode} />}
       <main className="main-content">
         <div>
           <Outlet />
         </div>
       </main>
-      <Footer />
+      {!isAuthRoute && <Footer />}
     </div>
   );
 };

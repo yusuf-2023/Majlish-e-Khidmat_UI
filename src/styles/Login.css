@@ -29,6 +29,12 @@ body.dark-mode .form-container {
   transition: color 0.3s ease;
 }
 
+.form-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  margin: -8px 0 14px;
+}
+
 body.dark-mode .form-container h2 {
   color: #81c784;
 }
@@ -46,6 +52,18 @@ body.dark-mode .form-container h2 {
   padding: 12px 14px;
   transition: 0.3s ease;
   width: 100%;
+}
+
+.form-group {
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.form-group label {
+  color: #374151;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
 }
 
 body.dark-mode .form-container input[type="email"],
@@ -190,6 +208,23 @@ body.dark-mode .register-link a {
 
 .register-link a:hover {
   text-decoration: underline;
+}
+
+.divider {
+  align-items: center;
+  color: #9ca3af;
+  display: flex;
+  font-size: 12px;
+  gap: 8px;
+  margin: 14px 0 2px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
 }
 
 /* ===== Responsive Design ===== */
