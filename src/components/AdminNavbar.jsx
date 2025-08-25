@@ -16,7 +16,7 @@ function AdminNavbar() {
     campaign: false,
     event: false,
     inventory: false,
-    management: false
+    management: false,
   });
 
   const isLoggedIn = role === "ADMIN";
@@ -44,15 +44,19 @@ function AdminNavbar() {
   };
 
   const toggleSection = (section) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
   const getInitials = (name) => {
     if (!name) return "A";
-    return name.split(" ").map((n) => n[0]).join("").toUpperCase();
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
   };
 
   const closeSidebar = () => {
@@ -81,17 +85,33 @@ function AdminNavbar() {
           <ul className="navbar-links">
             {isLoggedIn ? (
               <>
-                <li><Link to="/admin/dashboard">Home</Link></li>
-                <li><Link to="/admin/campaign/list">Campaigns</Link></li>
-                <li><Link to="/admin/events/list">Events</Link></li>
-                <li><Link to="/admin/inventory/list">Inventory</Link></li>
-                <li><Link to="/admin/feedback/list">Feedback</Link></li>
+                <li>
+                  <Link to="/admin/dashboard">Home</Link>
+                </li>
+                <li>
+                  <Link to="/admin/campaign/list">Campaigns</Link>
+                </li>
+                <li>
+                  <Link to="/admin/events/list">Events</Link>
+                </li>
+                <li>
+                  <Link to="/admin/inventory/list">Inventory</Link>
+                </li>
+                <li>
+                  <Link to="/admin/feedback/list">Feedback</Link>
+                </li>
               </>
             ) : (
               <>
-                <li><Link to="/auth/register/user">User Register</Link></li>
-                <li><Link to="/auth/login">Login</Link></li>
-                <li><Link to="/auth/register/admin">Admin Register</Link></li>
+                <li>
+                  <Link to="/auth/register/user">User Register</Link>
+                </li>
+                <li>
+                  <Link to="/auth/login">Login</Link>
+                </li>
+                <li>
+                  <Link to="/auth/register/admin">Admin Register</Link>
+                </li>
               </>
             )}
           </ul>
@@ -112,7 +132,9 @@ function AdminNavbar() {
                 {adminImage ? (
                   <img src={adminImage} alt="Admin" />
                 ) : (
-                  <div className="avatar-placeholder">{getInitials(adminName)}</div>
+                  <div className="avatar-placeholder">
+                    {getInitials(adminName)}
+                  </div>
                 )}
               </div>
               {isDropdownOpen && (
@@ -121,7 +143,9 @@ function AdminNavbar() {
                     {adminImage ? (
                       <img src={adminImage} alt="Admin" />
                     ) : (
-                      <div className="avatar-placeholder">{getInitials(adminName)}</div>
+                      <div className="avatar-placeholder">
+                        {getInitials(adminName)}
+                      </div>
                     )}
                     <span>{adminName || "Admin"}</span>
                   </div>
@@ -154,11 +178,15 @@ function AdminNavbar() {
               &times;
             </button>
           </div>
-          
+
           <div className="sidebar-content">
             {/* Dashboard */}
             <div className="sidebar-section">
-              <Link to="/admin/dashboard" onClick={closeSidebar} className="sidebar-item main-item">
+              <Link
+                to="/admin/dashboard"
+                onClick={closeSidebar}
+                className="sidebar-item main-item"
+              >
                 <span className="sidebar-icon">📊</span>
                 <span className="sidebar-text">Admin Dashboard</span>
               </Link>
@@ -166,24 +194,39 @@ function AdminNavbar() {
 
             {/* Management Section */}
             <div className="sidebar-section">
-              <div className="sidebar-header-item" onClick={() => toggleSection('management')}>
+              <div
+                className="sidebar-header-item"
+                onClick={() => toggleSection("management")}
+              >
                 <span className="sidebar-icon">👥</span>
                 <span className="sidebar-text">User Management</span>
                 <span className="sidebar-arrow">
-                  {expandedSections.management ? '▼' : '▶'}
+                  {expandedSections.management ? "▼" : "▶"}
                 </span>
               </div>
               {expandedSections.management && (
                 <div className="sidebar-submenu">
-                  <Link to="/admin/manage-users" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/manage-users"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">🔧</span>
                     <span className="sidebar-text">Manage Users</span>
                   </Link>
-                  <Link to="/admin/donation-dashboard" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/donation-dashboard"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">💰</span>
                     <span className="sidebar-text">Donation Dashboard</span>
                   </Link>
-                  <Link to="/admin/banks" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/banks"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">🏦</span>
                     <span className="sidebar-text">Manage Banks</span>
                   </Link>
@@ -193,20 +236,31 @@ function AdminNavbar() {
 
             {/* Volunteer Section */}
             <div className="sidebar-section">
-              <div className="sidebar-header-item" onClick={() => toggleSection('volunteer')}>
+              <div
+                className="sidebar-header-item"
+                onClick={() => toggleSection("volunteer")}
+              >
                 <span className="sidebar-icon">🤝</span>
                 <span className="sidebar-text">Volunteers</span>
                 <span className="sidebar-arrow">
-                  {expandedSections.volunteer ? '▼' : '▶'}
+                  {expandedSections.volunteer ? "▼" : "▶"}
                 </span>
               </div>
               {expandedSections.volunteer && (
                 <div className="sidebar-submenu">
-                  <Link to="/admin/volunteers/add" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/volunteers/add"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">➕</span>
                     <span className="sidebar-text">Add Volunteer</span>
                   </Link>
-                  <Link to="/admin/volunteers/list" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/volunteers/list"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">📋</span>
                     <span className="sidebar-text">Volunteer List</span>
                   </Link>
@@ -216,20 +270,31 @@ function AdminNavbar() {
 
             {/* Campaign Section */}
             <div className="sidebar-section">
-              <div className="sidebar-header-item" onClick={() => toggleSection('campaign')}>
+              <div
+                className="sidebar-header-item"
+                onClick={() => toggleSection("campaign")}
+              >
                 <span className="sidebar-icon">📢</span>
                 <span className="sidebar-text">Campaigns</span>
                 <span className="sidebar-arrow">
-                  {expandedSections.campaign ? '▼' : '▶'}
+                  {expandedSections.campaign ? "▼" : "▶"}
                 </span>
               </div>
               {expandedSections.campaign && (
                 <div className="sidebar-submenu">
-                  <Link to="/admin/campaign/form" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/campaign/form"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">➕</span>
                     <span className="sidebar-text">Create Campaign</span>
                   </Link>
-                  <Link to="/admin/campaign/list" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/campaign/list"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">📋</span>
                     <span className="sidebar-text">Campaign List</span>
                   </Link>
@@ -239,20 +304,31 @@ function AdminNavbar() {
 
             {/* Event Section */}
             <div className="sidebar-section">
-              <div className="sidebar-header-item" onClick={() => toggleSection('event')}>
+              <div
+                className="sidebar-header-item"
+                onClick={() => toggleSection("event")}
+              >
                 <span className="sidebar-icon">🎉</span>
                 <span className="sidebar-text">Events</span>
                 <span className="sidebar-arrow">
-                  {expandedSections.event ? '▼' : '▶'}
+                  {expandedSections.event ? "▼" : "▶"}
                 </span>
               </div>
               {expandedSections.event && (
                 <div className="sidebar-submenu">
-                  <Link to="/admin/events/create" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/events/create"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">➕</span>
                     <span className="sidebar-text">Create Event</span>
                   </Link>
-                  <Link to="/admin/events/list" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/events/list"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">📋</span>
                     <span className="sidebar-text">Event List</span>
                   </Link>
@@ -262,20 +338,31 @@ function AdminNavbar() {
 
             {/* Inventory Section */}
             <div className="sidebar-section">
-              <div className="sidebar-header-item" onClick={() => toggleSection('inventory')}>
+              <div
+                className="sidebar-header-item"
+                onClick={() => toggleSection("inventory")}
+              >
                 <span className="sidebar-icon">📦</span>
                 <span className="sidebar-text">Inventory</span>
                 <span className="sidebar-arrow">
-                  {expandedSections.inventory ? '▼' : '▶'}
+                  {expandedSections.inventory ? "▼" : "▶"}
                 </span>
               </div>
               {expandedSections.inventory && (
                 <div className="sidebar-submenu">
-                  <Link to="/admin/inventory/add" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/inventory/add"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">➕</span>
                     <span className="sidebar-text">Add Inventory</span>
                   </Link>
-                  <Link to="/admin/inventory/list" onClick={closeSidebar} className="sidebar-item">
+                  <Link
+                    to="/admin/inventory/list"
+                    onClick={closeSidebar}
+                    className="sidebar-item"
+                  >
                     <span className="sidebar-icon">📋</span>
                     <span className="sidebar-text">Inventory List</span>
                   </Link>
@@ -285,7 +372,11 @@ function AdminNavbar() {
 
             {/* Feedback Section */}
             <div className="sidebar-section">
-              <Link to="/admin/feedback/list" onClick={closeSidebar} className="sidebar-item main-item">
+              <Link
+                to="/admin/feedback/list"
+                onClick={closeSidebar}
+                className="sidebar-item main-item"
+              >
                 <span className="sidebar-icon">💬</span>
                 <span className="sidebar-text">Feedback</span>
               </Link>
@@ -295,14 +386,20 @@ function AdminNavbar() {
           <div className="sidebar-footer">
             <div className="user-info">
               {adminImage ? (
-                <img src={adminImage} alt="Admin" className="sidebar-user-avatar" />
+                <img
+                  src={adminImage}
+                  alt="Admin"
+                  className="sidebar-user-avatar"
+                />
               ) : (
                 <div className="sidebar-avatar-placeholder">
                   {getInitials(adminName)}
                 </div>
               )}
               <div className="sidebar-user-details">
-                <span className="sidebar-user-name">{adminName || "Admin"}</span>
+                <span className="sidebar-user-name">
+                  {adminName || "Admin"}
+                </span>
                 <span className="sidebar-user-role">Administrator</span>
               </div>
             </div>

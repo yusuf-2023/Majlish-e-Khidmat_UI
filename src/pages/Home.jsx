@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { fetchStats } from "../api/stats/statsApi";
 import { getAllCampaigns } from "../api/Campaign/campaignApi";
 import { listAllDonations } from "../api/donationApi";
@@ -9,6 +10,9 @@ import StatCard from "../components/StatCard";
 import "../styles/home.css";
 
 function Home() {
+  const { role } = useAuth();
+  const isAdmin = role === "ADMIN";
+  const isUser = role === "USER";
   const [stats, setStats] = useState({
     activeVolunteers: 0,
     totalUsers: 0,
@@ -224,7 +228,7 @@ function Home() {
     } catch (err) {
       console.error("Error loading home data:", err);
     } finally {
-      if (!mountedRef.current) return;  // eslint-disable-line
+      if (!mountedRef.current) return; // eslint-disable-line
       setLoading(false);
       // small delay to avoid rapid state flip-flop
       setTimeout(() => mountedRef.current && setRefreshing(false), 300);
@@ -276,11 +280,25 @@ function Home() {
           </div>
 
           {/* Call to Actions */}
-          <div className="hero-ctas">
-            <Link to="/donate" className="btn primary">
+          <div className="hero-ctas" aria-label="Primary actions">
+            <Link
+              to={
+                isAdmin
+                  ? "/admin/donation-dashboard"
+                  : isUser
+                  ? "/user/donation"
+                  : "/auth/login"
+              }
+              className="btn primary"
+              aria-label="Donate now"
+            >
               Donate Now
             </Link>
-            <Link to="/volunteer/register" className="btn outline">
+            <Link
+              to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+              className="btn outline"
+              aria-label="Become a volunteer"
+            >
               Become Volunteer
             </Link>
           </div>
@@ -376,10 +394,19 @@ function Home() {
                         "Support this cause."}
                     </p>
                     <div className="card-actions">
-                      <Link to={`/campaigns/${c.id}`} className="btn">
+                      <Link to="/user/campaign/list" className="btn">
                         View
                       </Link>
-                      <Link to="/donate" className="btn primary small">
+                      <Link
+                        to={
+                          isAdmin
+                            ? "/admin/donation-dashboard"
+                            : isUser
+                            ? "/user/donation"
+                            : "/auth/login"
+                        }
+                        className="btn primary small"
+                      >
                         Donate
                       </Link>
                     </div>
@@ -396,10 +423,19 @@ function Home() {
                       Help children get access to quality education.
                     </p>
                     <div className="card-actions">
-                      <Link to="/campaigns" className="btn">
+                      <Link to="/user/campaign/list" className="btn">
                         View
                       </Link>
-                      <Link to="/donate" className="btn primary small">
+                      <Link
+                        to={
+                          isAdmin
+                            ? "/admin/donation-dashboard"
+                            : isUser
+                            ? "/user/donation"
+                            : "/auth/login"
+                        }
+                        className="btn primary small"
+                      >
                         Donate
                       </Link>
                     </div>
@@ -413,10 +449,19 @@ function Home() {
                       Support medical camps and basic healthcare.
                     </p>
                     <div className="card-actions">
-                      <Link to="/campaigns" className="btn">
+                      <Link to="/user/campaign/list" className="btn">
                         View
                       </Link>
-                      <Link to="/donate" className="btn primary small">
+                      <Link
+                        to={
+                          isAdmin
+                            ? "/admin/donation-dashboard"
+                            : isUser
+                            ? "/user/donation"
+                            : "/auth/login"
+                        }
+                        className="btn primary small"
+                      >
                         Donate
                       </Link>
                     </div>
@@ -430,10 +475,19 @@ function Home() {
                       Join our local projects for community upliftment.
                     </p>
                     <div className="card-actions">
-                      <Link to="/campaigns" className="btn">
+                      <Link to="/user/campaign/list" className="btn">
                         View
                       </Link>
-                      <Link to="/donate" className="btn primary small">
+                      <Link
+                        to={
+                          isAdmin
+                            ? "/admin/donation-dashboard"
+                            : isUser
+                            ? "/user/donation"
+                            : "/auth/login"
+                        }
+                        className="btn primary small"
+                      >
                         Donate
                       </Link>
                     </div>
@@ -463,7 +517,10 @@ function Home() {
           ) : allVolunteers.length === 0 ? (
             <div className="no-volunteers">
               <p>No active volunteers at the moment.</p>
-              <Link to="/volunteer/register" className="btn primary">
+              <Link
+                to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+                className="btn primary"
+              >
                 Become Our First Volunteer
               </Link>
             </div>
@@ -579,10 +636,13 @@ function Home() {
           )}
 
           <div className="volunteers-cta">
-            <Link to="/volunteers" className="btn outline">
+            <Link to="/admin/volunteers/list" className="btn outline">
               View All Volunteers
             </Link>
-            <Link to="/volunteer/register" className="btn primary">
+            <Link
+              to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+              className="btn primary"
+            >
               Join Our Team
             </Link>
           </div>
@@ -617,7 +677,7 @@ function Home() {
               ))}
             </div>
           )}
-          <Link to="/events" className="btn primary small">
+          <Link to="/user/events" className="btn primary small">
             View All Events
           </Link>
         </div>
@@ -626,15 +686,9 @@ function Home() {
       {/* TOP DONORS & VOLUNTEERS */}
       <section
         className="leaders container section-lg"
-        style={{
-          willChange: "transform, opacity",
-          padding: "1rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+        style={{ willChange: "transform, opacity", padding: "1rem" }}
       >
-        <div>
+        <div className="flex-split">
           <div>
             <h3>Top Donors</h3>
             <ul className="list">
@@ -651,7 +705,16 @@ function Home() {
                 <li className="muted">No donors yet.</li>
               )}
             </ul>
-            <Link to="/donations" className="btn ghost small">
+            <Link
+              to={
+                isAdmin
+                  ? "/admin/donation-dashboard"
+                  : isUser
+                  ? "/user/donation"
+                  : "/auth/login"
+              }
+              className="btn ghost small"
+            >
               View All Donations
             </Link>
           </div>
@@ -698,7 +761,10 @@ function Home() {
                 <li className="muted">No volunteers found.</li>
               )}
             </ul>
-            <Link to="/volunteer/register" className="btn primary small">
+            <Link
+              to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+              className="btn primary small"
+            >
               Become a Volunteer
             </Link>
           </div>
@@ -749,10 +815,22 @@ function Home() {
               </ul>
 
               <div className="mission-actions">
-                <Link to="/volunteer/register" className="btn primary">
+                <Link
+                  to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+                  className="btn primary"
+                >
                   <i className="fas fa-hands-helping"></i> Get Involved
                 </Link>
-                <Link to="/donate" className="btn outline">
+                <Link
+                  to={
+                    isAdmin
+                      ? "/admin/donation-dashboard"
+                      : isUser
+                      ? "/user/donation"
+                      : "/auth/login"
+                  }
+                  className="btn outline"
+                >
                   <i className="fas fa-donate"></i> Support This Cause
                 </Link>
               </div>
@@ -777,11 +855,19 @@ function Home() {
           <p className="muted">
             Your time and skills can change lives. Become a volunteer.
           </p>
-          <div className="hero-ctas">
-            <Link to="/volunteer/register" className="btn primary large">
+          <div className="hero-ctas" aria-label="Volunteer actions">
+            <Link
+              to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+              className="btn primary large"
+              aria-label="Register as volunteer"
+            >
               Register as Volunteer
             </Link>
-            <Link to="/contact" className="btn outline large">
+            <Link
+              to="/contact"
+              className="btn outline large"
+              aria-label="Contact us"
+            >
               Contact Us
             </Link>
           </div>

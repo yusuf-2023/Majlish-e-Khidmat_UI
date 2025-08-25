@@ -1,6 +1,5 @@
 /* ===== Wrapper (Banner + Form) ===== */
 .admin-register-wrapper {
-  background: linear-gradient(135deg, #f1f8e9, #aed581);
   display: flex;
   font-family: Arial, sans-serif;
   min-height: 100vh;
@@ -48,6 +47,22 @@
 .admin-register-banner p {
   font-size: 1.2rem;
   max-width: 300px;
+}
+
+.banner-points {
+  list-style: none;
+  margin-top: 16px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.banner-points li {
+  background: rgb(0 0 0 / 35%);
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 8px;
+  margin: 6px 0;
+  padding: 8px 12px;
 }
 
 /* ===== Form Container (Right side) ===== */
@@ -117,12 +132,16 @@
 
 /* ===== DARK MODE STYLES ===== */
 .dark-mode .admin-register-wrapper {
-  background: linear-gradient(135deg, #1b1b1b, #2a2a2a);
 }
 
 .dark-mode .admin-register-form-container {
   background: #2e2e2e;
   color: #e0e0e0;
+}
+
+.dark-mode .banner-points li {
+  background: rgb(0 0 0 / 45%);
+  border-color: rgb(255 255 255 / 24%);
 }
 
 .dark-mode .admin-register-form-container h2 {

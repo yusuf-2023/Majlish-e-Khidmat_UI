@@ -196,14 +196,20 @@ html {
 
 .btn.outline { 
   background: transparent; 
-  border: 2px solid rgb(255 255 255); 
-  color: rgb(255 141 1); 
+  border: 2px solid var(--accent); 
+  color: var(--accent); 
+}
+
+/* Keep white outline on hero where background is darkened */
+.hero .btn.outline {
+  border-color: rgb(255 255 255);
+  color: rgb(255 141 1);
 }
 
 .btn.ghost { 
-  background: rgb(191 83 36 / 6%); 
-  border: 1px solid rgb(15 23 42 / 15%); 
-  color: white; 
+  background: rgb(249 115 22 / 10%); 
+  border: 1px solid rgb(249 115 22 / 30%); 
+  color: var(--accent); 
 }
 
 .btn.small { 
@@ -231,8 +237,8 @@ html {
 
 .impact h2 { 
   color: var(--text); 
-  font-size: 1.8rem; 
-  margin-bottom: 6px; 
+  font-size: 2rem; 
+  margin-bottom: 8px; 
   text-align: center; 
 }
 
@@ -274,7 +280,7 @@ html {
 
 .campaigns h2 { 
   color: var(--text); 
-  font-size: 1.8rem; 
+  font-size: 2rem; 
   margin-bottom: 18px; 
   text-align: center; 
 }
@@ -308,7 +314,7 @@ html {
 }
 
 .card-hero { 
-  background: linear-gradient(90deg,#eef2ff,#e6fffa); 
+  background: linear-gradient(135deg,#eaf4ff,#e6fffa); 
   height:160px; 
 }
 
@@ -525,7 +531,7 @@ html {
 
 .home-events h2 { 
   color: var(--text); 
-  font-size: 1.8rem; 
+  font-size: 2rem; 
   margin-bottom: 24px; 
   text-align: center; 
 }
@@ -551,6 +557,7 @@ html {
 .event-card h3 { 
   color: var(--accent); 
   margin-bottom: 8px; 
+  font-weight: 700;
 }
 
 .event-card p { 
@@ -645,8 +652,8 @@ html {
   border-radius: 20px;
   box-shadow: 0 10px 30px rgb(0 0 0 / 8%);
   display: flex;
-  gap: 50px;
-  padding: 40px;
+  gap: 40px;
+  padding: 32px 36px;
 }
 
 .mission-details {
@@ -797,7 +804,7 @@ color: #555; /* Fixed the color value from "555" to "#555555" */
   animation: fadeIn 1s ease-out;
 }
 
-@keyframes fade-in {
+@keyframes fadeIn {
   from { 
     opacity: 0; 
     transform: translateY(20px); 

@@ -1,6 +1,6 @@
 // src/pages/Admin/AdminRegister.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { adminRegister } from "../../api/admin/adminApi";
 import "../../styles/AdminRegister.css";
 import Notification from "../../components/Notification";
@@ -62,13 +62,14 @@ function AdminRegister() {
       // Redirect to **single login page** after 2 seconds
       setTimeout(() => {
         setShowNotification(false);
-        navigate("/login"); // <- single login page route
+        navigate("/auth/login"); // <- single login page route
       }, 2000);
-
     } catch (err) {
       console.error("Registration error:", err);
       setError(
-        err.response?.data?.message || err.message || "Registration failed. Please try again."
+        err.response?.data?.message ||
+          err.message ||
+          "Registration failed. Please try again."
       );
     }
   };
@@ -86,57 +87,88 @@ function AdminRegister() {
         <div className="admin-register-banner">
           <h1>Welcome Admin</h1>
           <p>Create an admin account to manage the system efficiently.</p>
+          <ul className="banner-points">
+            <li>Manage users and roles</li>
+            <li>Oversee campaigns and events</li>
+            <li>Track donations and inventory</li>
+          </ul>
         </div>
 
         <div className="admin-register-form-container">
           <h2>Create Admin Account</h2>
+          <p className="form-subtitle">
+            Set up an account to manage the platform
+          </p>
 
           {error && <p className="error-message">{error}</p>}
 
           <form onSubmit={handleSubmit}>
-            <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="name">Full Name</label>
               <input
+                id="name"
                 name="name"
-                placeholder="Full Name"
+                placeholder="Your full name"
                 value={formData.name}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="email"
-                type="email"
-                placeholder="Email"
-                value={formData.email}
                 onChange={handleChange}
                 required
               />
             </div>
 
-            <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
               <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
                 type="password"
                 name="password"
-                placeholder="Password"
+                placeholder="Create a strong password"
                 value={formData.password}
                 onChange={handleChange}
                 required
+                autoComplete="new-password"
               />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
               <input
+                id="phone"
                 name="phone"
-                placeholder="Phone"
+                placeholder="Optional"
                 value={formData.phone}
                 onChange={handleChange}
               />
             </div>
 
-            <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="address">Address</label>
               <input
+                id="address"
                 name="address"
                 placeholder="Address"
                 value={formData.address}
                 onChange={handleChange}
               />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="dob">Date of Birth</label>
               <input
+                id="dob"
                 type="date"
                 name="dob"
                 value={formData.dob}
@@ -144,8 +176,10 @@ function AdminRegister() {
               />
             </div>
 
-            <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="gender">Gender</label>
               <select
+                id="gender"
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
@@ -156,8 +190,12 @@ function AdminRegister() {
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
+            </div>
 
+            <div className="form-group">
+              <label htmlFor="role">Role</label>
               <select
+                id="role"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
@@ -169,8 +207,22 @@ function AdminRegister() {
               </select>
             </div>
 
-            <button type="submit">Register</button>
+            <div className="options" style={{ marginTop: 6 }}>
+              <label>
+                <input type="checkbox" required /> I agree to the Terms
+              </label>
+            </div>
+
+            <button type="submit">Create admin account</button>
           </form>
+
+          <div className="divider">
+            <span>or</span>
+          </div>
+
+          <p className="register-link">
+            Already have an account? <Link to="/auth/login">Sign in</Link>
+          </p>
         </div>
       </div>
     </>
