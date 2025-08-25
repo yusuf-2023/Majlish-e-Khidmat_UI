@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import AuthGuard from "./Guard/AuthGuard";
+import RoleBasedGuard from "./Guard/RoleBasedGuard";
 
 // Layout
 import MainLayout from "../layout/MainLayout";
@@ -29,27 +30,6 @@ import FeedbackList from "../pages/Feedback/FeedbackList";
 // Auth Routes
 import AuthRoutes from "./AuthRoutes";
 
-// Auth guards
-const AdminGuard = () => {
-  const { role, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return role === "ADMIN" ? <Outlet /> : <Navigate to="/auth/login" replace />;
-};
-
-const UserGuard = () => {
-  const { role, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return role === "USER" ? <Outlet /> : <Navigate to="/auth/login" replace />;
-};
-
 // Route configurations
 const MainRoutes = {
   path: "/",
@@ -63,7 +43,13 @@ const MainRoutes = {
     // Admin Routes
     {
       path: "admin",
-      element: <AdminGuard />,
+      element: (
+        <AuthGuard>
+          <RoleBasedGuard roles={["admin"]}>
+            <Outlet />
+          </RoleBasedGuard>
+        </AuthGuard>
+      ),
       children: [
         { path: "", element: <Navigate to="dashboard" replace /> },
         { path: "dashboard", element: <AdminDashboard /> },
@@ -85,7 +71,13 @@ const MainRoutes = {
     // User Routes
     {
       path: "user",
-      element: <UserGuard />,
+      element: (
+        <AuthGuard>
+          <RoleBasedGuard roles={["user"]}>
+            <Outlet />
+          </RoleBasedGuard>
+        </AuthGuard>
+      ),
       children: [
         { path: "", element: <Navigate to="dashboard" replace /> },
         { path: "dashboard", element: <Home /> },

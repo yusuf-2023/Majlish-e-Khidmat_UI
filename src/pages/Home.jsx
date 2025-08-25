@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { fetchStats } from "../api/stats/statsApi";
 import { getAllCampaigns } from "../api/Campaign/campaignApi";
 import { listAllDonations } from "../api/donationApi";

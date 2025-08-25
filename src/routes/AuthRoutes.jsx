@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import GuestGuard from "./Guard/GuestGuard";
 import AuthLayout from "../layout/AuthLayout";
 import Login from "../pages/Auth/Login";
 import AdminRegister from "../pages/Auth/AdminRegister";
@@ -17,15 +18,27 @@ const AuthRoutes = {
     },
     {
       path: "login",
-      element: <Login />,
+      element: (
+        <GuestGuard>
+          <Login />
+        </GuestGuard>
+      ),
     },
     {
       path: "register/admin",
-      element: <AdminRegister />,
+      element: (
+        <GuestGuard>
+          <AdminRegister />
+        </GuestGuard>
+      ),
     },
     {
       path: "register/user",
-      element: <UserRegister />,
+      element: (
+        <GuestGuard>
+          <UserRegister />
+        </GuestGuard>
+      ),
     },
     {
       path: "forgot-password",

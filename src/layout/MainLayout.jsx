@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { Outlet, useLoaderData, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
