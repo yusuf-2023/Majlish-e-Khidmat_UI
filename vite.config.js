@@ -6,12 +6,12 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),  // '@' points to 'src' folder
+      "@": path.resolve(__dirname, "src"), // '@' points to 'src' folder
     },
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:8080',
+      "/api": "http://localhost:8080",
     },
   },
 });

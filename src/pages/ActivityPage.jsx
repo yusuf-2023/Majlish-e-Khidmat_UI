@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getActivities, addActivity, deleteActivity } from "../api/activity/activityApi";
+import {
+  getActivities,
+  addActivity,
+  deleteActivity,
+} from "../api/activity/activityApi";
 import "../styles/ActivityPage.css";
 import { useNavigate } from "react-router-dom";
 
@@ -59,17 +63,18 @@ const ActivityPage = () => {
   };
 
   return (
-    <div className="activity-page">
-      {/* Animated Background */}
-      <div className="animated-bg"></div>
-
+    <div className="activity-page section-content">
       {/* Form */}
-      <form className="activity-form" onSubmit={handleSubmit}>
+      <form className="activity-form glass-card" onSubmit={handleSubmit}>
         <div className="activity-form-header">
-          <button type="button" className="back-arrow" onClick={() => navigate("/")}>
+          <button
+            type="button"
+            className="back-arrow"
+            onClick={() => navigate("/")}
+          >
             ← Back
           </button>
-          <h2>All Activities</h2>
+          <h2 className="section-title">All Activities</h2>
         </div>
 
         <input
@@ -106,14 +111,14 @@ const ActivityPage = () => {
         ) : (
           activities.map((activity) => (
             <div className="activity-card glass-card" key={activity.id}>
-              <h3>{activity.activityName}</h3>
-              <p>{activity.description}</p>
+              <h3 className="card-title">{activity.activityName}</h3>
+              <p className="card-description">{activity.description}</p>
               <span className="activity-date">
                 {new Date(activity.activityDate).toLocaleDateString()}{" "}
                 {new Date(activity.activityDate).toLocaleTimeString()}
               </span>
               <button
-                className="btn-secondary small-btn"
+                className="btn-danger"
                 onClick={() => handleDelete(activity.id)}
               >
                 Delete

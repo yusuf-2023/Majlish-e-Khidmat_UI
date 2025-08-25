@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { verifyOtpAndResetPassword } from "../api/password/passwordService";// Use verifyOtpAndResetPassword to match backend
+import { verifyOtpAndResetPassword } from "../api/password/passwordService"; // Use verifyOtpAndResetPassword to match backend
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/styles/Login.css";
 
@@ -17,7 +17,9 @@ function ResetPassword() {
       // Since backend expects OTP for reset, this direct reset might not work without OTP
       // Consider prompting user to enter OTP instead, or remove this component
       alert("Please use Verify OTP page to reset your password.");
-      navigate(type === "admin" ? "/admin/forgot-password" : "/user/forgot-password");
+      navigate(
+        type === "admin" ? "/admin/forgot-password" : "/user/forgot-password"
+      );
     } catch {
       alert("Error resetting password");
     }

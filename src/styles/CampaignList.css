@@ -117,7 +117,7 @@ option {
 
 /* Table data */
 .campaign-table td {
-  color: var(--text-light) !important; /* Dark/light mode text */
+ 
   font-size: 14px;
   transition: color 0.3s ease;
   vertical-align: middle;

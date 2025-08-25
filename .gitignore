@@ -1,3 +1,27 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+package-lock.json
+yarn.lock
+
+# Build outputs
+/dist
+/dist-ssr
+/build
+
+# Testing
+/coverage
+/.nyc_output
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+
 # Logs
 logs
 *.log
@@ -7,18 +31,68 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.sublime-workspace
+*.sublime-project
+.project
+.classpath
+
+# TypeScript
+*.tsbuildinfo
+
+# Cache directories
+.cache/
+.mf/
+.rollup.cache/
+tsconfig.tsbuildinfo
+.eslintcache
+.stylelintcache
+.npm
+.yarn-cache
+
+# Vite specific
+.vite/
+*.timestamp-*.mjs
+
+# Build artifacts
+*.tgz
+.yarn-integrity
+
+# Local deployment
+.netlify/
+.vercel/
+.firebase/
+
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+**/.DS_Store

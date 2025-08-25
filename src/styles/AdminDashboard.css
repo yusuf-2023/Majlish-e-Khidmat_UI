@@ -1,13 +1,4 @@
 /* ============ Root / Theme ============ */
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body{
-  font-family: 'Courier New', Courier, monospace;
-
-}
 .admin-dashboard {
   --bg: #f5f7fb;
   --card: #fff;
@@ -42,9 +33,13 @@ body{
 
 /* Headings */
 .admin-dashboard h2 {
+  color: var(--text);
 
-
- 
+  /* margin: 0 0 16px 0; */
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin-top: 5%;
 }
 
 /* ============ Cards / Containers ============ */
@@ -106,6 +101,7 @@ button,
   line-height: 1;
   padding: 8px 12px;
   transition: transform .06s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+ 
 }
 
 button:hover,

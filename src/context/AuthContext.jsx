@@ -1,8 +1,17 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 
+// Create and export the context
+export const AuthContext = createContext(null);
 
-export const AuthContext = createContext();
+// Create and export the custom hook
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(null);
@@ -48,8 +57,6 @@ export const AuthProvider = ({ children }) => {
     if (savedToken && savedRole) {
       try {
         const decoded = jwtDecode(savedToken);
-
-        
 
         // Token expiration check
         if (decoded.exp && decoded.exp * 1000 < Date.now()) {

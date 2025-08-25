@@ -1,95 +1,107 @@
-import React, { useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-import UserNavbar from "../components/UserNavbar";
-import AdminNavbar from "../components/AdminNavbar";
-import Footer from "../components/Footer";
-import Home from "../pages/Home"; // Imported Home page for the main route
-import VolunteerList from "../pages/Volunteer/VolunteerList";// ✅ Added this import
+// Layout
+import MainLayout from "../layout/MainLayout";
 
-import UserRoutes from "./UserRoutes";
-import AdminRoutes from "./AdminRoutes";
-
-import Login from "../pages/Login";
-import AdminRegister from "../pages/Admin/AdminRegister";
-import UserRegister from "../pages/User/UserRegister";
+// Pages & Features
+import Home from "../pages/Home";
 import UserProfile from "../pages/User/UserProfile";
-import VolunteerRegister from "../pages/Volunteer/VolunteerRegister"; 
+import ActivityPage from "../pages/ActivityPage";
+import DonationForm from "../pages/Donation/DonationForm";
+import DonationDashboard from "../pages/Donation/DonationDashboard";
+import AdminDashboard from "../pages/Admin/AdminDashboard";
+import AdminProfile from "../pages/Admin/AdminProfile";
+import ManageUsers from "../pages/Admin/ManageUsers";
+import AdminBankPage from "../pages/AdminBankPage";
+import VolunteerRegister from "../pages/Volunteer/VolunteerRegister";
+import VolunteerList from "../pages/Volunteer/VolunteerList";
+import CampaignForm from "../pages/Campaign/CampaignForm";
+import CampaignList from "../pages/Campaign/CampaignList";
+import EventForm from "../pages/Event/EventForm";
+import EventList from "../pages/Event/EventList";
+import InventoryForm from "../pages/Inventory/InventoryForm";
+import InventoryList from "../pages/Inventory/InventoryList";
+import FeedbackForm from "../pages/Feedback/FeedbackForm";
+import FeedbackList from "../pages/Feedback/FeedbackList";
 
-import { AuthContext } from "../context/AuthContext";
+// Auth Routes
+import AuthRoutes from "./AuthRoutes";
 
-function MainRoutes({ darkMode, toggleDarkMode }) {
-  const { role, loading } = useContext(AuthContext);
+// Auth guards
+const AdminGuard = () => {
+  const { role, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="app-layout">
-        <div className="container">
-          <div className="flex items-center justify-center" style={{ minHeight: "calc(100vh - var(--header-height))" }}>
-            Loading...
-          </div>
-        </div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  return (
-    <>
-      {/* Navbar based on role */}
-      {role === "ADMIN" ? (
-        <AdminNavbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      ) : (
-        <UserNavbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      )}
+  return role === "ADMIN" ? <Outlet /> : <Navigate to="/auth/login" replace />;
+};
 
-      <main className="main-content">
-        <div className="container section-lg">
-          <Routes>
-            {/* Main home route - added for public access */}
-            <Route path="/" element={<Home darkMode={darkMode} />} />
+const UserGuard = () => {
+  const { role, loading } = useAuth();
 
-            {/* Public routes */}
-            <Route path="/login" element={<Login darkMode={darkMode} />} />
-            <Route path="/admin/register" element={<AdminRegister darkMode={darkMode} />} />
-            <Route path="/user/register" element={<UserRegister darkMode={darkMode} />} />
-            <Route path="/volunteer/register" element={<VolunteerRegister darkMode={darkMode} />} />
-            <Route path="/volunteers" element={<VolunteerList darkMode={darkMode} />} />
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-            {/* Admin private routes */}
-            {role === "ADMIN" && (
-              <Route
-                path="/admin/*"
-                element={<AdminRoutes darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
-              />
-            )}
+  return role === "USER" ? <Outlet /> : <Navigate to="/auth/login" replace />;
+};
 
-            {/* User private routes */}
-            {role === "USER" && (
-              <>
-                <Route path="/user/profile" element={<UserProfile darkMode={darkMode} />} />
-                <Route path="/*" element={<UserRoutes darkMode={darkMode} />} />
-              </>
-            )}
-
-            {/* Fallback route */}
-            <Route
-              path="*"
-              element={
-                role === "ADMIN" ? (
-                  <Navigate to="/admin/dashboard" replace />
-                ) : role === "USER" ? (
-                  <Navigate to="/user/profile" replace />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              }
-            />
-          </Routes>
-        </div>
-      </main>
-      <Footer darkMode={darkMode} />
-    </>
-  );
-}
-
+// Route configurations
+const MainRoutes = {
+  path: "/",
+  element: <MainLayout />,
+  children: [
+    {
+      path: "/",
+      element: <Home />,
+    },
+    AuthRoutes,
+    // Admin Routes
+    {
+      path: "admin",
+      element: <AdminGuard />,
+      children: [
+        { path: "", element: <Navigate to="dashboard" replace /> },
+        { path: "dashboard", element: <AdminDashboard /> },
+        { path: "profile", element: <AdminProfile /> },
+        { path: "manage-users", element: <ManageUsers /> },
+        { path: "donation-dashboard", element: <DonationDashboard /> },
+        { path: "banks", element: <AdminBankPage /> },
+        { path: "volunteers/add", element: <VolunteerRegister /> },
+        { path: "volunteers/list", element: <VolunteerList /> },
+        { path: "campaign/form", element: <CampaignForm /> },
+        { path: "campaign/list", element: <CampaignList /> },
+        { path: "events/create", element: <EventForm /> },
+        { path: "events/list", element: <EventList /> },
+        { path: "inventory/add", element: <InventoryForm /> },
+        { path: "inventory/list", element: <InventoryList /> },
+        { path: "feedback/list", element: <FeedbackList /> },
+      ],
+    },
+    // User Routes
+    {
+      path: "user",
+      element: <UserGuard />,
+      children: [
+        { path: "", element: <Navigate to="dashboard" replace /> },
+        { path: "dashboard", element: <Home /> },
+        { path: "profile", element: <UserProfile /> },
+        { path: "activities", element: <ActivityPage /> },
+        { path: "donation", element: <DonationForm /> },
+        { path: "campaign/list", element: <CampaignList /> },
+        { path: "events", element: <EventList /> },
+        { path: "events/create", element: <EventForm /> },
+        { path: "feedback", element: <FeedbackForm /> },
+      ],
+    },
+    {
+      path: "*",
+      element: <Navigate to="/" replace />,
+    },
+  ],
+};
 export default MainRoutes;

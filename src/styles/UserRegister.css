@@ -5,7 +5,7 @@ html, body {
   margin: 0;
   overflow: hidden scroll;
   padding: 0;
-  scrollbar-width: none;
+  
   width: 100%;
 }
 

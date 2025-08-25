@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "../styles/AdminStats.css";
 
-
 function AdminStats() {
-  const [stats, setStats] = useState({ volunteers: 0, donations: 0, communities: 0 });
+  const [stats, setStats] = useState({
+    volunteers: 0,
+    donations: 0,
+    communities: 0,
+  });
   const [loading, setLoading] = useState(false);
 
   // Fetch stats once on mount
@@ -28,7 +31,10 @@ function AdminStats() {
     const { name, value } = e.target;
     // Accept only digits or empty string to allow clearing
     if (/^\d*$/.test(value)) {
-      setStats((prev) => ({ ...prev, [name]: value === "" ? "" : Number(value) }));
+      setStats((prev) => ({
+        ...prev,
+        [name]: value === "" ? "" : Number(value),
+      }));
     }
   };
 

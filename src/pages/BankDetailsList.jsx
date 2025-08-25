@@ -83,7 +83,8 @@ export default function BankDetailsList() {
 
   // Delete bank
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this bank account?")) return;
+    if (!window.confirm("Are you sure you want to delete this bank account?"))
+      return;
     try {
       await deleteBank(id);
       setMessage("Bank account deleted successfully.");
@@ -147,7 +148,9 @@ export default function BankDetailsList() {
             onChange={handleChange}
           />
           <button type="submit">Update</button>
-          <button type="button" onClick={cancelEdit}>Cancel</button>
+          <button type="button" onClick={cancelEdit}>
+            Cancel
+          </button>
         </form>
       )}
 

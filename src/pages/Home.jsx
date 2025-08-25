@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { fetchStats } from "../api/stats/statsApi";
 import { getAllCampaigns } from "../api/Campaign/campaignApi";
@@ -20,7 +20,7 @@ function Home({ darkMode }) {
   const [campaigns, setCampaigns] = useState([]);
   const [events, setEvents] = useState([]);
   const [topDonors, setTopDonors] = useState([]);
-  const [allVolunteers, setAllVolunteers] = useState([]); // Changed variable name to be more descriptive
+  const [allVolunteers, setAllVolunteers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [quote, setQuote] = useState("");
@@ -28,8 +28,11 @@ function Home({ darkMode }) {
   const [activeMissionTab, setActiveMissionTab] = useState(0);
   const [imageLoading, setImageLoading] = useState({});
 
-  const API_BASE_URL = window.location.origin.includes('localhost') 
-    ? "http://localhost:8080" 
+  // for cleanup safety
+  const mountedRef = useRef(true);
+
+  const API_BASE_URL = window.location.origin.includes("localhost")
+    ? "http://localhost:8080"
     : window.location.origin;
 
   const quotes = [
@@ -45,212 +48,228 @@ function Home({ darkMode }) {
     {
       title: "Your small help <br /> makes the world better",
       accent: "small help",
-      description: "Empowering communities by supporting education, social causes and sustainable development."
+      description:
+        "Empowering communities by supporting education, social causes and sustainable development.",
     },
     {
       title: "Save the youth <br /> they need your help & support",
       accent: "the youth",
-      description: "Join us to make opportunities universal & sustainable."
+      description: "Join us to make opportunities universal & sustainable.",
     },
     {
       title: "Your donation <br />helps change someone's life",
       accent: "donation",
-      description: "Together, we can serve humanity with dedication."
+      description: "Together, we can serve humanity with dedication.",
     },
     {
       title: "Giving hope <br /> to those who truly need it",
       accent: "hope",
-      description: "Every contribution, big or small, makes a lasting impact."
+      description: "Every contribution, big or small, makes a lasting impact.",
     },
     {
       title: "No Light, <br /> No Camera Only Action",
       accent: "Light",
-      description: "Join hands and make a difference in lives today."
+      description: "Join hands and make a difference in lives today.",
     },
     {
       title: "Majlish-e-Khidmat <br /> Serving with compassion & transparency",
       accent: "Majlish-e-Khidmat",
-      description: "Empowering communities by creating sustainable opportunities."
-    }
+      description:
+        "Empowering communities by creating sustainable opportunities.",
+    },
   ];
 
   const missionTabs = [
     {
       title: "Health & Wellness",
       icon: "fa-heart",
-      description: "Providing healthcare services, medical camps, and health awareness programs to underserved communities.",
+      description:
+        "Providing healthcare services, medical camps, and health awareness programs to underserved communities.",
       initiatives: [
         "Free medical checkup camps",
         "Medicine distribution drives",
         "Health and hygiene awareness sessions",
-        "Mental health support programs"
-      ]
+        "Mental health support programs",
+      ],
     },
     {
       title: "Education for All",
       icon: "fa-book",
-      description: "Ensuring access to quality education for children and adults through various educational initiatives.",
+      description:
+        "Ensuring access to quality education for children and adults through various educational initiatives.",
       initiatives: [
         "After-school tutoring programs",
         "Scholarships for deserving students",
         "Digital literacy workshops",
-        "Library and resource centers"
-      ]
+        "Library and resource centers",
+      ],
     },
     {
       title: "Islamic Education",
       icon: "fa-mosque",
-      description: "Promoting Islamic knowledge, values, and spiritual development through comprehensive educational programs.",
+      description:
+        "Promoting Islamic knowledge, values, and spiritual development through comprehensive educational programs.",
       initiatives: [
         "Quran memorization (Hifz) programs",
         "Islamic studies classes for all ages",
         "Seerah and Hadith workshops",
-        "Islamic ethics and character building"
-      ]
+        "Islamic ethics and character building",
+      ],
     },
     {
       title: "Community Development",
       icon: "fa-hands-helping",
-      description: "Empowering communities through skill development, infrastructure support, and social welfare programs.",
+      description:
+        "Empowering communities through skill development, infrastructure support, and social welfare programs.",
       initiatives: [
         "Vocational training programs",
         "Clean water and sanitation projects",
         "Women empowerment initiatives",
-        "Elderly care and support"
-      ]
+        "Elderly care and support",
+      ],
     },
     {
       title: "Disaster Relief",
       icon: "fa-house-damage",
-      description: "Providing immediate assistance and long-term support to communities affected by natural disasters.",
+      description:
+        "Providing immediate assistance and long-term support to communities affected by natural disasters.",
       initiatives: [
         "Emergency relief distribution",
         "Temporary shelter setup",
         "Rehabilitation programs",
-        "Disaster preparedness training"
-      ]
-    }
+        "Disaster preparedness training",
+      ],
+    },
   ];
 
   // Improved getImageUrl function
   const getImageUrl = (imagePath) => {
-    if (!imagePath || typeof imagePath !== 'string') return null;
-    
-    // Handle different URL formats
-    if (imagePath.startsWith('http')) return imagePath;
-    
-    // Handle Windows paths
-    if (imagePath.includes('\\')) {
-      const filename = imagePath.split('\\').pop();
+    if (!imagePath || typeof imagePath !== "string") return null;
+    if (imagePath.startsWith("http")) return imagePath;
+    if (imagePath.includes("\\")) {
+      const filename = imagePath.split("\\").pop();
       return `${API_BASE_URL}/uploads/${filename}`;
     }
-    
-    // Handle simple filenames
-    if (!imagePath.includes('/')) {
+    if (!imagePath.includes("/")) {
       return `${API_BASE_URL}/uploads/${imagePath}`;
     }
-    
-    // Handle relative paths
-    return `${API_BASE_URL}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+    return `${API_BASE_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
   };
 
   // Image loading handlers
   const handleImageLoad = (id) => {
-    setImageLoading(prev => ({...prev, [id]: false}));
+    setImageLoading((prev) => ({ ...prev, [id]: false }));
   };
 
   const handleImageError = (id) => {
-    setImageLoading(prev => ({...prev, [id]: false}));
+    setImageLoading((prev) => ({ ...prev, [id]: false }));
   };
 
+  // ✅ BATCHED loader — single render-cycle updates
   const loadAll = async () => {
     setRefreshing(true);
     try {
-      const s = await fetchStats();
-      setStats(s);
+      const [statsRes, campaignsRes, donationsRes, volunteersRes, eventsRes] =
+        await Promise.all([
+          // each call is isolated so a single failure doesn't break all
+          fetchStats().catch(() => null),
+          getAllCampaigns().catch(() => []),
+          listAllDonations().catch(() => []),
+          getAllVolunteers().catch(() => []),
+          getAllEvents().catch(() => []),
+        ]);
 
-      // campaigns
-      try {
-        const c = await getAllCampaigns();
-        setCampaigns(Array.isArray(c) ? c.slice(0, 3) : []);
-      } catch (e) {
-        setCampaigns([]);
-      }
+      if (!mountedRef.current) return;
 
-      // donors
-      try {
-        const donations = await listAllDonations();
-        if (Array.isArray(donations)) {
-          const sorted = [...donations].sort((a, b) => (b.amount || 0) - (a.amount || 0));
-          setTopDonors(sorted.slice(0, 3));
-        } else setTopDonors([]);
-      } catch (e) {
-        setTopDonors([]);
-      }
+      // Stats
+      setStats(
+        statsRes || {
+          activeVolunteers: 0,
+          totalUsers: 0,
+          donationsCollected: 0,
+          campaigns: 0,
+          inventoryItems: 0,
+          feedbacks: 0,
+        }
+      );
 
-      // volunteers
-      try {
-        const volunteers = await getAllVolunteers();
-        if (Array.isArray(volunteers)) {
-          // Changed this line to show all volunteers
-          setAllVolunteers(volunteers); 
-        } else setAllVolunteers([]);
-      } catch (e) {
-        setAllVolunteers([]);
-      }
+      // Campaigns (max 3)
+      const c =
+        Array.isArray(campaignsRes) && campaignsRes.length
+          ? campaignsRes.slice(0, 3)
+          : [];
+      setCampaigns(c);
 
-      // events
-      try {
-        const ev = await getAllEvents();
-        setEvents(Array.isArray(ev) ? ev.slice(0, 5) : []);
-      } catch (e) {
-        setEvents([]);
-      }
+      // Donors (top 3 by amount)
+      const donations = Array.isArray(donationsRes) ? donationsRes : [];
+      const top3 = donations
+        .slice()
+        .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+        .slice(0, 3);
+      setTopDonors(top3);
+
+      // Volunteers (all)
+      const v = Array.isArray(volunteersRes) ? volunteersRes : [];
+      setAllVolunteers(v);
+
+      // Events (max 5)
+      const e =
+        Array.isArray(eventsRes) && eventsRes.length
+          ? eventsRes.slice(0, 5)
+          : [];
+      setEvents(e);
 
       // random quote
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     } catch (err) {
       console.error("Error loading home data:", err);
     } finally {
+      if (!mountedRef.current) return;
       setLoading(false);
-      setTimeout(() => setRefreshing(false), 500);
+      // small delay to avoid rapid state flip-flop
+      setTimeout(() => mountedRef.current && setRefreshing(false), 300);
     }
   };
 
   useEffect(() => {
+    mountedRef.current = true;
     loadAll();
-    
+
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
-    
+
     const quoteInterval = setInterval(() => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     }, 10000);
-    
+
     return () => {
+      mountedRef.current = false;
       clearInterval(slideInterval);
       clearInterval(quoteInterval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className={`home-page ${darkMode ? "dark" : ""}`}>
+    <div>
       {/* HERO */}
-      <header className="hero">
+      <header className="hero" style={{ willChange: "transform, opacity" }}>
         <div className="hero-inner">
           <div className="text-slider-container">
             {slides.map((slide, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`slide ${index === currentSlide ? "active" : ""}`}
               >
-                <h1 dangerouslySetInnerHTML={{ 
-                  __html: slide.title.replace(
-                    slide.accent, 
-                    `<span class="accent">${slide.accent}</span>`
-                  ) 
-                }} />
+                <h1
+                  dangerouslySetInnerHTML={{
+                    __html: slide.title.replace(
+                      slide.accent,
+                      `<span class="accent">${slide.accent}</span>`
+                    ),
+                  }}
+                />
                 <p>{slide.description}</p>
               </div>
             ))}
@@ -258,13 +277,15 @@ function Home({ darkMode }) {
 
           {/* Call to Actions */}
           <div className="hero-ctas">
-            <Link to="/donate" className="btn primary">Donate Now</Link>
-            <Link to="/volunteer/register" className="btn outline">Become Volunteer</Link>
-            {/* <Link to="/user/register" className="btn ghost">Register</Link>
-            <Link to="/login" className="btn ghost">Login</Link> */}
+            <Link to="/donate" className="btn primary">
+              Donate Now
+            </Link>
+            <Link to="/volunteer/register" className="btn outline">
+              Become Volunteer
+            </Link>
           </div>
         </div>
-        
+
         <div className="slide-indicators">
           {slides.map((_, index) => (
             <button
@@ -277,21 +298,47 @@ function Home({ darkMode }) {
       </header>
 
       {/* IMPACT NUMBERS */}
-      <section className="impact">
-        <div className="container">
+      <section
+        className="impact container section-lg"
+        style={{ willChange: "transform, opacity" }}
+      >
+        <div>
           <h2>Our Impact</h2>
           <p className="muted">Working together to build better communities</p>
           <div className="impact-grid">
-            <StatCard label="Active Volunteers" value={loading ? "..." : stats.activeVolunteers} />
-            <StatCard label="Users" value={loading ? "..." : stats.totalUsers} />
-            <StatCard label="Donations Collected" value={loading ? "..." : stats.donationsCollected} suffix="₹" />
-            <StatCard label="Campaigns" value={loading ? "..." : stats.campaigns} />
-            <StatCard label="Inventory Items" value={loading ? "..." : stats.inventoryItems} />
-            <StatCard label="Feedbacks" value={loading ? "..." : stats.feedbacks} />
+            <StatCard
+              label="Active Volunteers"
+              value={loading ? "..." : stats.activeVolunteers}
+            />
+            <StatCard
+              label="Users"
+              value={loading ? "..." : stats.totalUsers}
+            />
+            <StatCard
+              label="Donations Collected"
+              value={loading ? "..." : stats.donationsCollected}
+              suffix="₹"
+            />
+            <StatCard
+              label="Campaigns"
+              value={loading ? "..." : stats.campaigns}
+            />
+            <StatCard
+              label="Inventory Items"
+              value={loading ? "..." : stats.inventoryItems}
+            />
+            <StatCard
+              label="Feedbacks"
+              value={loading ? "..." : stats.feedbacks}
+            />
           </div>
 
           <div className="refresh-row">
-            <button className={`btn small ${refreshing ? "disabled" : ""}`} onClick={loadAll} disabled={refreshing}>
+            <button
+              className={`btn small ${refreshing ? "disabled" : ""}`}
+              onClick={loadAll}
+              disabled={refreshing}
+            >
               {refreshing ? "Refreshing..." : "🔄 Refresh Stats"}
             </button>
             <div className="quote">{quote}</div>
@@ -300,8 +347,11 @@ function Home({ darkMode }) {
       </section>
 
       {/* CAMPAIGNS / CAUSES */}
-      <section className="campaigns">
-        <div className="container">
+      <section
+        className="campaigns container section-lg"
+        style={{ willChange: "transform, opacity" }}
+      >
+        <div>
           <h2>You Can Help Lots of People By Donating Little</h2>
           <div className="campaign-grid">
             {loading ? (
@@ -310,67 +360,102 @@ function Home({ darkMode }) {
                 <div className="placeholder-card" />
                 <div className="placeholder-card" />
               </div>
-            ) : (
-              campaigns.length > 0 ? campaigns.map((c, idx) => (
+            ) : campaigns.length > 0 ? (
+              campaigns.map((c, idx) => (
                 <article key={c.id ?? idx} className="campaign-card">
-                  {c.imageUrl ? <img src={c.imageUrl} alt={c.title || "campaign"} /> : <div className="card-hero" />}
+                  {c.imageUrl ? (
+                    <img src={c.imageUrl} alt={c.title || "campaign"} />
+                  ) : (
+                    <div className="card-hero" />
+                  )}
                   <div className="card-body">
                     <h3>{c.title ?? `Campaign ${idx + 1}`}</h3>
-                    <p className="muted">{c.shortDescription ?? c.description ?? "Support this cause."}</p>
+                    <p className="muted">
+                      {c.shortDescription ??
+                        c.description ??
+                        "Support this cause."}
+                    </p>
                     <div className="card-actions">
-                      <Link to={`/campaigns/${c.id}`} className="btn">View</Link>
-                      <Link to="/donate" className="btn primary small">Donate</Link>
+                      <Link to={`/campaigns/${c.id}`} className="btn">
+                        View
+                      </Link>
+                      <Link to="/donate" className="btn primary small">
+                        Donate
+                      </Link>
                     </div>
                   </div>
                 </article>
-              )) : (
-                <React.Fragment>
-                  <article className="campaign-card">
-                    <div className="card-hero" />
-                    <div className="card-body">
-                      <h3>Education for All</h3>
-                      <p className="muted">Help children get access to quality education.</p>
-                      <div className="card-actions">
-                        <Link to="/campaigns" className="btn">View</Link>
-                        <Link to="/donate" className="btn primary small">Donate</Link>
-                      </div>
+              ))
+            ) : (
+              <React.Fragment>
+                <article className="campaign-card">
+                  <div className="card-hero" />
+                  <div className="card-body">
+                    <h3>Education for All</h3>
+                    <p className="muted">
+                      Help children get access to quality education.
+                    </p>
+                    <div className="card-actions">
+                      <Link to="/campaigns" className="btn">
+                        View
+                      </Link>
+                      <Link to="/donate" className="btn primary small">
+                        Donate
+                      </Link>
                     </div>
-                  </article>
-                  <article className="campaign-card">
-                    <div className="card-hero" />
-                    <div className="card-body">
-                      <h3>Healthcare Drive</h3>
-                      <p className="muted">Support medical camps and basic healthcare.</p>
-                      <div className="card-actions">
-                        <Link to="/campaigns" className="btn">View</Link>
-                        <Link to="/donate" className="btn primary small">Donate</Link>
-                      </div>
+                  </div>
+                </article>
+                <article className="campaign-card">
+                  <div className="card-hero" />
+                  <div className="card-body">
+                    <h3>Healthcare Drive</h3>
+                    <p className="muted">
+                      Support medical camps and basic healthcare.
+                    </p>
+                    <div className="card-actions">
+                      <Link to="/campaigns" className="btn">
+                        View
+                      </Link>
+                      <Link to="/donate" className="btn primary small">
+                        Donate
+                      </Link>
                     </div>
-                  </article>
-                  <article className="campaign-card">
-                    <div className="card-hero" />
-                    <div className="card-body">
-                      <h3>Community Support</h3>
-                      <p className="muted">Join our local projects for community upliftment.</p>
-                      <div className="card-actions">
-                        <Link to="/campaigns" className="btn">View</Link>
-                        <Link to="/donate" className="btn primary small">Donate</Link>
-                      </div>
+                  </div>
+                </article>
+                <article className="campaign-card">
+                  <div className="card-hero" />
+                  <div className="card-body">
+                    <h3>Community Support</h3>
+                    <p className="muted">
+                      Join our local projects for community upliftment.
+                    </p>
+                    <div className="card-actions">
+                      <Link to="/campaigns" className="btn">
+                        View
+                      </Link>
+                      <Link to="/donate" className="btn primary small">
+                        Donate
+                      </Link>
                     </div>
-                  </article>
-                </React.Fragment>
-              )
+                  </div>
+                </article>
+              </React.Fragment>
             )}
           </div>
         </div>
       </section>
 
       {/* ACTIVE VOLUNTEERS SECTION */}
-      <section className="active-volunteers">
-        <div className="container">
+      <section
+        className="active-volunteers container section-lg"
+        style={{ willChange: "transform, opacity", padding: "1rem" }}
+      >
+        <div>
           <h2>Our Active Volunteers</h2>
-          <p className="muted">Meet the dedicated individuals making a difference in our community</p>
-          
+          <p className="muted">
+            Meet the dedicated individuals making a difference in our community
+          </p>
+
           {loading ? (
             <div className="volunteers-loading">
               <p>Loading volunteers...</p>
@@ -378,59 +463,107 @@ function Home({ darkMode }) {
           ) : allVolunteers.length === 0 ? (
             <div className="no-volunteers">
               <p>No active volunteers at the moment.</p>
-              <Link to="/volunteer/register" className="btn primary">Become Our First Volunteer</Link>
+              <Link to="/volunteer/register" className="btn primary">
+                Become Our First Volunteer
+              </Link>
             </div>
           ) : (
             <div className="volunteers-grid">
-              {allVolunteers.map((volunteer, index) => { // Changed from topVolunteers to allVolunteers
-                const imageUrl = getImageUrl(volunteer.profileImage || volunteer.profilePicture);
+              {allVolunteers.map((volunteer, index) => {
+                const imageUrl = getImageUrl(
+                  volunteer.profileImage || volunteer.profilePicture
+                );
                 const volunteerId = volunteer.id || index;
-                
+
                 return (
                   <div key={volunteerId} className="volunteer-card">
                     <div className="volunteer-image">
                       {imageUrl ? (
                         <>
                           {imageLoading[volunteerId] && (
-                            <div className="volunteer-image-loading">Loading...</div>
+                            <div className="volunteer-image-loading">
+                              Loading...
+                            </div>
                           )}
                           <img
                             src={imageUrl}
                             alt={volunteer.name || "Volunteer"}
                             onLoad={() => handleImageLoad(volunteerId)}
                             onError={() => handleImageError(volunteerId)}
-                            style={{ display: imageLoading[volunteerId] === false ? 'block' : 'none' }}
+                            style={{
+                              display:
+                                imageLoading[volunteerId] === false
+                                  ? "block"
+                                  : "none",
+                            }}
+                            // kick off loading state on first render if not set
+                            ref={(el) => {
+                              if (
+                                el &&
+                                imageLoading[volunteerId] === undefined
+                              ) {
+                                setImageLoading((prev) => ({
+                                  ...prev,
+                                  [volunteerId]: true,
+                                }));
+                              }
+                            }}
                           />
                         </>
                       ) : null}
-                      <div 
+                      <div
                         className="volunteer-avatar"
-                        style={{ display: imageUrl && imageLoading[volunteerId] !== false ? 'none' : 'flex' }}
+                        style={{
+                          display:
+                            imageUrl && imageLoading[volunteerId] !== false
+                              ? "flex"
+                              : imageUrl
+                              ? "none"
+                              : "flex",
+                        }}
                       >
                         <i className="fas fa-user"></i>
                       </div>
                     </div>
                     <div className="volunteer-details">
-                      <h3>{volunteer.name || volunteer.fullName || "Volunteer"}</h3>
-                      <p className="volunteer-role">{volunteer.role || "Community Volunteer"}</p>
-                      <p className="volunteer-bio">{volunteer.bio || volunteer.description || "Dedicated to making a difference in the community."}</p>
-                      
+                      <h3>
+                        {volunteer.name || volunteer.fullName || "Volunteer"}
+                      </h3>
+                      <p className="volunteer-role">
+                        {volunteer.role || "Community Volunteer"}
+                      </p>
+                      <p className="volunteer-bio">
+                        {volunteer.bio ||
+                          volunteer.description ||
+                          "Dedicated to making a difference in the community."}
+                      </p>
+
                       <div className="volunteer-contact">
                         {volunteer.email && (
-                          <p><i className="fas fa-envelope"></i> {volunteer.email}</p>
+                          <p>
+                            <i className="fas fa-envelope"></i>{" "}
+                            {volunteer.email}
+                          </p>
                         )}
                         {volunteer.phone && (
-                          <p><i className="fas fa-phone"></i> {volunteer.phone}</p>
+                          <p>
+                            <i className="fas fa-phone"></i> {volunteer.phone}
+                          </p>
                         )}
                         {volunteer.location && (
-                          <p><i className="fas fa-map-marker-alt"></i> {volunteer.location}</p>
+                          <p>
+                            <i className="fas fa-map-marker-alt"></i>{" "}
+                            {volunteer.location}
+                          </p>
                         )}
                       </div>
-                      
+
                       <div className="volunteer-skills">
                         {volunteer.skills && Array.isArray(volunteer.skills) ? (
                           volunteer.skills.slice(0, 3).map((skill, i) => (
-                            <span key={i} className="skill-tag">{skill}</span>
+                            <span key={i} className="skill-tag">
+                              {skill}
+                            </span>
                           ))
                         ) : volunteer.skills ? (
                           <span className="skill-tag">{volunteer.skills}</span>
@@ -444,17 +577,24 @@ function Home({ darkMode }) {
               })}
             </div>
           )}
-          
+
           <div className="volunteers-cta">
-            <Link to="/volunteers" className="btn outline">View All Volunteers</Link>
-            <Link to="/volunteer/register" className="btn primary">Join Our Team</Link>
+            <Link to="/volunteers" className="btn outline">
+              View All Volunteers
+            </Link>
+            <Link to="/volunteer/register" className="btn primary">
+              Join Our Team
+            </Link>
           </div>
         </div>
       </section>
 
       {/* EVENTS SECTION */}
-      <section className="home-events">
-        <div className="container">
+      <section
+        className="home-events container section-lg"
+        style={{ willChange: "transform, opacity", padding: "1rem" }}
+      >
+        <div>
           <h2>Upcoming Events</h2>
           {loading ? (
             <p className="muted">Loading events...</p>
@@ -465,87 +605,128 @@ function Home({ darkMode }) {
               {events.map((ev) => (
                 <div key={ev.id} className="event-card">
                   <h3>{ev.name}</h3>
-                  <p><strong>Location:</strong> {ev.location}</p>
-                  <p><strong>Date:</strong> {new Date(ev.date).toLocaleString()}</p>
+                  <p>
+                    <strong>Location:</strong> {ev.location}
+                  </p>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {ev.date ? new Date(ev.date).toLocaleString() : "-"}
+                  </p>
                   <p>{ev.description}</p>
                 </div>
               ))}
             </div>
           )}
-          <Link to="/events" className="btn primary small">View All Events</Link>
+          <Link to="/events" className="btn primary small">
+            View All Events
+          </Link>
         </div>
       </section>
 
       {/* TOP DONORS & VOLUNTEERS */}
-      <section className="leaders">
-        <div className="container flex-split">
+      <section
+        className="leaders container section-lg"
+        style={{
+          willChange: "transform, opacity",
+          padding: "1rem",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "1rem",
+        }}
+      >
+        <div>
           <div>
             <h3>Top Donors</h3>
             <ul className="list">
-              {topDonors.length > 0 ? topDonors.map((d, i) => (
-                <li key={d.id ?? i}>
-                  <strong>{d.name ?? d.donorName}</strong> — ₹{d.amount ?? 0}
-                  <span className="muted small">{d.date ? new Date(d.date).toLocaleDateString() : ""}</span>
-                </li>
-              )) : <li className="muted">No donors yet.</li>}
+              {topDonors.length > 0 ? (
+                topDonors.map((d, i) => (
+                  <li key={d.id ?? i}>
+                    <strong>{d.name ?? d.donorName}</strong> — ₹{d.amount ?? 0}
+                    <span className="muted small">
+                      {d.date ? new Date(d.date).toLocaleDateString() : ""}
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li className="muted">No donors yet.</li>
+              )}
             </ul>
-            <Link to="/donations" className="btn ghost small">View All Donations</Link>
+            <Link to="/donations" className="btn ghost small">
+              View All Donations
+            </Link>
           </div>
 
           <div>
             <h3>Recent Volunteers</h3>
             <ul className="list">
-              {allVolunteers.length > 0 ? allVolunteers.slice(0, 5).map((v, i) => { // Slicing here to show only a few recent volunteers in this list
-                const imageUrl = getImageUrl(v.profileImage || v.profilePicture);
-                const volunteerId = v.id || i;
-                
-                return (
-                  <li key={volunteerId} className="recent-volunteer">
-                    {imageUrl ? (
-                      <img 
-                        src={imageUrl} 
-                        alt={v.name} 
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          const placeholder = e.target.nextSibling;
-                          if (placeholder) placeholder.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div 
-                      className="recent-volunteer-placeholder"
-                      style={{ display: imageUrl ? 'none' : 'flex' }}
-                    >
-                      {v.name ? v.name.charAt(0).toUpperCase() : 'V'}
-                    </div>
-                    <div className="recent-volunteer-info">
-                      <strong>{v.name ?? v.fullName}</strong>
-                      <span className="muted small">{v.email ?? v.phone}</span>
-                    </div>
-                  </li>
-                );
-              }) : <li className="muted">No volunteers found.</li>}
+              {allVolunteers.length > 0 ? (
+                allVolunteers.slice(0, 5).map((v, i) => {
+                  const imageUrl = getImageUrl(
+                    v.profileImage || v.profilePicture
+                  );
+                  const volunteerId = v.id || i;
+
+                  return (
+                    <li key={volunteerId} className="recent-volunteer">
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={v.name}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            const placeholder = e.target.nextSibling;
+                            if (placeholder) placeholder.style.display = "flex";
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className="recent-volunteer-placeholder"
+                        style={{ display: imageUrl ? "none" : "flex" }}
+                      >
+                        {v.name ? v.name.charAt(0).toUpperCase() : "V"}
+                      </div>
+                      <div className="recent-volunteer-info">
+                        <strong>{v.name ?? v.fullName}</strong>
+                        <span className="muted small">
+                          {v.email ?? v.phone}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })
+              ) : (
+                <li className="muted">No volunteers found.</li>
+              )}
             </ul>
-            <Link to="/volunteer/register" className="btn primary small">Become a Volunteer</Link>
+            <Link to="/volunteer/register" className="btn primary small">
+              Become a Volunteer
+            </Link>
           </div>
         </div>
       </section>
 
       {/* MISSION / GOALS */}
-      <section className="mission">
-        <div className="container">
+      <section
+        className="mission container section-lg"
+        style={{ willChange: "transform, opacity", padding: "1rem" }}
+      >
+        <div>
           <h2>Our Mission</h2>
           <p className="mission-intro">
-            Committed to serving society by promoting education, moral values, and social welfare.
-            We focus on healthcare, education, Islamic teachings, disaster relief and community development to create
+            Committed to serving society by promoting education, moral values,
+            and social welfare. We focus on healthcare, education, Islamic
+            teachings, disaster relief and community development to create
             sustainable change in communities.
           </p>
-          
+
           <div className="mission-tabs">
             {missionTabs.map((tab, index) => (
               <button
                 key={index}
-                className={`mission-tab ${activeMissionTab === index ? 'active' : ''}`}
+                className={`mission-tab ${
+                  activeMissionTab === index ? "active" : ""
+                }`}
                 onClick={() => setActiveMissionTab(index)}
               >
                 <i className={`fas ${tab.icon}`}></i>
@@ -553,19 +734,21 @@ function Home({ darkMode }) {
               </button>
             ))}
           </div>
-          
+
           <div className="mission-content">
             <div className="mission-details">
               <h3>{missionTabs[activeMissionTab].title}</h3>
               <p>{missionTabs[activeMissionTab].description}</p>
-              
+
               <h4>Key Initiatives:</h4>
               <ul>
-                {missionTabs[activeMissionTab].initiatives.map((initiative, i) => (
-                  <li key={i}>{initiative}</li>
-                ))}
+                {missionTabs[activeMissionTab].initiatives.map(
+                  (initiative, i) => (
+                    <li key={i}>{initiative}</li>
+                  )
+                )}
               </ul>
-              
+
               <div className="mission-actions">
                 <Link to="/volunteer/register" className="btn primary">
                   <i className="fas fa-hands-helping"></i> Get Involved
@@ -575,7 +758,7 @@ function Home({ darkMode }) {
                 </Link>
               </div>
             </div>
-            
+
             <div className="mission-visual">
               <div className="mission-icon">
                 <i className={`fas ${missionTabs[activeMissionTab].icon}`}></i>
@@ -586,13 +769,22 @@ function Home({ darkMode }) {
       </section>
 
       {/* VOLUNTEER QUICK FORM */}
-      <section className="volunteer-cta">
-        <div className="container">
+      <section
+        className="volunteer-cta container section-lg"
+        style={{ willChange: "transform, opacity", padding: "1rem" }}
+      >
+        <div>
           <h2>Join Us Today</h2>
-          <p className="muted">Your time and skills can change lives. Become a volunteer.</p>
+          <p className="muted">
+            Your time and skills can change lives. Become a volunteer.
+          </p>
           <div className="hero-ctas">
-            <Link to="/volunteer/register" className="btn primary large">Register as Volunteer</Link>
-            <Link to="/contact" className="btn outline large">Contact Us</Link>
+            <Link to="/volunteer/register" className="btn primary large">
+              Register as Volunteer
+            </Link>
+            <Link to="/contact" className="btn outline large">
+              Contact Us
+            </Link>
           </div>
         </div>
       </section>

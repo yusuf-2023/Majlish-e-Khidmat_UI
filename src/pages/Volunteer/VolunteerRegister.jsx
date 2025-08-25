@@ -107,7 +107,9 @@ function VolunteerRegister() {
       <div className="volunteer-register-left">
         <div className="volunteer-register-headline">
           <h1>Are you ready to become a volunteer?</h1>
-          <p className="volunteer-animated-message">{messages[headlineIndex]}</p>
+          <p className="volunteer-animated-message">
+            {messages[headlineIndex]}
+          </p>
         </div>
       </div>
 

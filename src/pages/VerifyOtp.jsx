@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { verifyOtpAndResetPassword } from "../api/password/passwordService";
- // API call import karo
+// API call import karo
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/styles/Login.css";
 
@@ -18,7 +18,9 @@ function VerifyOtp() {
   // Agar email nahi milta toh redirect karo ForgotPassword page pe
   useEffect(() => {
     if (!email) {
-      navigate(type === "admin" ? "/admin/forgot-password" : "/user/forgot-password");
+      navigate(
+        type === "admin" ? "/admin/forgot-password" : "/user/forgot-password"
+      );
     }
   }, [email, type, navigate]);
 

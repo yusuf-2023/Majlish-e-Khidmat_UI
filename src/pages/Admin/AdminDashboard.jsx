@@ -1,30 +1,28 @@
-// src/pages/Admin/AdminDashboard.jsx
 import React, { useEffect, useMemo, useCallback, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Chart, registerables } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
+import { Pie, Bar, Line } from "react-chartjs-2";
 import "../../styles/AdminDashboard.css";
 
-// ===== API imports (adjust paths to your project) =====
+// API imports
 import {
   getAllAdmins,
   deleteAdminProfile,
   updateAdminProfile,
-  uploadAdminProfilePic,
 } from "../../api/admin/adminApi";
 import {
   getAllUsers,
   deleteUserProfile,
   updateUserProfile,
-  uploadUserProfilePic,
 } from "../../api/user/userApi";
- // optional (will fallback if missing)
 import { getAllVolunteers } from "../../api/Volunteer/volunteerApi";
-
 import { getAllEvents } from "../../api/event/eventApi";
-
 import { getAllCampaigns } from "../../api/Campaign/campaignApi";
+
+// Components
+import AdminLayout from "../../components/layouts/AdminLayout";
+import DashboardStats from "../../components/DashboardStats";
 
 
 Chart.register(...registerables, ChartDataLabels);
@@ -35,7 +33,7 @@ const AdminDashboard = () => {
   const [state, setState] = useState({
     admins: [],
     users: [],
-    volunteers: [], // ADDED: store volunteers array so we can reliably show count
+    volunteers: [],
     stats: {
       volunteers: 0,
       donations: 0,
