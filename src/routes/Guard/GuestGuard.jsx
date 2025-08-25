@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import PropTypes from "prop-types";
 import { Navigate, useLocation } from "react-router-dom";
 
@@ -19,7 +18,7 @@ export default function GuestGuard({ children }) {
   // Show loader while authentication is being initialized
   if (loading) {
     return (
-      <Box
+      <div
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -28,7 +27,7 @@ export default function GuestGuard({ children }) {
         }}
       >
         <Loader />
-      </Box>
+      </div>
     );
   }
 

@@ -104,13 +104,7 @@ function AdminNavbar() {
             ) : (
               <>
                 <li>
-                  <Link to="/auth/register/user">User Register</Link>
-                </li>
-                <li>
                   <Link to="/auth/login">Login</Link>
-                </li>
-                <li>
-                  <Link to="/auth/register/admin">Admin Register</Link>
                 </li>
               </>
             )}

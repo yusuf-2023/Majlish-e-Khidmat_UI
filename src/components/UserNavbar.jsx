@@ -10,7 +10,6 @@ function UserNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  
 
   const isLoggedIn = !!localStorage.getItem("accessToken");
 
@@ -21,14 +20,12 @@ function UserNavbar() {
         const decoded = jwtDecode(token);
         setUserName(decoded.name || "User Name");
         setUserImage(decoded.profileImage || null);
-        
       } catch (error) {
         console.error("Invalid token", error);
       }
     } else {
       setUserName(null);
       setUserImage(null);
-      
     }
   }, [isLoggedIn]);
 
@@ -95,13 +92,7 @@ function UserNavbar() {
             ) : (
               <>
                 <li>
-                  <Link to="/auth/register/user">User Register</Link>
-                </li>
-                <li>
                   <Link to="/auth/login">Login</Link>
-                </li>
-                <li>
-                  <Link to="/auth/register/admin">Admin Register</Link>
                 </li>
               </>
             )}
@@ -169,7 +160,10 @@ function UserNavbar() {
         <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
           <ul>
             <li>
-              <Link to="/user/activities" onClick={() => setIsSidebarOpen(false)}>
+              <Link
+                to="/user/activities"
+                onClick={() => setIsSidebarOpen(false)}
+              >
                 📋 Activities
               </Link>
             </li>
@@ -198,7 +192,10 @@ function UserNavbar() {
             </li>
 
             <li>
-              <Link to="/user/campaign/list" onClick={() => setIsSidebarOpen(false)}>
+              <Link
+                to="/user/campaign/list"
+                onClick={() => setIsSidebarOpen(false)}
+              >
                 🎯 Campaigns
               </Link>
             </li>
