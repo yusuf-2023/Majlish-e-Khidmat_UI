@@ -1,122 +1,312 @@
-/* =================== GLOBAL RESET =================== */
-* {
-  box-sizing: border-box;
-  font-family: Poppins, sans-serif;
-  margin: 0;
-  padding: 0;
+:root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --light-bg: #f8f9fa;
+  --dark-bg: #121212;
+  --light-text: #2c3e50;
+  --dark-text: #f5f5f5;
+  --input-light-bg: #ffffff;
+  --input-dark-bg: #1e1e2f;
+  --input-light-border: #ddd;
+  --input-dark-border: #333;
+  /* Removed overlay-dark as we remove overlay */
 }
 
-/* =================== CONTAINER =================== */
-.donation-form-container {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgb(0 0 0 / 10%);
-  margin: 40px auto;
-  max-width: 600px;
-  padding: 30px;
+/* Light Mode */
+body.light-mode {
+  --bg-color: var(--light-bg);
+  --text-color: var(--light-text);
+  --input-bg: var(--input-light-bg);
+  --input-border: var(--input-light-border);
 }
+
+/* Dark Mode */
+body.dark-mode {
+  --bg-color: var(--dark-bg);
+  --text-color: var(--dark-text);
+  --input-bg: var(--input-dark-bg);
+  --input-border: var(--input-dark-border);
+}
+
+/* ====================== Page Container ====================== */
+.donation-page-container {
+  margin-top: 3%;
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.5s ease;
+  position: relative;
+  z-index: 0;
+}
+
+/* ====================== Content Section ====================== */
+.donation-content-section {
+  flex: 0 0 65%;
+  position: relative;
+  background-size: cover;
+  background-position: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+  z-index: 1; /* Ensure content is above other elements */
+  animation: backgroundChange 20s infinite ease-in-out;
+}
+
+/* Background image animation */
+@keyframes backgroundChange {
+  0%, 100% {
+    background-image: url("/child10.jpg");
+  }
+  25% {
+    background-image: url("/child11.jpg");
+  }
+  50% {
+    background-image: url("/child9.jpg");
+  }
+  75% {
+    background-image: url("/child5.jpg");
+  }
+}
+
+/* Removed .donation-overlay, so no black blur overlay on background image */
+
+/* ====================== Text Content ====================== */
+.donation-text-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 600px;
+  animation: fadeZoom 2s ease-in-out forwards;
+}
+
+@keyframes fadeZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.donation-main-heading {
+  margin-top: 52%;
+  font-size: 2.8rem;
+  font-weight: 800;
+  
+  /* Removed text-shadow for sharper text */
+  background: linear-gradient(90deg, #ffffff, #ffcc00, #00ff48, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 400% 400%;
+  animation: gradientMove 6s infinite linear;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.rotating-text-container {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.rotating-text {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeInOut 5s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+}
+
+/* ====================== Form Section ====================== */
+.donation-form-section {
+  flex: 0 0 35%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--bg-color);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.5s ease;
+  z-index: 2;
+}
+
+
+.donation-form-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: var(--bg-color);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  animation: fadeSlideUp 1.2s ease-out;
+}
+
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 .donation-form-container h2 {
-  color: #333;
-  margin-bottom: 25px;
   text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  font-size: 2rem;
+  font-weight: 700;
 }
 
-/* =================== FORM =================== */
+
 .donation-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1.2rem;
 }
+
 
 .donation-form label {
-  color: #555;
   display: flex;
   flex-direction: column;
-  font-size: 14px;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color);
 }
 
+
+/* Input fields dark/light */
 .donation-form input,
 .donation-form select {
-  border: 1px solid #ccc;
+  padding: 0.8rem;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  font-size: 14px;
-  margin-top: 5px;
-  outline: none;
-  padding: 10px 12px;
-  transition: border 0.3s;
+  font-size: 1rem;
+  color: var(--text-color);
+  transition: all 0.3s ease;
 }
+
 
 .donation-form input:focus,
 .donation-form select:focus {
-  border-color: #007bff;
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(67, 97, 238, 0.5);
+  transform: scale(1.02);
 }
 
-/* =================== BUTTON =================== */
+
+/* Button styles */
 .donation-form button {
-  background-color: #007bff;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, var(--primary-color), #00b4d8);
+  color: white;
   border: none;
   border-radius: 6px;
-  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 15px;
-  margin-top: 10px;
-  padding: 12px 15px;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
 }
+
 
 .donation-form button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, var(--primary-hover), #0096c7);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
-/* =================== UPI QR BLOCK =================== */
-.upi-block {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-}
 
-.upi-block img {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  height: 200px;
-  object-fit: contain;
-  padding: 10px;
-  width: 200px;
-}
-
-/* =================== RAZORPAY BUTTON =================== */
 .pay-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
+  margin-top: 1.5rem;
 }
 
-/* =================== NOTIFICATION =================== */
-.notification {
-  background-color: #ffeb3b;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
-  color: #333;
-  font-size: 14px;
-  padding: 12px 18px;
-  position: fixed;
-  right: 20px;
-  top: 20px;
-  z-index: 9999;
+
+.upi-block {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background-color: var(--bg-color);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.5s ease, border-color 0.5s ease;
 }
 
-/* =================== RESPONSIVE =================== */
-@media (width <= 640px) {
+/* ================= Responsive ================= */
+@media (max-width: 900px) {
+  .donation-page-container {
+    flex-direction: column;
+  }
+
+  .donation-content-section,
+  .donation-form-section {
+    flex: 1 1 100%;
+    min-height: 50vh;
+  }
+
+  .donation-main-heading {
+    font-size: 2.2rem;
+  }
+  .rotating-text {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .donation-content-section,
+  .donation-form-section {
+    padding: 1rem;
+  }
+  .donation-main-heading {
+    font-size: 1.8rem;
+  }
+  .rotating-text {
+    font-size: 1rem;
+  }
   .donation-form-container {
-    margin: 20px;
-    padding: 20px;
-  }
-
-  .upi-block img {
-    height: 150px;
-    width: 150px;
+    padding: 1rem;
   }
 }
+
+

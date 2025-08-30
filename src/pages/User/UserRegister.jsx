@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { registerUser } from "../../api/user/userApi";
 import "../../styles/UserRegister.css";
-import "../../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import Notification from "../../components/Notification";
 import {
@@ -11,6 +10,8 @@ import {
   FaMedkit,
   FaUsers,
   FaRegSmile,
+  FaEye,
+  FaEyeSlash
 } from "react-icons/fa";
 
 function UserRegister() {
@@ -27,6 +28,8 @@ function UserRegister() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // ===== Topics with icons =====
@@ -55,18 +58,25 @@ function UserRegister() {
     }));
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     if (!formData.name || !formData.email || !formData.password) {
       setError("Name, Email, and Password are required.");
+      setIsLoading(false);
       return;
     }
 
     const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (formData.dob && !dobRegex.test(formData.dob)) {
       setError("Invalid date format. Please use YYYY-MM-DD.");
+      setIsLoading(false);
       return;
     }
 
@@ -95,6 +105,8 @@ function UserRegister() {
       setError(
         err.response?.data?.message || "Registration failed. Please try again."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,80 +119,125 @@ function UserRegister() {
         />
       )}
 
-      <div className="user-register-wrapper">
-        <div className="user-register-left">
-          {/* Smoke Particles */}
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="smoke-particle"></div>
-          ))}
-
-          {/* Animated Topic */}
-          <div className="animated-topic">
-            <span className="topic-icon">{topics[currentTopic].icon}</span>
-            <span className="topic-text">{topics[currentTopic].text}</span>
+      <div className="user-register-container">
+        <div className="user-register-left-panel">
+          <div 
+            className="user-register-banner"
+            style={{ backgroundImage: `url("/child10.jpg")` }}
+          >
+            <div className="banner-overlay">
+              <div className="topic-carousel-container">
+                <div className="topic-carousel-item active">
+                  <span className="topic-carousel-icon">{topics[currentTopic].icon}</span>
+                  <span className="topic-carousel-text">{topics[currentTopic].text}</span>
+                </div>
+              </div>
+              <div className="banner-footer">
+                <p>© 2023 Majlish-e-Khidmat. All rights reserved.</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="user-register-right">
-          <div className="user-register-form">
-            <h2>Create Account</h2>
-            <p className="form-subtitle">Join Majlish-e-Khidmat to continue</p>
-            {error && <p className="error-message">{error}</p>}
+        <div className="user-register-right-panel">
+          <div className="user-register-form-container">
+            <div className="form-header">
+              <h2>Create Account</h2>
+              <p className="form-subtitle">
+                Join Majlish-e-Khidmat to continue
+              </p>
+            </div>
 
-            <form onSubmit={handleSubmit}>
+            {error && <div className="error-message">{error}</div>}
+
+            <form onSubmit={handleSubmit} className="user-register-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="name">Full Name *</label>
+                  <input
+                    id="name"
+                    name="name"
+                    placeholder="Your full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="email">Email *</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group password-group">
+                <label htmlFor="password">Password *</label>
+                <div className="password-input-container">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Create a strong password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <span 
+                    className="password-toggle"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="phone">Phone</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    placeholder="Optional"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="dob">Date of Birth</label>
+                  <input
+                    id="dob"
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
               <div className="form-group">
-                <label htmlFor="name">Full Name</label>
+                <label htmlFor="address">Address</label>
                 <input
-                  id="name"
-                  name="name"
-                  placeholder="Your full name"
-                  value={formData.name}
+                  id="address"
+                  name="address"
+                  placeholder="Address"
+                  value={formData.address}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  type="password"
-                  name="password"
-                  placeholder="Create a strong password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  autoComplete="new-password"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="phone">Phone</label>
-                <input
-                  id="phone"
-                  name="phone"
-                  placeholder="Optional"
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="gender">Gender</label>
+                <label htmlFor="gender">Gender *</label>
                 <select
                   id="gender"
                   name="gender"
@@ -195,40 +252,29 @@ function UserRegister() {
                 </select>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="dob">Date of Birth</label>
-                <input
-                  id="dob"
-                  type="date"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="address">Address</label>
-                <input
-                  id="address"
-                  name="address"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="options">
-                <label>
-                  <input type="checkbox" required /> I agree to the Terms
+              <div className="form-group checkbox-group">
+                <label className="checkbox-container">
+                  <input type="checkbox" required />
+                  <span className="checkmark"></span>
+                  I agree to the <Link to="/terms">Terms and Conditions</Link>
                 </label>
               </div>
 
-              <button type="submit">Create account</button>
+              <button 
+                type="submit" 
+                className={`submit-button ${isLoading ? 'loading' : ''}`}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Creating Account...' : 'Create account'}
+              </button>
             </form>
 
+            <div className="divider">
+              <span>or</span>
+            </div>
+
             <p className="register-link">
-              Already have an account?{" "}
-              <Link to="/auth/login">Create an account</Link>
+              Already have an account? <Link to="/auth/login">Sign in</Link>
             </p>
           </div>
         </div>

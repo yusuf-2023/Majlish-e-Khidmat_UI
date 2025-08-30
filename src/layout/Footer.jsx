@@ -21,7 +21,7 @@ function Footer() {
           <div className="footer-section">
             <h5 className="footer-subtitle">Quick Links</h5>
             <ul className="footer-links">
-              <li><Link to="/user/register" className="footer-link">Register</Link></li>
+              <li><Link to="/user/register" className="footer-link" color="orange">Register</Link></li>
               <li><Link to="/login" className="footer-link">Login</Link></li>
               <li><Link to="/donate" className="footer-link">Donate</Link></li>
               <li><Link to="/volunteer/register" className="footer-link">Volunteer</Link></li>
@@ -32,11 +32,11 @@ function Footer() {
           <div className="footer-section">
             <h5 className="footer-subtitle">Contact</h5>
             <div className="contact-info">
-              <p className="text-muted">
-                Email: <a href="mailto:info@majlis.org" className="footer-link">info@majlis.org</a>
+              <p className="text-muted" >
+                Email: <a href="mailto:info@majlis.org"  className="footer-link">info@majlis.org</a>
               </p>
-              <p className="text-muted">
-                Phone: <a href="tel:+919123188968" className="footer-link">+91 9123188968</a>
+              <p className="text-muted" >
+                Phone: <a href="tel:+919123188968" className="footer-link" color="orange">+91 9123188968</a>
               </p>
             </div>
 

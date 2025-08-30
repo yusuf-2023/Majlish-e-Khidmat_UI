@@ -1,177 +1,426 @@
-/* ================== Light & Dark Mode ================== */
-:root {
-  --bg-color: #f8f9fa;
-  --text-color: #333;
-  --card-bg: #fff;
-  --border-color: #ddd;
-  --primary: #3498db;
-  --primary-hover: #2980b9;
-  --success-bg: #d4edda;
-  --success-text: #155724;
-  --success-border: #c3e6cb;
-  --delete-bg: #e74c3c;
-  --delete-hover: #c0392b;
-}
-
-body.dark-mode {
-  --bg-color: #1e1e2f;
-  --text-color: #eaeaea;
-  --card-bg: #2a2a40;
-  --border-color: #444;
-  --primary: #4aa3ff;
-  --primary-hover: #1c7ed6;
-  --success-bg: #2d6a4f;
-  --success-text: #d4f8e8;
-  --success-border: #3d8b6d;
-  --delete-bg: #ff4d4f;
-  --delete-hover: #d9363e;
-}
-
-/* ================== Main Container ================== */
-.admin-bank {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 5% auto 0;  /* Top = 5%, Left/Right = auto, Bottom = 0 */
-  max-width: 1000px;
-  min-height: 100vh;
-  padding: 20px;
-}
-
-
-.admin-bank h2 {
-  border-bottom: 2px solid var(--primary);
-  color: var(--text-color);
-  font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-}
-
-.admin-bank h3 {
-  color: var(--text-color);
-  font-weight: 600;
-  margin: 30px 0 15px;
-}
-
-/* ================== Messages ================== */
-.form-message {
-  border-radius: 4px;
-  font-weight: 500;
-  margin-bottom: 20px;
-  padding: 12px;
-}
-
-.form-message:not(:empty) {
-  background-color: var(--success-bg);
-  border: 1px solid var(--success-border);
-  color: var(--success-text);
-}
-
-/* ================== Form ================== */
-.admin-bank-form {
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
-  margin-bottom: 30px;
-  padding: 25px;
-}
-
-.admin-bank-form input,
-.admin-bank-form select {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  box-sizing: border-box;
-  color: var(--text-color);
-  font-size: 16px;
-  margin-bottom: 15px;
-  padding: 12px 15px;
-  transition: border-color 0.3s;
+/* ================= ADMIN BANK PAGE ================= */
+.admin-bank-page {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
   width: 100%;
 }
 
-.admin-bank-form input:focus,
-.admin-bank-form select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgb(52 152 219 / 30%);
-  outline: none;
-}
-
-/* Save Button - aligned right */
-.admin-bank-form button {
-  background-color: var(--primary);
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-  display: block;
-  font-size: 16px;
-  font-weight: 500;
-  margin-left: auto; /* this pushes button to right */
-  padding: 12px 20px;
-  transition: background-color 0.3s;
-}
-
-.admin-bank-form button:hover {
-  background-color: var(--primary-hover);
-}
-
-/* ================== Bank List ================== */
-.admin-bank ul {
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
-  list-style: none;
-  overflow: hidden;
-  padding: 0;
-}
-
-.admin-bank li {
+.admin-bank-left {
   align-items: center;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-color);
+  background: url("../child2.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 65%;
+}
+
+.admin-bank-headline {
+  color: #fff;
+  margin-top: 28%;
+  padding: 28px;
+  text-align: center;
+}
+
+.admin-bank-headline h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-shadow: 0 3px 8px rgb(0 0 0 / 50%);
+}
+
+.admin-bank-headline p {
+  color: #f0f0f0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgb(0 0 0 / 50%);
+}
+
+.admin-bank-right {
+  align-items: center;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 20px;
+  width: 35%;
+}
+
+/* ================= ADMIN BANK CONTAINER ================= */
+.admin-bank-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
+  max-width: 500px;
+  padding: 25px;
+  width: 100%;
+}
+
+.admin-bank-container h2 {
+  color: #222;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.admin-bank-container h3 {
+  border-top: 1px solid #eee;
+  color: #222;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 25px;
+  padding-top: 25px;
+}
+
+/* ================= FORM STYLING ================= */
+.admin-bank-form {
+  margin-bottom: 20px;
+}
+
+.admin-bank-form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-bank-form-group {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.admin-bank-label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.admin-bank-input,
+.admin-bank-select {
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #000;
+  font-size: 13px;
+  height: 38px;
+  outline: none;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.admin-bank-input:focus,
+.admin-bank-select:focus {
+  background: #fff;
+  border-color: #128318;
+  box-shadow: 0 0 8px rgb(0 123 255 / 30%);
+  color: #000;
+}
+
+/* ================= BUTTON STYLING ================= */
+.admin-bank-submit-btn {
+  background: linear-gradient(45deg, #359931, #2da852);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+  overflow: hidden;
+  padding: 12px 20px;
+  position: relative;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.admin-bank-submit-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ================= PAYMENT ACCOUNTS LIST ================= */
+.admin-bank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.admin-bank-empty {
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+  padding: 20px;
+  text-align: center;
+}
+
+/* ================= PAYMENT ACCOUNT CARD ================= */
+.admin-bank-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.admin-bank-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.admin-bank-card-header {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 15px 20px;
+  margin-bottom: 12px;
 }
 
-.admin-bank li:last-child {
-  border-bottom: none;
+.admin-bank-card-header h4 {
+  color: #222;
+  font-size: 16px;
+  margin: 0;
 }
 
-/* Delete Button */
-.delete-btn {
-  background-color: var(--delete-bg);
+.admin-bank-status {
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+.admin-bank-status.active {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.admin-bank-status.inactive {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.admin-bank-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-bank-detail {
+  display: flex;
+  justify-content: space-between;
+}
+
+.admin-bank-detail-label {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.admin-bank-detail-value {
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.admin-bank-card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-bank-delete-btn {
+  background: #dc3545;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   color: white;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
   padding: 8px 12px;
-  transition: background-color 0.3s;
+  transition: all 0.2s;
 }
 
-.delete-btn:hover {
-  background-color: var(--delete-hover);
+.admin-bank-delete-btn:hover {
+  background: #c82333;
 }
 
-/* ================== Responsive ================== */
+/* ================= MESSAGE STYLING ================= */
+.admin-bank-message {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  color: #155724;
+  margin-bottom: 15px;
+  padding: 10px;
+  text-align: center;
+}
+
+/* ================= DARK MODE ================= */
+body.dark-mode .admin-bank-right {
+  background: #1e1e1e;
+}
+
+body.dark-mode .admin-bank-container {
+  background: #1f1f1f;
+  box-shadow: 0 8px 25px rgb(0 0 0 / 50%);
+}
+
+body.dark-mode .admin-bank-container h2,
+body.dark-mode .admin-bank-container h3 {
+  color: #fff;
+}
+
+body.dark-mode .admin-bank-label {
+  color: #fff;
+}
+
+body.dark-mode .admin-bank-input,
+body.dark-mode .admin-bank-select {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+body.dark-mode .admin-bank-input:focus,
+body.dark-mode .admin-bank-select:focus {
+  background: #333;
+  border-color: #4caf50;
+  box-shadow: 0 0 8px rgb(76 175 80 / 30%);
+}
+
+body.dark-mode .admin-bank-card {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+body.dark-mode .admin-bank-card-header h4 {
+  color: #fff;
+}
+
+body.dark-mode .admin-bank-detail-label {
+  color: #ccc;
+}
+
+body.dark-mode .admin-bank-detail-value {
+  color: #fff;
+}
+
+body.dark-mode .admin-bank-empty {
+  background: #2a2a2a;
+  color: #aaa;
+}
+
+/* ================= SCROLLBAR STYLING ================= */
+.admin-bank-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-bank-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.admin-bank-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.admin-bank-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+body.dark-mode .admin-bank-list::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+body.dark-mode .admin-bank-list::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+body.dark-mode .admin-bank-list::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+@media (width <= 992px) {
+  .admin-bank-page {
+    flex-direction: column;
+  }
+  
+  .admin-bank-left {
+    height: 250px;
+    width: 100%;
+  }
+  
+  .admin-bank-right {
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .admin-bank-container {
+    margin: auto;
+    max-width: 600px;
+  }
+}
+
 @media (width <= 768px) {
-  .admin-bank {
-    padding: 15px;
-  }
-  
-  .admin-bank-form {
-    padding: 15px;
-  }
-  
-  .admin-bank li {
-    align-items: flex-start;
+  .admin-bank-form-row {
     flex-direction: column;
     gap: 10px;
   }
   
-  .delete-btn {
-    align-self: flex-end;
+  .admin-bank-container {
+    padding: 20px 15px;
+  }
+  
+  .admin-bank-headline h1 {
+    font-size: 1.8rem;
+  }
+  
+  .admin-bank-detail {
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .admin-bank-detail-value {
+    text-align: left;
+  }
+}
+
+@media (width <= 576px) {
+  .admin-bank-container h2 {
+    font-size: 18px;
+  }
+  
+  .admin-bank-input,
+  .admin-bank-select {
+    font-size: 12px;
+    height: 36px;
+  }
+  
+  .admin-bank-submit-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .admin-bank-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .admin-bank-card-footer {
+    justify-content: center;
+  }
+  
+  .admin-bank-delete-btn {
+    width: 100%;
   }
 }

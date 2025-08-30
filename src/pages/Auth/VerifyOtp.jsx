@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { verifyOtpAndResetPassword } from "../../api/password/passwordService";
-// API call import karo
 import { useNavigate, useLocation } from "react-router-dom";
-import "@/styles/Login.css";
+import "@/styles/forgetPassword.css";
 
 function VerifyOtp() {
   const [otp, setOtp] = useState("");
@@ -11,35 +10,29 @@ function VerifyOtp() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Navigation se email aur type (admin/user) le lo
   const email = location.state?.email;
   const type = location.state?.type || "user";
 
-  // Agar email nahi milta toh redirect karo ForgotPassword page pe
+  // Agar email missing hai toh Forgot Password page pe redirect karo
   useEffect(() => {
     if (!email) {
-      navigate(
-        type === "admin" ? "/admin/forgot-password" : "/user/forgot-password"
-      );
+      navigate("/auth/forgot-password");
     }
-  }, [email, type, navigate]);
+  }, [email, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // API call with email, otp, new password (type is ignored by backend as of now)
       await verifyOtpAndResetPassword(email, otp, newPassword);
-
       alert("Password reset successfully!");
-      // Success pe login page pe bhejo
-      navigate(type === "admin" ? "/admin/login" : "/user/login");
+      navigate("/auth/login"); // Login page pe redirect
     } catch (error) {
-      alert(error?.message || "Invalid OTP or error resetting password");
+      alert(error?.response?.data?.message || "Invalid OTP or error resetting password");
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="password-form-container">
       <h2>{type === "admin" ? "Admin" : "User"} Verify OTP</h2>
       <form onSubmit={handleSubmit}>
         <input

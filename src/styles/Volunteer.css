@@ -46,85 +46,92 @@
   width: 35%;
 }
 
-/* ================= SMALLER FORM CONTAINER ================= */
+/* ================= FORM CONTAINER ================= */
 .volunteer-register-form-container {
   background: #fffefe;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
-  max-width: 380px;
-  padding: 30px 20px;
+  max-width: 500px;
+  padding: 30px 25px;
   text-align: center;
   transition: all 0.3s ease;
-  width: 85%;
+  width: 90%;
 }
 
 .volunteer-register-form-container h2 {
   color: #222;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-/* ================= FORM LABEL & INPUT SIDE BY SIDE ================= */
+/* ================= FORM LAYOUT WITH TWO INPUTS PER ROW ================= */
 .volunteer-form-row {
-  align-items: center;
   display: flex;
-  flex-direction: row;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.volunteer-form-group {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .volunteer-form-label {
   color: #333;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 15px;
+  margin-bottom: 6px;
   text-align: left;
-  width: 30%;
 }
 
 .volunteer-form-input,
-.volunteer-form-select,
-.volunteer-form-file {
+.volunteer-form-select {
   background: #fafafa;
   border: 1px solid #ccc;
   border-radius: 6px;
   color: #000;
   font-size: 13px;
-  height: 34px;
+  height: 38px;
   outline: none;
-  padding: 6px 10px;
+  padding: 6px 12px;
   transition: all 0.3s ease;
-  width: 65%;
+  width: 100%;
 }
 
 .volunteer-form-input:focus,
-.volunteer-form-select:focus,
-.volunteer-form-file:focus {
+.volunteer-form-select:focus {
   background: #fff;
   border-color: #128318;
   box-shadow: 0 0 8px rgb(0 123 255 / 30%);
   color: #000;
 }
 
+/* File input specific styling */
+.volunteer-form-input[type="file"] {
+  padding: 8px 6px;
+}
+
 /* ================= SUBMIT BUTTON ================= */
-.volunteer-submit-btn {
-  background: linear-gradient(45deg,#359931,#2da852);
+.volunteer-register-btn {
+  background: linear-gradient(45deg, #359931, #2da852);
   border: none;
   border-radius: 8px;
   color: #fff;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 15px;
   overflow: hidden;
-  padding: 10px;
+  padding: 12px 20px;
   position: relative;
   transition: all 0.3s ease;
   width: 100%;
 }
 
-.volunteer-submit-btn::after {
+.volunteer-register-btn::after {
   background: rgb(255 255 255 / 20%);
   content: '';
   height: 100%;
@@ -136,8 +143,34 @@
   width: 50%;
 }
 
-.volunteer-submit-btn:hover::after { left: 150%; }
-.volunteer-submit-btn:hover { transform: translateY(-2px) scale(1.02); }
+.volunteer-register-btn:hover::after { 
+  left: 150%; 
+}
+
+.volunteer-register-btn:hover { 
+  transform: translateY(-2px); 
+}
+
+.volunteer-register-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ================= IMAGE PREVIEW ================= */
+.volunteer-image-preview {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.volunteer-image-preview img {
+  border: 2px solid #128318;
+  border-radius: 8px;
+  height: 80px;
+  object-fit: cover;
+  width: 80px;
+}
 
 /* ================= DARK MODE ================= */
 body.dark-mode .volunteer-register-right {
@@ -159,56 +192,83 @@ body.dark-mode .volunteer-form-label {
 }
 
 body.dark-mode .volunteer-form-input,
-body.dark-mode .volunteer-form-select,
-body.dark-mode .volunteer-form-file {
+body.dark-mode .volunteer-form-select {
   background: #2a2a2a;
   border: 1px solid #555;
   color: #fff;
 }
 
 body.dark-mode .volunteer-form-input:focus,
-body.dark-mode .volunteer-form-select:focus,
-body.dark-mode .volunteer-form-file:focus {
+body.dark-mode .volunteer-form-select:focus {
   background: #333;
   border-color: #4caf50;
   box-shadow: 0 0 8px rgb(76 175 80 / 30%);
 }
 
-body.dark-mode .volunteer-submit-btn {
-  background: linear-gradient(45deg,#2b8a2b,#1f6f1f);
+body.dark-mode .volunteer-register-btn {
+  background: linear-gradient(45deg, #2b8a2b, #1f6f1f);
   color: #fff;
 }
 
-/* ================= IMAGE PREVIEW STYLE ================= */
-.volunteer-form-row img {
-  border: 2px solid #128318;
-  border-radius: 50%;
-  height: 50px;
-  margin-left: 10px;
-  object-fit: cover;
-  width: 50px;
+/* ================= RESPONSIVE DESIGN ================= */
+@media (width <= 992px) {
+  .volunteer-register-page { 
+    flex-direction: column; 
+  }
+  
+  .volunteer-register-left { 
+    height: 280px; 
+    width: 100%; 
+  }
+  
+  .volunteer-register-right { 
+    padding: 20px; 
+    width: 100%; 
+  }
+  
+  .volunteer-register-form-container { 
+    margin: auto; 
+    max-width: 500px; 
+    width: 90%; 
+  }
 }
 
-/* ================= RESPONSIVE UPDATES ================= */
-@media (width <= 992px){
-  .volunteer-register-page { flex-direction: column; }
-  .volunteer-register-left { height: 280px; width: 100%; }
-  .volunteer-register-right { padding: 20px; width: 100%; }
-  .volunteer-register-form-container { margin: auto; max-width: 400px; width: 90%; }
-  .volunteer-form-row { align-items: flex-start; flex-direction: column; }
-  .volunteer-form-label { margin-bottom: 6px; text-align: left; width: 100%; }
-  .volunteer-form-input, .volunteer-form-select, .volunteer-form-file { width: 100%; }
+@media (width <= 768px) {
+  .volunteer-form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .volunteer-register-form-container {
+    padding: 20px 15px;
+    width: 95%;
+  }
+  
+  .volunteer-register-form-container h2 {
+    font-size: 18px;
+  }
 }
 
-@media (width <= 576px){
-  .volunteer-register-form-container { padding: 20px 15px; width: 95%; }
-  .volunteer-register-form-container h2 { font-size: 16px; }
-  .volunteer-form-input, .volunteer-form-select, .volunteer-form-file { font-size: 12px; height: 32px; padding: 6px 8px; }
-  .volunteer-submit-btn { font-size: 12px; padding: 8px; }
+@media (width <= 576px) {
+  .volunteer-register-form-container h2 {
+    font-size: 16px;
+  }
+  
+  .volunteer-form-input,
+  .volunteer-form-select {
+    font-size: 12px;
+    height: 36px;
+    padding: 6px 10px;
+  }
+  
+  .volunteer-register-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
 }
 
 /* ================= ANIMATION ================= */
-@keyframes fade-in-out {
-  0%,100%{opacity:0;}
-  10%,90%{opacity:1;}
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  10%, 90% { opacity: 1; }
 }

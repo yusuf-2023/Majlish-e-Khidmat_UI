@@ -40,37 +40,39 @@ function FeedbackList() {
       ) : feedbacks.length === 0 ? (
         <p>No feedback available.</p>
       ) : (
-        <table className="feedback-table">
-          <thead>
-            <tr>
-              <th>Sr.</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Message</th>
-              <th>Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {feedbacks.map((fb, index) => (
-              <tr key={fb.id || index}>
-                <td>{index + 1}</td>
-                <td>{fb.name}</td>
-                <td>{fb.email}</td>
-                <td>{fb.message}</td>
-                <td>{new Date(fb.createdAt).toLocaleString()}</td>
-                <td>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(fb.id)}
-                  >
-                    ❌ Delete
-                  </button>
-                </td>
+        <div className="feedback-table-wrapper">
+          <table className="feedback-table">
+            <thead>
+              <tr>
+                <th>Sr.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {feedbacks.map((fb, index) => (
+                <tr key={fb.id || index}>
+                  <td>{index + 1}</td>
+                  <td>{fb.name}</td>
+                  <td>{fb.email}</td>
+                  <td>{fb.message}</td>
+                  <td>{new Date(fb.createdAt).toLocaleString()}</td>
+                  <td>
+                    <button
+                      className="feedback-delete-btn"
+                      onClick={() => handleDelete(fb.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

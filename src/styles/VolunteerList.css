@@ -1,5 +1,4 @@
-/* VolunteerList.css - Professional Dark/Light Mode Styles */
-
+/* ==================== VOLUNTEER LIST CSS ==================== */
 /* Global Variables for Light Mode */
 :root {
   --vl-bg-primary: #fff;
@@ -12,14 +11,16 @@
   --vl-danger: #dc3545;
   --vl-warning: #ffc107;
   --vl-info: #17a2b8;
-  --vl-shadow: 0 4px 6px rgb(0 0 0 / 10%);
-  --vl-shadow-hover: 0 8px 15px rgb(0 0 0 / 15%);
+  --vl-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --vl-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.15);
   --vl-card-bg: #fff;
   --vl-input-bg: #fff;
   --vl-header-bg: #f8f9fa;
+  --vl-avatar-bg: #4361ee;
 }
 
 /* Dark Mode Variables */
+body.dark-mode,
 .volunteer-list-dark-mode,
 .vl-dark-mode {
   --vl-bg-primary: #121212;
@@ -32,11 +33,18 @@
   --vl-danger: #ff3b30;
   --vl-warning: #fc0;
   --vl-info: #5ac8fa;
-  --vl-shadow: 0 4px 6px rgb(0 0 0 / 30%);
-  --vl-shadow-hover: 0 8px 15px rgb(0 0 0 / 40%);
+  --vl-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --vl-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.4);
   --vl-card-bg: #1e1e1e;
   --vl-input-bg: #2d2d2d;
   --vl-header-bg: #1a1a1a;
+  --vl-avatar-bg: #5e72e4;
+}
+
+/* Ensure all elements inherit the color scheme */
+.vl-admin-container,
+.vl-admin-container * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Base Container */
@@ -47,7 +55,6 @@
   margin-top: 5%;
   min-height: 100vh;
   padding: 20px;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Header Styles */
@@ -60,7 +67,6 @@
   justify-content: space-between;
   margin-bottom: 24px;
   padding: 16px 20px;
-  transition: all 0.3s ease;
 }
 
 .vl-header h2 {
@@ -131,12 +137,12 @@
 }
 
 .vl-btn-edit {
-  background-color: rgb(23 162 184 / 10%);
+  background-color: rgba(23, 162, 184, 0.1);
   color: var(--vl-info);
 }
 
 .vl-btn-delete {
-  background-color: rgb(220 53 69 / 10%);
+  background-color: rgba(220, 53, 69, 0.1);
   color: var(--vl-danger);
 }
 
@@ -182,7 +188,7 @@
 
 .vl-search-input:focus {
   border-color: var(--vl-accent);
-  box-shadow: 0 0 0 3px rgb(67 97 238 / 15%);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
   outline: none;
 }
 
@@ -199,7 +205,6 @@
   box-shadow: var(--vl-shadow);
   margin-bottom: 24px;
   overflow: hidden;
-  transition: all 0.3s ease;
 }
 
 .vl-table {
@@ -219,6 +224,7 @@
 
 .vl-table td {
   border-bottom: 1px solid var(--vl-border-color);
+  color: var(--vl-text-primary);
   padding: 16px;
   vertical-align: middle;
 }
@@ -245,7 +251,7 @@
 
 .vl-avatar-placeholder {
   align-items: center;
-  background-color: var(--vl-accent);
+  background-color: var(--vl-avatar-bg);
   border-radius: 50%;
   color: white;
   display: flex;
@@ -263,6 +269,7 @@
 }
 
 .vl-skills {
+  color: var(--vl-text-secondary);
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -279,17 +286,17 @@
 }
 
 .vl-weekdays {
-  background-color: rgb(67 97 238 / 10%);
+  background-color: rgba(67, 97, 238, 0.1);
   color: var(--vl-accent);
 }
 
 .vl-weekends {
-  background-color: rgb(40 167 69 / 10%);
+  background-color: rgba(40, 167, 69, 0.1);
   color: var(--vl-success);
 }
 
 .vl-both {
-  background-color: rgb(255 193 7 / 10%);
+  background-color: rgba(255, 193, 7, 0.1);
   color: var(--vl-warning);
 }
 
@@ -384,7 +391,7 @@
 
 .vl-form-input:focus {
   border-color: var(--vl-accent);
-  box-shadow: 0 0 0 3px rgb(67 97 238 / 15%);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
   outline: none;
 }
 
@@ -460,6 +467,7 @@
 }
 
 .vl-no-results-icon {
+  color: var(--vl-text-secondary);
   display: block;
   font-size: 48px;
   margin-bottom: 16px;
@@ -468,6 +476,11 @@
 .vl-no-results h3 {
   color: var(--vl-text-secondary);
   margin: 0 0 8px;
+}
+
+.vl-no-results p {
+  color: var(--vl-text-secondary);
+  margin: 0;
 }
 
 /* Loading State */
@@ -480,8 +493,34 @@
   justify-content: center;
 }
 
+/* Animation for expanding rows */
+.vl-details-row {
+  animation: expandRow 0.3s ease-out;
+}
+
+@keyframes expandRow {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  to {
+    max-height: 1000px;
+    opacity: 1;
+  }
+}
+
+/* Focus states for accessibility */
+.vl-btn:focus,
+.vl-search-input:focus,
+.vl-form-input:focus,
+.vl-image-upload-btn:focus {
+  outline: 2px solid var(--vl-accent);
+  outline-offset: 2px;
+}
+
 /* Responsive Design */
-@media (width <= 768px) {
+@media (max-width: 768px) {
   .vl-admin-container {
     padding: 12px;
   }
@@ -524,39 +563,39 @@
   }
 }
 
-/* Animation for expanding rows */
-.vl-details-row {
-  animation: expandRow 0.3s ease-out;
+/* Additional fixes for dark mode compatibility */
+body.dark-mode .vl-table th,
+.volunteer-list-dark-mode .vl-table th,
+.vl-dark-mode .vl-table th {
+  color: var(--vl-text-primary);
 }
 
-@keyframes expand-row {
-  from {
-    max-height: 0;
-    opacity: 0;
-  }
-
-  to {
-    max-height: 1000px;
-    opacity: 1;
-  }
+body.dark-mode .vl-btn-secondary,
+.volunteer-list-dark-mode .vl-btn-secondary,
+.vl-dark-mode .vl-btn-secondary {
+  border-color: var(--vl-border-color);
 }
 
-/* Focus states for accessibility */
-.vl-btn:focus,
-.vl-search-input:focus,
-.vl-form-input:focus,
-.vl-image-upload-btn:focus {
-  outline: 2px solid var(--vl-accent);
-  outline-offset: 2px;
-}
-/* Component-specific styles */
-.my-component {
-  background: var(--light-surface);
-  color: var(--light-text);
+/* Ensure all text elements use the correct variables */
+.vl-admin-container h1,
+.vl-admin-container h2,
+.vl-admin-container h3,
+.vl-admin-container h4,
+.vl-admin-container h5,
+.vl-admin-container h6,
+.vl-admin-container p,
+.vl-admin-container span,
+.vl-admin-container div {
+  color: var(--vl-text-primary);
 }
 
-/* Dark mode support */
-body.dark-mode .my-component {
-  background: var(--dark-surface);
-  color: var(--dark-text);
+/* Fix for placeholder text color */
+.vl-search-input::placeholder {
+  color: var(--vl-text-secondary);
+  opacity: 0.7;
+}
+
+.vl-form-input::placeholder {
+  color: var(--vl-text-secondary);
+  opacity: 0.7;
 }

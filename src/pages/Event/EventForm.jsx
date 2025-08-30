@@ -1,4 +1,3 @@
-// src/pages/Event/EventForm.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { createEvent, getEventById } from "../../api/event/eventApi";
 import Notification from "../../components/Notification";
@@ -57,68 +56,99 @@ const EventForm = ({ eventId }) => {
   };
 
   return (
-    <div className="event-container">
-      <h2>{eventId ? "Event Details" : "Create Event"}</h2>
-
-      {notification && (
-        <Notification
-          message={notification}
-          onClose={handleNotificationClose}
-          duration={2000}
-          className="event-notification"
-        />
-      )}
-
-      {!eventId && (
-        <form onSubmit={handleSubmit} className="event-form">
-          <input
-            type="text"
-            name="name"
-            placeholder="Event Name"
-            value={event.name}
-            onChange={handleChange}
-            required
-            className="event-input"
-          />
-          <input
-            type="text"
-            name="location"
-            placeholder="Location"
-            value={event.location}
-            onChange={handleChange}
-            required
-            className="event-input"
-          />
-          <input
-            type="datetime-local"
-            name="date"
-            value={event.date}
-            onChange={handleChange}
-            required
-            className="event-input"
-          />
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={event.description}
-            onChange={handleChange}
-            required
-            className="event-textarea"
-          />
-          <button type="submit" className="event-button">
-            Create Event
-          </button>
-        </form>
-      )}
-
-      {eventId && (
-        <div className="event-details">
-          <p><strong>Name:</strong> {event.name}</p>
-          <p><strong>Location:</strong> {event.location}</p>
-          <p><strong>Date:</strong> {new Date(event.date).toLocaleString()}</p>
-          <p><strong>Description:</strong> {event.description}</p>
+    <div className="event-page-container">
+      <div className="event-image-section">
+        <div className="event-image-overlay">
+          <h2>Create Memorable Events</h2>
+          <p>Plan your events with ease and precision. Our platform helps you organize everything in one place.</p>
         </div>
-      )}
+      </div>
+      
+      <div className="event-form-section">
+        <div className="event-form-container">
+          <h2>{eventId ? "Event Details" : "Create Event"}</h2>
+
+          {notification && (
+            <Notification
+              message={notification}
+              onClose={handleNotificationClose}
+              duration={2000}
+              className="event-notification"
+            />
+          )}
+
+          {!eventId && (
+            <form onSubmit={handleSubmit} className="event-form">
+              <div className="form-group">
+                <label htmlFor="name">Event Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Enter event name"
+                  value={event.name}
+                  onChange={handleChange}
+                  required
+                  className="event-input"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="location">Location</label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  placeholder="Enter event location"
+                  value={event.location}
+                  onChange={handleChange}
+                  required
+                  className="event-input"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="date">Date & Time</label>
+                <input
+                  type="datetime-local"
+                  id="date"
+                  name="date"
+                  value={event.date}
+                  onChange={handleChange}
+                  required
+                  className="event-input"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="Describe your event"
+                  value={event.description}
+                  onChange={handleChange}
+                  required
+                  className="event-textarea"
+                />
+              </div>
+              
+              <button type="submit" className="event-button">
+                Create Event
+              </button>
+            </form>
+          )}
+
+          {eventId && (
+            <div className="event-details">
+              <p><strong>Name:</strong> {event.name}</p>
+              <p><strong>Location:</strong> {event.location}</p>
+              <p><strong>Date:</strong> {new Date(event.date).toLocaleString()}</p>
+              <p><strong>Description:</strong> {event.description}</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

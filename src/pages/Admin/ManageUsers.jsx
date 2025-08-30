@@ -24,9 +24,9 @@ function ManageUsers({ darkMode }) {
     gender: "",
     blocked: false,
   });
-  const [undoDeleteUser, setUndoDeleteUser] = useState(null);
+  const [undoDeleteUsers, setUndoDeleteUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
-  // Notification state: { message: string, type: "success" | "error" }
   const [notification, setNotification] = useState(null);
 
   const fetchUsers = async () => {
@@ -46,30 +46,36 @@ function ManageUsers({ darkMode }) {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (email) => {
+  const handleDelete = (email) => {
     const userToDelete = users.find((u) => u.email === email);
-    setUndoDeleteUser(userToDelete);
     setUsers(users.filter((u) => u.email !== email));
-    setNotification({ message: "User deleted. You can undo this action.", type: "success" });
 
-    setTimeout(async () => {
-      if (undoDeleteUser && undoDeleteUser.email === email) {
-        try {
-          await deleteUser(email);
-          setUndoDeleteUser(null);
-          setNotification({ message: "User deleted permanently.", type: "success" });
-        } catch {
-          setNotification({ message: "Failed to delete user.", type: "error" });
-          fetchUsers();
-        }
+    const timeoutId = setTimeout(async () => {
+      try {
+        await deleteUser(email);
+        setUndoDeleteUsers((prev) => prev.filter((u) => u.email !== email));
+        setNotification({ message: "User deleted permanently.", type: "success" });
+      } catch {
+        setNotification({ message: "Failed to delete user.", type: "error" });
+        fetchUsers();
       }
     }, 5000);
+
+    setUndoDeleteUsers((prev) => [...prev, { ...userToDelete, timeoutId }]);
+    setNotification({ message: "User deleted. You can undo this action.", type: "success" });
   };
 
-  const undoDelete = () => {
-    if (undoDeleteUser) {
-      setUsers((prev) => [...prev, undoDeleteUser]);
-      setUndoDeleteUser(null);
+  const handleMultiDelete = () => {
+    selectedUsers.forEach((email) => handleDelete(email));
+    setSelectedUsers([]);
+  };
+
+  const undoDelete = (email) => {
+    const deletedUser = undoDeleteUsers.find((u) => u.email === email);
+    if (deletedUser) {
+      clearTimeout(deletedUser.timeoutId);
+      setUsers((prev) => [...prev, deletedUser]);
+      setUndoDeleteUsers((prev) => prev.filter((u) => u.email !== email));
       setNotification({ message: "User deletion undone.", type: "success" });
     }
   };
@@ -116,6 +122,12 @@ function ManageUsers({ darkMode }) {
     }
   };
 
+  const handleSelect = (email) => {
+    setSelectedUsers((prev) =>
+      prev.includes(email) ? prev.filter((e) => e !== email) : [...prev, email]
+    );
+  };
+
   const filteredUsers = users.filter(
     (user) =>
       user.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -128,7 +140,6 @@ function ManageUsers({ darkMode }) {
 
   return (
     <div className={`manage-users-container ${darkMode ? "dark-mode" : ""}`}>
-      {/* Fixed Header */}
       <header className="mu-header">
         <h2 className="mu-title">Manage Users</h2>
         <div className="mu-controls">
@@ -144,10 +155,14 @@ function ManageUsers({ darkMode }) {
             <span className="mu-badge mu-badge-muted">Active: {activeUsers}</span>
             <span className="mu-badge mu-badge-warning">Blocked: {blockedUsers}</span>
           </div>
+          {selectedUsers.length > 0 && (
+            <button className="manage-users-delete-btn" onClick={handleMultiDelete}>
+              Delete Selected ({selectedUsers.length})
+            </button>
+          )}
         </div>
       </header>
 
-      {/* Notification Component */}
       {notification && (
         <Notification
           message={notification.message}
@@ -156,22 +171,30 @@ function ManageUsers({ darkMode }) {
         />
       )}
 
-      {undoDeleteUser && (
-        <div className="mu-undo">
-          <span>User deleted.</span>
-          <button className="btn-undo" onClick={undoDelete}>
+      {undoDeleteUsers.map((user) => (
+        <div className="mu-undo" key={user.email}>
+          <span>{user.name} deleted.</span>
+          <button className="btn-undo" onClick={() => undoDelete(user.email)}>
             Undo
           </button>
         </div>
-      )}
+      ))}
 
       {loading && <p className="mu-msg">Loading users...</p>}
 
-      {/* Scrollable Table Body */}
       <div className="users-table-wrapper">
         <table className="users-table">
           <thead>
             <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={selectedUsers.length === users.length && users.length > 0}
+                  onChange={(e) =>
+                    setSelectedUsers(e.target.checked ? users.map((u) => u.email) : [])
+                  }
+                />
+              </th>
               <th>Profile</th>
               <th>Name / Email</th>
               <th>Phone</th>
@@ -183,13 +206,20 @@ function ManageUsers({ darkMode }) {
           <tbody>
             {filteredUsers.length === 0 && !loading && (
               <tr>
-                <td colSpan="6" className="mu-msg">
+                <td colSpan="7" className="mu-msg">
                   No users found.
                 </td>
               </tr>
             )}
             {filteredUsers.map((user) => (
               <tr key={user.id}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.includes(user.email)}
+                    onChange={() => handleSelect(user.email)}
+                  />
+                </td>
                 <td>
                   <div className="avatar">
                     {user.profilePic ? (
@@ -228,26 +258,26 @@ function ManageUsers({ darkMode }) {
                           name="name"
                           value={editData.name}
                           onChange={handleEditChange}
-                          className="input"
+                          className="manage-user-input"
                         />
                         <input
                           name="email"
                           value={editData.email}
                           disabled
-                          className="input"
+                          className="manage-user-input"
                         />
                         <input
                           name="phone"
                           value={editData.phone}
                           onChange={handleEditChange}
-                          className="input"
+                          className="manage-user-input"
                           placeholder="Phone"
                         />
                         <input
                           name="address"
                           value={editData.address}
                           onChange={handleEditChange}
-                          className="input"
+                          className="manage-user-input"
                           placeholder="Address"
                         />
                         <input
@@ -255,20 +285,20 @@ function ManageUsers({ darkMode }) {
                           type="date"
                           value={editData.dob || ""}
                           onChange={handleEditChange}
-                          className="input"
+                          className="manage-user-input"
                         />
                         <select
                           name="gender"
                           value={editData.gender}
                           onChange={handleEditChange}
-                          className="input"
+                          className="manage-user-input"
                         >
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                           <option value="Other">Other</option>
                         </select>
-                        <label className="input-checkbox">
+                        <label className="manage-user-input-checkbox">
                           <input
                             type="checkbox"
                             name="blocked"
@@ -317,7 +347,7 @@ function ManageUsers({ darkMode }) {
                           Edit
                         </button>
                         <button
-                          className="action delete-btn"
+                          className="manage-users-delete-btn"
                           onClick={() => handleDelete(user.email)}
                         >
                           Delete

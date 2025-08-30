@@ -1,12 +1,11 @@
 import API, { jsonHeader } from "../core/httpClient";
 
-
-// Send OTP for forgot password
+// Send OTP
 export const sendOtp = async (email) => {
   try {
     return await API.post("/forgot-password/send-otp", { email }, jsonHeader);
   } catch (error) {
-    console.error("Error sending OTP:", error);
+    console.error("Error sending OTP:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -20,18 +19,15 @@ export const verifyOtpAndResetPassword = async (email, otp, newPassword) => {
       jsonHeader
     );
 
-    // Update tokens if returned
     const accessToken = response.data.accessToken || response.data.token;
-    if (accessToken) {
-      localStorage.setItem("token", accessToken);
-      if (response.data.refreshToken) {
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-      }
-    }
+    const refreshToken = response.data.refreshToken;
+
+    if (accessToken) localStorage.setItem("accessToken", accessToken);
+    if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
 
     return response;
   } catch (error) {
-    console.error("Password reset error:", error);
+    console.error("Password reset error:", error.response?.data || error.message);
     throw error;
   }
 };

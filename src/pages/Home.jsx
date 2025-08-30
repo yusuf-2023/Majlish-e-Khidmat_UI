@@ -284,7 +284,7 @@ function Home() {
             <Link
               to={
                 isAdmin
-                  ? "/admin/donation-dashboard"
+                  ? "/admin/donation"
                   : isUser
                   ? "/user/donation"
                   : "/auth/login"
@@ -295,7 +295,7 @@ function Home() {
               Donate Now
             </Link>
             <Link
-              to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+              to={isAdmin ? "/admin/volunteers/add" : "/user/volunteers/add"}
               className="btn outline"
               aria-label="Become a volunteer"
             >
@@ -353,11 +353,11 @@ function Home() {
 
           <div className="refresh-row">
             <button
-              className={`btn small ${refreshing ? "disabled" : ""}`}
+              className={`btn primary small ${refreshing ? "disabled" : ""}`}
               onClick={loadAll}
               disabled={refreshing}
             >
-              {refreshing ? "Refreshing..." : "🔄 Refresh Stats"}
+              {refreshing ? "Refreshing..." : "Refresh Stats"}
             </button>
             <div className="quote">{quote}</div>
           </div>
@@ -623,7 +623,7 @@ function Home() {
                             </span>
                           ))
                         ) : volunteer.skills ? (
-                          <span className="skill-tag">{volunteer.skills}</span>
+                          <span className="skill-tag" style={{ background: "orange", color: "#fff" }}>{volunteer.skills}</span>
                         ) : (
                           <span className="skill-tag">Community Service</span>
                         )}
@@ -713,7 +713,7 @@ function Home() {
                   ? "/user/donation"
                   : "/auth/login"
               }
-              className="btn ghost small"
+              className="btn primary small"
             >
               View All Donations
             </Link>

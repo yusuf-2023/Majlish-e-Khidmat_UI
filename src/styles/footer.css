@@ -34,7 +34,9 @@
 .site-footer p {
   line-height: var(--line-height-relaxed);
 }
-
+.footer-link{
+  color: orange;
+}
 .site-footer .text-muted {
   color: var(--text-muted);
 }

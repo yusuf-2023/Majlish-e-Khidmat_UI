@@ -93,7 +93,7 @@ html {
 }
 
 .hero .accent { 
-  color: var(--accent); 
+  color: orange; 
 }
 
 .hero .sub { 
@@ -160,7 +160,7 @@ html {
 }
 
 .indicator.active {
-  background: var(--accent);
+  background: rgb(255, 149, 0);
   transform: scale(1.2);
 }
 
@@ -190,26 +190,26 @@ html {
 }
 
 .btn.primary { 
-  background: var(--accent); 
+  background: orange; 
   color: #fff; 
 }
 
 .btn.outline { 
-  background: transparent; 
-  border: 2px solid var(--accent); 
-  color: var(--accent); 
+  background: orange; 
+  border: 2px solid orange; 
+  color: white; 
 }
 
 /* Keep white outline on hero where background is darkened */
 .hero .btn.outline {
-  border-color: rgb(255 255 255);
-  color: rgb(255 141 1);
+  border-color:orange;
+  color: rgb(255, 255, 255);
 }
 
 .btn.ghost { 
-  background: rgb(249 115 22 / 10%); 
-  border: 1px solid rgb(249 115 22 / 30%); 
-  color: var(--accent); 
+  background: color orange; 
+  border: 2px solid orange;
+  color: rgb(255, 255, 255); 
 }
 
 .btn.small { 
@@ -415,7 +415,7 @@ html {
 }
 
 .volunteer-role {
-  color: var(--accent);
+  color: orange;
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 10px; 
@@ -442,7 +442,7 @@ html {
 }
 
 .volunteer-contact i {
-  color: var(--accent);
+  color: orange;
   width: 14px; 
 }
 
@@ -555,7 +555,7 @@ html {
 }
 
 .event-card h3 { 
-  color: var(--accent); 
+  color: orange; 
   margin-bottom: 8px; 
   font-weight: 700;
 }

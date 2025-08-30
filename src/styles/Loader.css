@@ -1,30 +1,73 @@
+Container for the spinner and text
 .spinner-container {
-  align-items: center;
-  color: var(--success);
   display: flex;
   flex-direction: column;
-  font-size: 1rem;
-  gap: var(--spacing-sm);
-  height: 60vh;
+  align-items: center;
   justify-content: center;
+  min-height: 100vh; /* Takes full viewport height */
+  width: 100%;
+  background-color: transparent;
+  position: fixed; /* Stays on top of other content */
+  top: 0;
+  left: 0;
+  z-index: 9999; /* Ensures it's always on top */
+  animation: fadeIn 0.5s ease-in-out;
 }
 
+/* The Loader Spinner Itself */
 .simple-loader {
-  animation: spin 1s linear infinite;
-  border: 3px solid #e0e0e0;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border-top: 3px solid #2e7d32;
-  height: 40px;
-  width: 40px;
+  border: 5px solid rgba(255, 255, 255, 0.2); /* Base color of the ring */
+  border-top-color: #007bff; /* The primary color of the spinner */
+  animation: spin 1.2s cubic-bezier(0.5, 0.2, 0.5, 0.8) infinite;
+  transition: all 0.3s ease-in-out;
 }
 
+/* Hover and active states for added interactivity */
+.simple-loader:hover {
+  border-top-color: #0056b3; /* Darker blue on hover */
+  transform: scale(1.1);
+}
+
+/* Text Styles */
+.spinner-container p {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-family: 'Inter', sans-serif;
+  color: #555; /* A subtle grey for text */
+  animation: pulseText 2s infinite;
+}
+
+/* Keyframe Animations */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Dark mode support */
-body.dark-mode .simple-loader {
-  border: 3px solid #444;
-  border-top: 3px solid #a5d6a7;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
+
+@keyframes pulseText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Optional: Dark theme adjustments */
+body.dark-mode .simple-loader {
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #FFD700; /* Gold color for dark mode */
+}
+
+body.dark-mode .simple-loader:hover {
+  border-top-color: #FFC107;
+}
+
+body.dark-mode .spinner-container p {
+  color: #aaa;
+}
+
+

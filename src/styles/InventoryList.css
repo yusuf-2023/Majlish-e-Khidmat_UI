@@ -1,0 +1,217 @@
+/* ==================== THEME VARIABLES ==================== */
+:root {
+  --primary-color: #2563eb;
+  --primary-dark: #1d4ed8;
+  --secondary-color: #60a5fa;
+  --background-color: #f3f4f6;
+  --card-background: rgba(255, 255, 255, 0.9);
+  --text-color: #1f2937;
+  --border-color: rgba(229, 231, 235, 0.7);
+  --hover-color: rgba(243, 244, 246, 0.7);
+  --delete-btn-bg: #dc2626;
+  --delete-btn-hover: #b91c1c;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  --background-color: #0f172a;
+  --card-background: rgba(30, 41, 59, 0.95);
+  --text-color: #e2e8f0;
+  --border-color: rgba(55, 65, 81, 0.6);
+  --hover-color: rgba(51, 65, 85, 0.7);
+  --primary-color: #60a5fa;
+  --primary-dark: #3b82f6;
+  --delete-btn-bg: #ef4444;
+  --delete-btn-hover: #dc2626;
+}
+
+/* ==================== MAIN LAYOUT ==================== */
+.inventory-list-container {
+  padding: 30px;
+  max-width: 1000px;
+  margin: 60px auto 30px auto;
+  background: var(--card-background);
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* ==================== HEADING & FILTERS ==================== */
+.inventory-list-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.inventory-filter {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.inventory-filter input {
+  width: 100%;
+  max-width: 250px;
+  padding: 10px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  font-size: 0.95rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.inventory-filter input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ==================== TABLE STYLES ==================== */
+/* Scrollable wrapper for mobile */
+.inventory-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* Table layout */
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* desktop default */
+}
+
+.inventory-table thead {
+  background-color: var(--primary-color);
+}
+
+.inventory-table th {
+  text-align: left;
+  padding: 14px 16px;
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  border-bottom: 2px solid var(--primary-dark);
+}
+
+.inventory-table th:last-child {
+  text-align: center;
+}
+
+.inventory-table tbody tr {
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inventory-table tbody tr:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.inventory-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  white-space: normal; /* wrap text */
+  word-break: break-word;
+}
+
+.inventory-table td:last-child {
+  text-align: center;
+}
+
+/* Remove border from last row */
+.inventory-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==================== BUTTONS & STATES ==================== */
+.delete-btn {
+  background-color: var(--delete-btn-bg);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: var(--delete-btn-hover);
+  transform: scale(1.05);
+}
+
+.loading, .empty-message {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1024px) {
+  .inventory-list-container {
+    padding: 20px;
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .inventory-list-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .inventory-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inventory-filter input {
+    max-width: 100%;
+  }
+
+  .inventory-table {
+    min-width: 100%; /* shrink table on mobile */
+  }
+
+  .inventory-table th, .inventory-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .inventory-list-container {
+    padding: 15px;
+  }
+
+  .inventory-list-container h2 {
+    font-size: 1.4rem;
+  }
+
+  .inventory-filter input {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .inventory-table th, .inventory-table td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

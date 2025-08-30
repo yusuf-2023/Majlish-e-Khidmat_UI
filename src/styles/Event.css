@@ -1,151 +1,419 @@
-/* ==================== GLOBAL RESET FOR EVENT PAGE ==================== */
-.event-container * {
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
+/* Event.css - With Dark/Light Mode Toggle - Compact Form */
 
-/* ==================== ROOT VARIABLES ==================== */
+/* CSS Variables for Theming */
 :root {
-  --event-bg: #f0fdf4;
-  --event-card: #fff;
-  --event-text: #065f46;
-  --event-accent: #10b981; /* green accent */
-  --event-border: #d1fae5;
-  --event-hover: #d1fae5;
-  --event-input-bg: #f9fafb;
-  --event-input-text: #065f46;
-  --event-input-border: #a7f3d0;
-  --event-btn-bg: #10b981;
-  --event-btn-text: #fff;
-  --event-btn-hover: #059669;
+  /* Light Mode Variables */
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #2980b9;
+  --input-bg: #ffffff;
+  --input-border: #e1e8ed;
+  --input-text: #555555;
+  --card-bg: #f8f9fa;
+  --card-border: #e9ecef;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+  --button-text: #ffffff;
+  --form-heading: #2c3e50;
 }
 
-/* Dark mode */
-body.dark-mode {
-  --event-bg: #0f172a;
-  --event-card: #1f2937;
-  --event-text: #d1fae5;
-  --event-accent: #22c55e;
-  --event-border: #374151;
-  --event-hover: #065f46;
-  --event-input-bg: #111827;
-  --event-input-text: #d1fae5;
-  --event-input-border: #22c55e;
-  --event-btn-bg: #22c55e;
-  --event-btn-text: #111;
-  --event-btn-hover: #16a34a;
+[data-theme="dark"] {
+  /* Dark Mode Variables */
+  --bg-color: #1a1a1a;
+  --text-color: #f0f0f0;
+  --primary-color: #5dade2;
+  --secondary-color: #566573;
+  --accent-color: #85c1e9;
+  --input-bg: #2d2d2d;
+  --input-border: #444444;
+  --input-text: #e0e0e0;
+  --card-bg: #2a2a2a;
+  --card-border: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --overlay-bg: rgba(0, 0, 0, 0.8);
+  --button-text: #ffffff;
+  --form-heading: #f0f0f0;
 }
 
-/* ==================== CONTAINER ==================== */
-.event-container {
-  background-color: var(--event-bg);
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgb(0 0 0 / 6%);
-  color: var(--event-text);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin: 40px auto;
-  max-width: 700px;
-  padding: 25px;
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Headings */
-.event-container h2 {
-  color: var(--event-accent);
-  font-size: 28px;
-  margin-bottom: 25px;
-  text-align: center;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-/* ==================== FORM ==================== */
-.event-form {
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  background: var(--card-bg);
+  border: 2px solid var(--input-border);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 0 auto;
-  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px var(--shadow-color);
 }
 
-.event-input,
-.event-textarea {
-  background-color: var(--event-input-bg);
-  border: 1px solid var(--event-input-border);
-  border-radius: 8px;
-  color: var(--event-input-text);
-  font-size: 14px;
-  outline: none;
-  padding: 12px 15px;
-  resize: none;
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--text-color);
+}
+
+/* Event Page Container */
+.event-page-container {
+  display: flex;
+  min-height: 100vh;
   width: 100%;
 }
 
-.event-input:focus,
-.event-textarea:focus {
-  border-color: var(--event-accent);
-  box-shadow: 0 0 5px var(--event-accent);
+/* Image Section (65% width) */
+.event-image-section {
+  flex: 0 0 65%;
+  background: linear-gradient(var(--overlay-bg), var(--overlay-bg)), url("/child3.jpg") no-repeat center center/cover;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
-/* Textarea height */
+.event-image-overlay {
+  color: white;
+  padding: 3rem;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 90%;
+  width: 100%;
+}
+
+.event-image-overlay h2 {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+.event-image-overlay p {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+/* Form Section (35% width) - Compact Version */
+.event-form-section {
+      margin-top: 4%;
+  flex: 0 0 35%;
+  background: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.event-form-container {
+  width: 100%;
+  max-width: 380px;
+  padding: 0.5rem;
+}
+
+.event-form-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--form-heading);
+  font-size: 1.8rem;
+  font-weight: 600;
+  padding: 0 0.5rem;
+}
+
+/* Form Styles - Compact */
+.event-form {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+.event-input, .event-textarea {
+  padding: 0.8rem 1rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1.5px solid var(--input-border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.event-input:focus, .event-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
 .event-textarea {
   min-height: 100px;
+  resize: vertical;
 }
 
-/* ==================== BUTTON ==================== */
 .event-button {
-  background-color: var(--event-btn-bg);
+  padding: 0.9rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--button-text);
   border: none;
-  border-radius: 8px;
-  color: var(--event-btn-text);
-  cursor: pointer;
-  font-size: 15px;
+  border-radius: 6px;
+  font-size: 1rem;
   font-weight: 600;
-  padding: 12px 18px;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  width: 100%;
 }
 
 .event-button:hover {
-  background-color: var(--event-btn-hover);
+  background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
-/* ==================== DETAILS VIEW ==================== */
+.event-button:active {
+  transform: translateY(0);
+}
+
+/* Event Details */
+.event-details {
+  background: var(--card-bg);
+  padding: 2.5rem;
+  border-radius: 10px;
+  border-left: 5px solid var(--primary-color);
+  margin-top: 1.5rem;
+  color: var(--text-color);
+}
+
 .event-details p {
-  font-size: 15px;
-  margin: 10px 0;
+  margin-bottom: 1.2rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
 }
 
 .event-details strong {
-  color: var(--event-accent);
+  color: var(--text-color);
+  font-weight: 600;
 }
 
-/* ==================== NOTIFICATION ==================== */
+/* Notification */
 .event-notification {
-  background-color: var(--event-accent);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-  color: #fff;
-  font-weight: 500;
-  margin-bottom: 15px;
-  padding: 10px 15px;
-  text-align: center;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--input-border);
 }
 
-/* ==================== RESPONSIVE ==================== */
-@media screen and (width <= 600px) {
-  .event-container {
-    padding: 15px;
-  }
+/* Form element enhancements */
+input[type="datetime-local"] {
+  color: var(--input-text);
+}
 
-  .event-form {
-    gap: 12px;
-  }
+::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+  cursor: pointer;
+  border-radius: 3px;
+}
 
-  .event-input,
-  .event-textarea {
-    font-size: 13px;
-    padding: 10px 12px;
-  }
+[data-theme="dark"] ::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+}
 
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .event-image-overlay h2 {
+    font-size: 2.4rem;
+  }
+  
+  .event-image-overlay p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .event-page-container {
+    flex-direction: column;
+  }
+  
+  .event-image-section,
+  .event-form-section {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  
+  .event-image-section {
+    min-height: 45vh;
+    padding: 1.5rem;
+  }
+  
+  .event-form-section {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .event-image-overlay {
+    max-width: 95%;
+    padding: 2.5rem 2rem;
+  }
+  
+  .event-image-overlay h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .event-image-overlay p {
+    font-size: 1.1rem;
+  }
+  
+  .event-form-container {
+    max-width: 500px;
+  }
+  
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .event-image-section {
+    min-height: 40vh;
+  }
+  
+  .event-image-overlay {
+    padding: 2rem 1.5rem;
+  }
+  
+  .event-image-overlay h2 {
+    font-size: 2rem;
+  }
+  
+  .event-image-overlay p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .event-form-container h2 {
+    font-size: 1.7rem;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-form-container {
+    padding: 0.25rem;
+  }
+  
+  .event-form-container h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .event-image-overlay {
+    padding: 1.5rem;
+  }
+  
+  .event-image-overlay h2 {
+    font-size: 1.8rem;
+  }
+  
   .event-button {
-    font-size: 14px;
-    padding: 10px 15px;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+  }
+  
+  .event-input, .event-textarea {
+    padding: 0.7rem 0.9rem;
+  }
+  
+  .theme-toggle {
+    top: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+  }
+  
+  .theme-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* High-resolution displays */
+@media (min-width: 1800px) {
+  .event-form-container {
+    max-width: 500px;
+  }
+  
+  .event-image-overlay h2 {
+    font-size: 3.2rem;
+  }
+  
+  .event-image-overlay p {
+    font-size: 1.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .event-image-section {
+    display: none;
+  }
+  
+  .event-form-section {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  
+  .theme-toggle {
+    display: none;
   }
 }

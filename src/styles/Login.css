@@ -1,240 +1,365 @@
-/* ===== Common Form Container ===== */
-.form-container {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
-  color: #0f172a; /* text default for light mode */
-  font-family: Arial, sans-serif;
-  margin: 70px auto;
-  max-width: 400px;
-  padding: 30px 25px;
+/*
+ * Perfected CSS for a Modern Login Page - Absolutely Clear Image & Headline
+ * ------------------------------------------------------------------------
+ * This stylesheet is optimized for a clean, professional,
+ * and perfectly animated user interface with NO blur effects on the
+ * background image or the headline container.
+ * Key features:
+ * - A high-contrast, elegant color palette
+ * - Dynamic, smooth, and timed animations
+ * - Completely clear background image and headline text
+ * - Enhanced form styling with subtle effects
+ * - Flawless responsiveness across devices
+*/
+
+/* --- Base & Layout --- */
+.login-container {
+     margin-top: 60px;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Prevents overflow from animations */
+}
+
+
+/* --- Left Section (Hero Image) --- */
+.login-left {
+  position: relative;
+  width: 65%;
+  background-image: url("/child10.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: backgroundPan 30s linear infinite alternate;
+}
+
+.login-left::before {
+
+  position: absolute;
+  inset: 0;
+ 
+
+  z-index: 1;
+}
+
+.headline-container {
+  margin-top: 30%;
+  position: relative;
+  z-index: 2;
   text-align: center;
-  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  color: white;
+  padding: 2rem;
+  max-width: 80%;
+  
+  background: rgba(255, 255, 255, 0.0); 
+  border-radius: 16px;
+
+  
+  
+  animation: slideInLeft 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Dark Mode Support */
-body.dark-mode .form-container {
-  background: #1e1e1e;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 50%);
-  color: #e0e0e0;
+.headline {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: headlinePopIn 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+  animation-delay: 0.8s; /* Timed to appear after the container slides in */
 }
 
-/* Heading */
+.headline.active {
+  opacity: 1;
+  transform: translateY(0);
+  background: linear-gradient(90deg, #ff6b6b, #fcd34d, #6ee7b7, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* for some browsers */
+}
+
+
+/* --- Right Section (Form) --- */
+.login-right {
+  margin-bottom: 4%;
+  width: 35%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f2f5;
+  padding: 1rem;
+  animation: slideInRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: formFadeIn 1.2s ease-out forwards;
+}
+
 .form-container h2 {
-  color: #2e7d32;
-  font-size: 26px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  margin-bottom: 20px;
-  transition: color 0.3s ease;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #121626;
+  font-weight: 700;
+  text-align: center;
 }
 
 .form-subtitle {
-  color: #6b7280;
-  font-size: 14px;
-  margin: -8px 0 14px;
-}
-
-body.dark-mode .form-container h2 {
-  color: #81c784;
-}
-
-/* ===== Input Fields ===== */
-.form-container input[type="email"],
-.form-container input[type="password"],
-.form-container input[type="text"] {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  color: #0f172a;
-  font-size: 15px;
-  margin: 10px 0;
-  padding: 12px 14px;
-  transition: 0.3s ease;
-  width: 100%;
+  color: #666;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .form-group {
-  margin-bottom: 8px;
-  text-align: left;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
 }
+
+.form-group:nth-child(2) { animation-delay: 0.3s; }
+.form-group:nth-child(3) { animation-delay: 0.5s; }
 
 .form-group label {
-  color: #374151;
   display: block;
-  font-size: 13px;
-  margin-bottom: 6px;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 600;
 }
 
-body.dark-mode .form-container input[type="email"],
-body.dark-mode .form-container input[type="password"],
-body.dark-mode .form-container input[type="text"] {
-  background: #2a2a2a;
-  border: 1px solid #555;
-  color: #e0e0e0;
+.form-group input {
+  width: 100%;
+  padding: 0.85rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-container input:focus {
-  border-color: #43a047;
-  box-shadow: 0 0 6px rgb(67 160 71 / 30%);
+.form-group input:focus {
   outline: none;
+  border-color: #00BFFF;
+  box-shadow: 0 0 8px rgba(0, 191, 255, 0.2);
 }
 
-/* ===== Password Toggle Button ===== */
 .password-container {
-  align-items: center;
-  display: flex;
   position: relative;
 }
 
-.password-container input {
-  flex: 1;
-}
-
 .toggle-password {
-  background: none;
-  border: none;
-  color: #43a047;
-  cursor: pointer;
-  font-size: 0.9rem;
-  padding: 2px 6px;
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 1rem;
   transition: color 0.3s ease;
 }
 
-body.dark-mode .toggle-password {
-  color: #81c784;
-}
-
 .toggle-password:hover {
-  color: #2e7d32;
+  color: #00BFFF;
 }
 
-body.dark-mode .toggle-password:hover {
-  color: #66bb6a;
-}
-
-/* ===== Options Row (Remember Me & Forgot Link) ===== */
 .options {
-  align-items: center;
-  color: #0f172a;
   display: flex;
-  font-size: 0.9rem;
   justify-content: space-between;
-  margin: 12px 0;
-}
-
-body.dark-mode .options {
-  color: #e0e0e0;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .options label {
-  align-items: center;
+  gap: 1rem;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  color: #666;
+  font-weight: normal;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.options input {
+  margin-right: 0.5rem;
 }
 
 .forgot-link {
-  color: #43a047;
-  font-weight: 500;
+  color: #00BFFF;
   text-decoration: none;
-}
-
-body.dark-mode .forgot-link {
-  color: #81c784;
+  font-size: 0.9rem;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
 }
 
 .forgot-link:hover {
+  color: #0077b3;
   text-decoration: underline;
 }
 
-/* ===== Submit Button ===== */
-.form-container button[type="submit"] {
-  background: #43a047;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 10px;
-  padding: 12px;
-  transition: background 0.3s ease, transform 0.2s ease;
+button[type="submit"] {
   width: 100%;
+  padding: 0.85rem;
+  background-color: #00BFFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.7s;
+  opacity: 0;
 }
 
-body.dark-mode .form-container button[type="submit"] {
-  background: #81c784;
-  color: #1e1e1e;
+button[type="submit"]:hover {
+  background-color: #0077b3;
+  transform: translateY(-2px);
 }
 
-.form-container button[type="submit"]:hover {
-  background: #2e7d32;
-  transform: translateY(-1px);
-}
-
-body.dark-mode .form-container button[type="submit"]:hover {
-  background: #66bb6a;
-}
-
-.form-container button[type="submit"]:disabled {
-  background: #ccc;
+button[type="submit"]:disabled {
+  background-color: #9ca3af;
   cursor: not-allowed;
-}
-
-/* ===== Bottom Link (Register or Back to Login) ===== */
-.register-link {
-  color: #0f172a;
-  font-size: 0.9rem;
-  margin-top: 18px;
-}
-
-body.dark-mode .register-link {
-  color: #e0e0e0;
-}
-
-.register-link a {
-  color: #43a047;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-body.dark-mode .register-link a {
-  color: #81c784;
-}
-
-.register-link a:hover {
-  text-decoration: underline;
+  transform: none;
 }
 
 .divider {
-  align-items: center;
-  color: #9ca3af;
   display: flex;
-  font-size: 12px;
-  gap: 8px;
-  margin: 14px 0 2px;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.9s;
+  opacity: 0;
 }
 
 .divider::before,
 .divider::after {
-  content: "";
+  content: '';
   flex: 1;
   height: 1px;
-  background: #e5e7eb;
+  background-color: #ddd;
 }
 
-/* ===== Responsive Design ===== */
-@media (width <= 480px) {
-  .form-container {
-    margin: 40px 15px;
-    padding: 20px;
+.divider span {
+  padding: 0 1rem;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.register-link {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 1.1s;
+  opacity: 0;
+}
+
+.register-link a {
+  color: #00BFFF;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+  color: #0077b3;
+  text-decoration: underline;
+}
+
+/* --- Keyframe Animations --- */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes headlinePopIn {
+  0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+  80% { transform: scale(1.1) translateY(0); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes formFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes backgroundPan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .login-left {
+    width: 100%;
+    height: 40vh;
+    animation: none; /* Disable background pan on mobile */
+  }
+  
+  .login-left::before {
+   
   }
 
-  .form-container h2 {
-    font-size: 22px;
+  .login-right {
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+    animation: none;
+  }
+  
+  .headline-container {
+    padding: 1.5rem;
+    max-width: 90%;
+    animation: none;
+    background: transparent; 
+    border: none; 
+    box-shadow: none; 
+  }
+  
+  .headline {
+    font-size: 1.8rem;
+    animation: none;
+    position: static;
+    transform: none;
+    opacity: 1;
+  }
+
+  .form-container {
+    padding: 2rem;
+    animation: none;
+  }
+
+  .form-group,
+  button[type="submit"],
+  .divider,
+  .register-link {
+    animation: none !important;
+    opacity: 1;
   }
 }

@@ -18,6 +18,15 @@ function DonationForm() {
   const [upiLink, setUpiLink] = useState("");
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState(false);
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
+  // Text messages with icons that will rotate with animation
+  const rotatingTexts = [
+    { text: "Your donation can provide education to underprivileged children", icon: "fa-graduation-cap" },
+    { text: "Every contribution helps feed a hungry family", icon: "fa-utensils" },
+    { text: "Support healthcare initiatives for those in need", icon: "fa-heartbeat" },
+    { text: "Help us build a better future for our community", icon: "fa-hands-helping" }
+  ];
 
   useEffect(() => {
     listActiveBanks()
@@ -26,6 +35,15 @@ function DonationForm() {
         setMessage("Failed to load active banks. Please login again.");
         setShowNotification(true);
       });
+
+    // Set up text rotation animation
+    const interval = setInterval(() => {
+      setCurrentTextIndex((prevIndex) => 
+        prevIndex === rotatingTexts.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleChange = (e) => {
@@ -115,66 +133,85 @@ function DonationForm() {
   };
 
   return (
-    <div className="donation-form-container">
-      <h2>Donate</h2>
-      <form onSubmit={createOrder} className="donation-form">
-        <label>
-          Donor Name:
-          <input name="donorName" value={formData.donorName} onChange={handleChange} required />
-        </label>
-
-        <label>
-          Amount (INR):
-          <input type="number" name="amount" value={formData.amount} onChange={handleChange} required min="1" />
-        </label>
-
-        <label>
-          Pay To (Account):
-          <select name="accountId" value={formData.accountId} onChange={handleChange} required>
-            <option value="" disabled>Select</option>
-            {banks.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.label} — {b.bankName} {b.upiId ? ` (UPI: ${b.upiId})` : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Method:
-          <select name="method" value={formData.method} onChange={handleChange}>
-            <option value="UPI">UPI</option>
-            <option value="CARD">Card</option>
-            <option value="NETBANKING">Netbanking</option>
-          </select>
-        </label>
-
-        <button type="submit">Create Order</button>
-      </form>
-
-      {order && formData.method !== "UPI" && (
-        <div className="pay-actions">
-          <RazorpayButton
-            order={order}
-            donorName={formData.donorName}
-            onSuccess={onRazorpaySuccess}
-            onFailure={(e) => {
-              setMessage(e.message || "Payment cancelled");
-              setShowNotification(true);
-            }}
-          />
+    <div className="donation-page-container">
+      {/* Left side - 65% width with background image and animated text */}
+      <div className="donation-content-section">
+        <div className="donation-overlay"></div>
+        <div className="donation-text-content">
+          <h2 className="donation-main-heading">Your little donation saves someone’s life</h2>
+          <div className="rotating-text-container">
+            <div className="rotating-text-wrapper">
+              <i className={`fas ${rotatingTexts[currentTextIndex].icon} rotating-icon`}></i>
+              <p className="rotating-text">{rotatingTexts[currentTextIndex].text}</p>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
 
-      {upiLink && <div className="upi-block"><UpiQrBlock upiLink={upiLink} /></div>}
+      {/* Right side - 35% width with donation form */}
+      <div className="donation-form-section">
+        <div className="donation-form-container">
+          <h2>Donate</h2>
+          <form onSubmit={createOrder} className="donation-form">
+            <label>
+              Donor Name:
+              <input name="donorName" value={formData.donorName} onChange={handleChange} required />
+            </label>
 
-      {showNotification && (
-        <Notification
-          message={message}
-          onClose={() => setShowNotification(false)}
-          duration={2500}
-        />
-      )}
+            <label>
+              Amount (INR):
+              <input type="number" name="amount" value={formData.amount} onChange={handleChange} required min="1" />
+            </label>
+
+            <label>
+              Pay To (Account):
+              <select name="accountId" value={formData.accountId} onChange={handleChange} required>
+                <option value="" disabled>Select</option>
+                {banks.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.label} — {b.bankName} {b.upiId ? ` (UPI: ${b.upiId})` : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Method:
+              <select name="method" value={formData.method} onChange={handleChange}>
+                <option value="UPI">UPI</option>
+                <option value="CARD">Card</option>
+                <option value="NETBANKING">Netbanking</option>
+              </select>
+            </label>
+
+            <button type="submit">Create Order</button>
+          </form>
+
+          {order && formData.method !== "UPI" && (
+            <div className="pay-actions">
+              <RazorpayButton
+                order={order}
+                donorName={formData.donorName}
+                onSuccess={onRazorpaySuccess}
+                onFailure={(e) => {
+                  setMessage(e.message || "Payment cancelled");
+                  setShowNotification(true);
+                }}
+              />
+            </div>
+          )}
+
+          {upiLink && <div className="upi-block"><UpiQrBlock upiLink={upiLink} /></div>}
+
+          {showNotification && (
+            <Notification
+              message={message}
+              onClose={() => setShowNotification(false)}
+              duration={2500}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

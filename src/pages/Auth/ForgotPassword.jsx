@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { sendOtp } from "../../api/password/passwordService";
-
 import { useNavigate, useLocation } from "react-router-dom";
-import "@/styles/Login.css";
+import "@/styles/forgetPassword.css";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -15,8 +14,8 @@ function ForgotPassword() {
     try {
       await sendOtp(email);
       alert("OTP sent to your email");
-      navigate(isAdmin ? "/admin/verify-otp" : "/user/verify-otp", {
-        state: { email },
+      navigate("/auth/verify-otp", {
+        state: { email, type: isAdmin ? "admin" : "user" }, // Send type to OTP page
       });
     } catch (error) {
       alert(error.response?.data?.message || "Error sending OTP");
@@ -24,7 +23,7 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="form-container">
+    <div className="password-form-container">
       <h2>{isAdmin ? "Admin" : "User"} Forgot Password</h2>
       <form onSubmit={handleSubmit}>
         <input

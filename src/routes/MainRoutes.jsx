@@ -30,16 +30,13 @@ import FeedbackList from "../pages/Feedback/FeedbackList";
 // Auth Routes
 import AuthRoutes from "./AuthRoutes";
 
-// Route configurations
 const MainRoutes = {
   path: "/",
   element: <MainLayout />,
   children: [
-    {
-      path: "/",
-      element: <Home />,
-    },
-    AuthRoutes,
+    { path: "/", element: <Home /> },
+    AuthRoutes, // Auth pages: login, register, forgot-password, verify-otp
+
     // Admin Routes
     {
       path: "admin",
@@ -59,6 +56,7 @@ const MainRoutes = {
         { path: "banks", element: <AdminBankPage /> },
         { path: "volunteers/add", element: <VolunteerRegister /> },
         { path: "volunteers/list", element: <VolunteerList /> },
+        { path: "donation", element: <DonationForm /> },
         { path: "campaign/form", element: <CampaignForm /> },
         { path: "campaign/list", element: <CampaignList /> },
         { path: "events/create", element: <EventForm /> },
@@ -68,6 +66,7 @@ const MainRoutes = {
         { path: "feedback/list", element: <FeedbackList /> },
       ],
     },
+
     // User Routes
     {
       path: "user",
@@ -85,15 +84,15 @@ const MainRoutes = {
         { path: "activities", element: <ActivityPage /> },
         { path: "donation", element: <DonationForm /> },
         { path: "campaign/list", element: <CampaignList /> },
-        { path: "events", element: <EventList /> },
-        { path: "events/create", element: <EventForm /> },
+        { path: "events/list", element: <EventList /> },
         { path: "feedback", element: <FeedbackForm /> },
+        { path: "volunteers/list", element: <VolunteerList /> },
+        { path: "volunteers/add", element: <VolunteerRegister /> },
       ],
     },
-    {
-      path: "*",
-      element: <Navigate to="/" replace />,
-    },
+
+    { path: "*", element: <Navigate to="/" replace /> },
   ],
 };
+
 export default MainRoutes;

@@ -26,7 +26,7 @@ function VolunteerRegister() {
     profilePicture: null,
   });
 
-  const [savedVolunteer, setSavedVolunteer] = useState(null); // Backend saved volunteer
+  const [savedVolunteer, setSavedVolunteer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState(false);
@@ -64,7 +64,7 @@ function VolunteerRegister() {
       }
 
       const response = await registerVolunteer(data);
-      setSavedVolunteer(response); // Save returned volunteer
+      setSavedVolunteer(response);
       setMessage("Volunteer registered successfully!");
 
       // Reset form except for savedVolunteer
@@ -93,10 +93,8 @@ function VolunteerRegister() {
 
   const getProfilePictureUrl = () => {
     if (formData.profilePicture) {
-      // Preview before submission
       return URL.createObjectURL(formData.profilePicture);
     } else if (savedVolunteer?.profilePicture) {
-      // After save, show backend image
       return `http://localhost:8080/uploads/profile-pics/${savedVolunteer.profilePicture}`;
     }
     return null;
@@ -118,173 +116,180 @@ function VolunteerRegister() {
           <h2>Hey Volunteer, Register Now</h2>
 
           <form onSubmit={handleSubmit} className="volunteer-register-form">
-            {/* Name */}
             <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Name</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+              {/* Name */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Name</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {/* Email */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Email</label>
+                <input
+                  className="volunteer-form-input"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
 
-            {/* Email */}
             <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Email</label>
-              <input
-                className="volunteer-form-input"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+              {/* Phone */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Phone</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {/* Address */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Address</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            {/* Phone */}
             <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Phone</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
+              {/* Gender */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Gender</label>
+                <select
+                  className="volunteer-form-select"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                </select>
+              </div>
+
+              {/* DOB */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Date of Birth</label>
+                <input
+                  className="volunteer-form-input"
+                  type="date"
+                  name="dob"
+                  value={formData.dob}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            {/* Address */}
             <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Address</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-              />
+              {/* Skills */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Skills</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Occupation */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Occupation</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="occupation"
+                  value={formData.occupation}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            {/* Gender */}
             <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Gender</label>
-              <select
-                className="volunteer-form-select"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-              </select>
+              {/* Education */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Education</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="education"
+                  value={formData.education}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Experience */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Experience</label>
+                <input
+                  className="volunteer-form-input"
+                  type="text"
+                  name="experience"
+                  value={formData.experience}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            {/* DOB */}
             <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Date of Birth</label>
-              <input
-                className="volunteer-form-input"
-                type="date"
-                name="dob"
-                value={formData.dob}
-                onChange={handleChange}
-              />
-            </div>
+              {/* Availability */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Availability</label>
+                <select
+                  className="volunteer-form-select"
+                  name="availability"
+                  value={formData.availability}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="WEEKDAYS">Weekdays</option>
+                  <option value="WEEKENDS">Weekends</option>
+                  <option value="BOTH">Both</option>
+                </select>
+              </div>
 
-            {/* Skills */}
-            <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Skills</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="skills"
-                value={formData.skills}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Occupation */}
-            <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Occupation</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="occupation"
-                value={formData.occupation}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Education */}
-            <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Education</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="education"
-                value={formData.education}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Experience */}
-            <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Experience</label>
-              <input
-                className="volunteer-form-input"
-                type="text"
-                name="experience"
-                value={formData.experience}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Availability */}
-            <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Availability</label>
-              <select
-                className="volunteer-form-select"
-                name="availability"
-                value={formData.availability}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option value="WEEKDAYS">Weekdays</option>
-                <option value="WEEKENDS">Weekends</option>
-                <option value="BOTH">Both</option>
-              </select>
-            </div>
-
-            {/* Profile Picture */}
-            <div className="volunteer-form-row">
-              <label className="volunteer-form-label">Profile Picture</label>
-              <input
-                className="volunteer-form-input"
-                type="file"
-                name="profilePicture"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
+              {/* Profile Picture */}
+              <div className="volunteer-form-group">
+                <label className="volunteer-form-label">Profile Picture</label>
+                <input
+                  className="volunteer-form-input"
+                  type="file"
+                  name="profilePicture"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </div>
             </div>
 
             {/* Image preview */}
             {getProfilePictureUrl() && (
-              <img
-                src={getProfilePictureUrl()}
-                alt="Profile"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  borderRadius: "8px",
-                  marginLeft: "10px",
-                  marginTop: "5px",
-                }}
-              />
+              <div className="volunteer-image-preview">
+                <img
+                  src={getProfilePictureUrl()}
+                  alt="Profile"
+                />
+              </div>
             )}
 
             <button

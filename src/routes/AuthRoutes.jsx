@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import GuestGuard from "./Guard/GuestGuard";
-import AuthLayout from "../layout/AuthLayout";
+
 import Login from "../pages/Auth/Login";
 import AdminRegister from "../pages/Auth/AdminRegister";
 import UserRegister from "../pages/Auth/UserRegister";
@@ -10,12 +10,8 @@ import VerifyOtp from "../pages/Auth/VerifyOtp";
 
 const AuthRoutes = {
   path: "auth",
-  element: <AuthLayout />,
   children: [
-    {
-      path: "",
-      element: <Navigate to="login" replace />,
-    },
+    { path: "", element: <Navigate to="login" replace /> },
     {
       path: "login",
       element: (
@@ -40,14 +36,8 @@ const AuthRoutes = {
         </GuestGuard>
       ),
     },
-    {
-      path: "forgot-password",
-      element: <ForgotPassword />,
-    },
-    {
-      path: "verify-otp",
-      element: <VerifyOtp />,
-    },
+    { path: "forgot-password", element: <ForgotPassword /> },
+    { path: "verify-otp", element: <VerifyOtp /> }, // Common OTP page
   ],
 };
 

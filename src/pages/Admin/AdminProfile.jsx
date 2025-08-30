@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   getAdminProfile,
@@ -6,6 +6,7 @@ import {
   deleteAdminProfile,
   uploadAdminProfilePic,
 } from "../../api/admin/adminApi";
+import { AuthContext } from "../../context/AuthContext";
 
 import "../../styles/UserProfile.css";
 import Loader from "../../components/common/Loader";
@@ -21,43 +22,35 @@ function AdminProfile() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { logoutUser, setAdminImage, setAdminName } = useContext(AuthContext);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-
     if (!token) {
       navigate("/admin/login", { replace: true });
       return;
     }
     fetchProfile();
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, setAdminImage, setAdminName]);
 
-  // Backend se profile fetch karo
   const fetchProfile = async () => {
     try {
       const res = await getAdminProfile();
-      let profile = null;
-
-      // Backend response format check
-      if (res?.data) {
-        if (Array.isArray(res.data)) {
-          profile = res.data[0]; // agar array me aa raha hai
-        } else if (res.data.data) {
-          profile = res.data.data; // agar object me aa raha hai
-        } else {
-          profile = res.data; // direct object
-        }
-      } else {
-        profile = res;
-      }
-
+      const profile = res?.data?.data || res?.data || (Array.isArray(res.data) ? res.data[0] : res.data);
       if (!profile) throw new Error("Profile data is empty");
 
-      setAdmin(profile);
-      setEditedData(profile);
+      // Check and correct the profile picture URL
+      let imageUrl = profile.profilePic;
+      if (imageUrl && !imageUrl.startsWith("http")) {
+        imageUrl = `http://localhost:8080/${imageUrl}`;
+      }
+
+      setAdmin({ ...profile, profilePic: imageUrl });
+      setEditedData({ ...profile, profilePic: imageUrl });
+      setAdminName(profile.name);
+      setAdminImage(imageUrl);
     } catch (err) {
       console.error("Failed to fetch profile", err);
-      setAdmin(null);
       showNotification("Failed to load profile", "error");
       if (err.message.toLowerCase().includes("unauthorized")) {
         navigate("/admin/login", { replace: true });
@@ -85,14 +78,16 @@ function AdminProfile() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
-    if (file) setPreview(URL.createObjectURL(file));
-    else setPreview(null);
+    setPreview(file ? URL.createObjectURL(file) : null);
   };
 
   const handleSave = async () => {
     try {
       await updateAdminProfile(editedData);
-      if (selectedFile) await uploadAdminProfilePic(selectedFile);
+
+      if (selectedFile) {
+        await uploadAdminProfilePic(selectedFile);
+      }
 
       await fetchProfile();
       setEditMode(false);
@@ -101,7 +96,7 @@ function AdminProfile() {
       showNotification("Profile updated successfully!");
     } catch (err) {
       console.error("Update failed:", err);
-      showNotification("Failed to update profile!", "error");
+      showNotification(err.message || "Failed to update profile!", "error");
     }
   };
 
@@ -140,26 +135,23 @@ function AdminProfile() {
 
       <div className="profile-rect-left">
         <img
-          src={
-            preview
-              ? preview
-              : admin.profilePic
-              ? admin.profilePic.startsWith("http")
-                ? admin.profilePic
-                : `http://localhost:8080/${admin.profilePic}`
-              : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  admin.name
-                )}&background=2e7d32&color=fff&size=200`
-          }
+          src={preview || admin.profilePic}
           alt="Admin Avatar"
         />
+
         {editMode && (
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="file-input"
-          />
+          <div className="file-input-container">
+            <label htmlFor="file-upload" className="file-upload-btn">
+              Choose Profile Picture
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="file-input"
+            />
+          </div>
         )}
 
         <h2>{admin.name}</h2>
@@ -174,7 +166,6 @@ function AdminProfile() {
         <div className="detail-grid">
           <label>Email:</label>
           <p>{admin.email}</p>
-
           <label>Phone:</label>
           {editMode ? (
             <input
@@ -185,7 +176,6 @@ function AdminProfile() {
           ) : (
             <p>{admin.phone || "Not Provided"}</p>
           )}
-
           <label>Address:</label>
           {editMode ? (
             <input
@@ -196,7 +186,6 @@ function AdminProfile() {
           ) : (
             <p>{admin.address || "Not Provided"}</p>
           )}
-
           <label>DOB:</label>
           {editMode ? (
             <input
@@ -208,7 +197,6 @@ function AdminProfile() {
           ) : (
             <p>{admin.dob || "Not Provided"}</p>
           )}
-
           <label>Gender:</label>
           {editMode ? (
             <select

@@ -24,18 +24,18 @@ API.interceptors.request.use((config) => {
 
 // ✅ Inventory APIs
 export const addInventoryItem = async (item) =>
-  (await API.post("/", item)).data;
+  (await API.post("", item)).data; // Backend expects POST to /api/inventory
 
 export const getAllInventoryItems = async () =>
-  (await API.get("/")).data; // 🔥 renamed function
+  (await API.get("")).data; // GET all items from /api/inventory
 
 export const getInventoryById = async (id) =>
-  (await API.get(`/${id}`)).data;
+  (await API.get(`/${id}`)).data; // GET single item
 
 export const updateInventoryItem = async (id, item) =>
-  (await API.put(`/${id}`, item)).data;
+  (await API.put(`/${id}`, item)).data; // PUT to /api/inventory/:id
 
 export const deleteInventoryItem = async (id) =>
-  (await API.delete(`/${id}`)).data;
+  (await API.delete(`/${id}`)).data; // DELETE /api/inventory/:id
 
 export default API;

@@ -6,7 +6,7 @@ import "../../styles/EventList.css";
 import { AuthContext } from "../../context/AuthContext";
 
 const EventList = () => {
-  const { role } = useContext(AuthContext); // Get role from AuthContext
+  const { role } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState(null);
@@ -24,8 +24,8 @@ const EventList = () => {
   };
 
   useEffect(() => {
-    if (role === "ADMIN") fetchEvents();
-  }, [role]);
+    fetchEvents(); // Role check hata diya, dono users fetch karenge
+  }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete this event?")) {
@@ -44,7 +44,6 @@ const EventList = () => {
     setNotification(null);
   };
 
-  if (role !== "ADMIN") return <p className="eventlist-not-authorized">You are not authorized to view all events.</p>;
   if (loading) return <p className="eventlist-loading">Loading events...</p>;
 
   return (
@@ -63,30 +62,34 @@ const EventList = () => {
       {events.length === 0 ? (
         <p className="eventlist-empty">No events found.</p>
       ) : (
-        <table className="eventlist-table">
-          <thead>
-            <tr>
-              <th className="eventlist-th">Name</th>
-              <th className="eventlist-th">Location</th>
-              <th className="eventlist-th">Date</th>
-              <th className="eventlist-th">Description</th>
-              <th className="eventlist-th">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {events.map((ev) => (
-              <tr key={ev.id} className="eventlist-tr">
-                <td className="eventlist-td">{ev.name}</td>
-                <td className="eventlist-td">{ev.location}</td>
-                <td className="eventlist-td">{new Date(ev.date).toLocaleString()}</td>
-                <td className="eventlist-td">{ev.description}</td>
-                <td className="eventlist-td">
-                  <button className="eventlist-btn" onClick={() => handleDelete(ev.id)}>Delete</button>
-                </td>
+        <div className="eventlist-responsive-table">
+          <table className="eventlist-table">
+            <thead>
+              <tr>
+                <th className="eventlist-th">Name</th>
+                <th className="eventlist-th">Location</th>
+                <th className="eventlist-th">Date</th>
+                <th className="eventlist-th">Description</th>
+                {role === "ADMIN" && <th className="eventlist-th">Actions</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {events.map((ev) => (
+                <tr key={ev.id} className="eventlist-tr">
+                  <td className="eventlist-td" data-label="Name">{ev.name}</td>
+                  <td className="eventlist-td" data-label="Location">{ev.location}</td>
+                  <td className="eventlist-td" data-label="Date">{new Date(ev.date).toLocaleString()}</td>
+                  <td className="eventlist-td" data-label="Description">{ev.description}</td>
+                  {role === "ADMIN" && (
+                    <td className="eventlist-td" data-label="Actions">
+                      <button className="eventlist-btn" onClick={() => handleDelete(ev.id)}>Delete</button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

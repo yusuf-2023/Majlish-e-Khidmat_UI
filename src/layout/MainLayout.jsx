@@ -1,14 +1,11 @@
 import React from "react";
 import { useAuth } from "../hooks/useAuth";
-import { Outlet, useLoaderData, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const MainLayout = () => {
-  const { role } = useAuth();
-  const { darkMode } = useLoaderData();
-  const location = useLocation();
-  const isAuthRoute = location.pathname.startsWith("/auth");
+const MainLayout = ({ darkMode, toggleDarkMode }) => {
+  const { role } = useAuth(); // ✅ Safe inside AuthProvider
 
   return (
     <div
@@ -16,13 +13,17 @@ const MainLayout = () => {
         darkMode ? "dark-mode" : ""
       }`}
     >
-      {!isAuthRoute && <Header darkMode={darkMode} />}
+      {/* Always show Header on all pages */}
+      <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      
       <main className="main-content">
         <div>
           <Outlet />
         </div>
       </main>
-      {!isAuthRoute && <Footer />}
+      
+      {/* Always show Footer on all pages */}
+      <Footer />
     </div>
   );
 };

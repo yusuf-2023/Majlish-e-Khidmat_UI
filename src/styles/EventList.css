@@ -1,140 +1,213 @@
-/* ==================== GLOBAL RESET FOR EVENT LIST ==================== */
+/* ==================== GLOBAL RESET ==================== */
 .eventlist-container * {
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  margin: 0;
+  padding: 0;
+  transition: all 0.25s ease-in-out;
 }
 
 /* ==================== ROOT VARIABLES ==================== */
 :root {
-  --eventlist-bg: #f0fdf4;
-  --eventlist-card: #fff;
-  --eventlist-text: #065f46;
-  --eventlist-accent: #10b981;
-  --eventlist-border: #d1fae5;
-  --eventlist-hover: #d1fae5;
-  --eventlist-btn-bg: #10b981;
-  --eventlist-btn-text: #fff;
-  --eventlist-btn-hover: #059669;
+  --eventlist-bg: #f9fafb;
+  --eventlist-card: rgba(255, 255, 255, 0.8); /* glassmorphism */
+  --eventlist-text: #1f2937;
+  --eventlist-accent: #2563eb;
+  --eventlist-accent-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+  --eventlist-border: rgba(229, 231, 235, 0.7);
+  --eventlist-hover: rgba(243, 244, 246, 0.7);
+
+  --eventlist-btn-bg: #3b82f6;
+  --eventlist-btn-text: #ffffff;
+  --eventlist-btn-hover: #2563eb;
+  --eventlist-btn-gradient: linear-gradient(135deg, #60a5fa, #2563eb);
 }
 
-/* Dark mode */
+/* Dark Mode */
 body.dark-mode {
-  --eventlist-bg: #111827;
-  --eventlist-card: #1f2937;
-  --eventlist-text: #d1fae5;
-  --eventlist-accent: #34d399;
-  --eventlist-border: #374151;
-  --eventlist-hover: #065f46;
-  --eventlist-btn-bg: #34d399;
-  --eventlist-btn-text: #111827;
-  --eventlist-btn-hover: #10b981;
+  --eventlist-bg: #0f172a;
+  --eventlist-card: rgba(30, 41, 59, 0.85);
+  --eventlist-text: #e2e8f0;
+  --eventlist-accent: #60a5fa;
+  --eventlist-accent-gradient: linear-gradient(135deg, #93c5fd, #60a5fa);
+  --eventlist-border: rgba(55, 65, 81, 0.6);
+  --eventlist-hover: rgba(51, 65, 85, 0.7);
+
+  --eventlist-btn-bg: #3b82f6;
+  --eventlist-btn-text: #f8fafc;
+  --eventlist-btn-hover: #1d4ed8;
+  --eventlist-btn-gradient: linear-gradient(135deg, #60a5fa, #2563eb);
 }
 
 /* ==================== CONTAINER ==================== */
 .eventlist-container {
-  background-color: var(--eventlist-bg);
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgb(0 0 0 / 6%);
+  background: var(--eventlist-card);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px); /* Glass effect */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--eventlist-border);
   color: var(--eventlist-text);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin: 40px auto;
-  max-width: 900px;
-  padding: 25px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  margin: 50px auto;
+  padding: 35px;
+  animation: fadeIn 0.6s ease;
 }
 
-/* Headings */
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== HEADINGS ==================== */
 .eventlist-heading {
-  color: var(--eventlist-accent);
-  font-size: 28px;
-  margin-bottom: 25px;
+  background: var(--eventlist-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 28px;
   text-align: center;
+  letter-spacing: 0.6px;
 }
 
-/* Table */
+/* ==================== TABLE ==================== */
 .eventlist-table {
   border-collapse: collapse;
-  border-radius: 10px;
-  margin-top: 20px;
-  overflow: hidden;
   width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--eventlist-card);
 }
 
 .eventlist-th, .eventlist-td {
   border-bottom: 1px solid var(--eventlist-border);
-  font-size: 14px;
-  padding: 12px 16px;
+  font-size: 15px;
+  padding: 16px 20px;
   text-align: left;
+  vertical-align: middle;
 }
 
 .eventlist-th {
-  background-color: var(--eventlist-card);
   color: var(--eventlist-accent);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(5px);
+  letter-spacing: 0.7px;
+  font-size: 14px;
+}
+
+.eventlist-tr {
+  transition: all 0.25s ease;
 }
 
 .eventlist-tr:hover {
-  background-color: var(--eventlist-hover);
-  transform: scale(1.01);
+  background: var(--eventlist-hover);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.eventlist-td {
-  color: var(--eventlist-text);
-}
-
-/* Buttons */
+/* ==================== BUTTONS ==================== */
 .eventlist-btn {
-  background-color: var(--eventlist-btn-bg);
+  background: var(--eventlist-btn-gradient);
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   color: var(--eventlist-btn-text);
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  padding: 8px 14px;
-  transition: background-color 0.3s ease;
+  padding: 10px 18px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button shine hover effect */
+.eventlist-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: skewX(-20deg);
 }
 
 .eventlist-btn:hover {
-  background-color: var(--eventlist-btn-hover);
+  background: var(--eventlist-btn-gradient);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
 }
 
-/* Notifications */
+.eventlist-btn:hover::after {
+  animation: shine 1s forwards;
+}
+
+@keyframes shine {
+  100% { left: 125%; }
+}
+
+/* ==================== NOTIFICATIONS ==================== */
 .eventlist-notification {
-  background-color: var(--eventlist-accent);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  background: var(--eventlist-accent-gradient);
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
   color: #fff;
-  font-weight: 500;
-  margin-bottom: 15px;
-  padding: 10px 15px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding: 14px 20px;
   text-align: center;
+  font-size: 15px;
+  animation: slideInDown 0.6s ease;
 }
 
-/* Empty & Loading States */
+@keyframes slideInDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ==================== STATES ==================== */
 .eventlist-empty,
 .eventlist-loading,
 .eventlist-not-authorized {
   color: var(--eventlist-text);
   font-style: italic;
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
+  font-size: 14px;
+  opacity: 0.85;
+  animation: fadeIn 0.8s ease;
 }
 
-/* Responsive */
-@media screen and (width <= 700px) {
-  .eventlist-table th, .eventlist-table td {
+/* ==================== SCROLLBAR STYLE ==================== */
+.eventlist-table::-webkit-scrollbar {
+  height: 8px;
+}
+.eventlist-table::-webkit-scrollbar-thumb {
+  background: var(--eventlist-accent);
+  border-radius: 6px;
+}
+.eventlist-table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ==================== RESPONSIVENESS ==================== */
+@media screen and (max-width: 700px) {
+  .eventlist-th, .eventlist-td {
     font-size: 13px;
     padding: 10px 12px;
   }
-
   .eventlist-btn {
     font-size: 13px;
     padding: 6px 12px;
   }
 }
 
-@media screen and (width <= 500px) {
+@media screen and (max-width: 500px) {
   .eventlist-table {
     display: block;
     overflow-x: auto;

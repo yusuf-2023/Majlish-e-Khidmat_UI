@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useCallback, useRef, useState } from "react"
 import { useLocation } from "react-router-dom";
 import { Chart, registerables } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Pie, Bar, Line } from "react-chartjs-2";
+import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
 import "../../styles/AdminDashboard.css";
+import Notification from "../../components/Notification";
 
 // API imports
 import {
@@ -23,9 +24,6 @@ import { fetchStats } from "../../api/stats/statsApi";
 import { uploadAdminProfilePic } from "../../api/admin/adminApi";
 import { uploadUserProfilePic } from "../../api/user/userApi";
 
-// Components
-
-
 Chart.register(...registerables, ChartDataLabels);
 
 const AdminDashboard = () => {
@@ -35,6 +33,8 @@ const AdminDashboard = () => {
     admins: [],
     users: [],
     volunteers: [],
+    events: [],
+    campaigns: [],
     stats: {
       volunteers: 0,
       donations: 0,
@@ -54,7 +54,6 @@ const AdminDashboard = () => {
     sortConfig: { field: "name", direction: "asc" },
     editingItemId: null,
     editData: { id: null, name: "", email: "", file: null },
-    darkMode: false,
     undoDelete: null,
     selectedIds: new Set(),
     bulkAction: "",
@@ -62,18 +61,25 @@ const AdminDashboard = () => {
     userAdminChartType: "pie",
     growthChartType: "line",
     activeTab: "admins", // admins | users
+    notification: null,
   });
 
   const perPage = 8;
+  const loggedInEmail = localStorage.getItem("userEmail") || localStorage.getItem("email");
+
+  // Show notification
+  const showNotification = useCallback((message) => {
+    setState(prev => ({ ...prev, notification: message }));
+    setTimeout(() => setState(prev => ({ ...prev, notification: null })), 3000);
+  }, []);
 
   // auth guard — redirect to login if no token/email
   useEffect(() => {
-    const email = localStorage.getItem("userEmail") || localStorage.getItem("email");
     const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
-    if (!email || !token) {
+    if (!loggedInEmail || !token) {
       window.location.href = "/admin/login";
     }
-  }, []);
+  }, [loggedInEmail]);
 
   // Refs used by undo timer
   const undoRef = useRef(null);
@@ -107,8 +113,8 @@ const AdminDashboard = () => {
     setState((prev) => ({ ...prev, loading: true, error: "" }));
 
     try {
-      // Fetch admins, users, volunteers in parallel (best-effort)
-      const [adminsRes, usersRes, volunteersRes] = await Promise.all([
+      // Fetch all data in parallel
+      const [adminsRes, usersRes, volunteersRes, eventsRes, campaignsRes] = await Promise.all([
         getAllAdmins().catch((e) => {
           console.warn("getAllAdmins failed:", e);
           return [];
@@ -121,40 +127,35 @@ const AdminDashboard = () => {
           console.warn("getAllVolunteers failed:", e);
           return [];
         }),
+        getAllEvents().catch((e) => {
+          console.warn("getAllEvents failed:", e);
+          return [];
+        }),
+        getAllCampaigns().catch((e) => {
+          console.warn("getAllCampaigns failed:", e);
+          return [];
+        }),
       ]);
 
       const adminsArr = extractArray(adminsRes);
       const usersArr = extractArray(usersRes);
       const volunteersArr = extractArray(volunteersRes);
+      const eventsArr = extractArray(eventsRes);
+      const campaignsArr = extractArray(campaignsRes);
 
-      // Try stats endpoint; if missing fallback to counting lists and other endpoints
+      // Try stats endpoint; if missing fallback to counting lists
       let statsObj = {};
       try {
         const s = await fetchStats();
         statsObj = s?.data || s || {};
       } catch (error) {
         console.error("fetchStats failed:", error);
-        // fallback: compute counts (we already fetched volunteers); fetch events & campaigns for counts
-        const [evRes, campRes] = await Promise.all([
-          getAllEvents().catch((er) => {
-            console.warn("getAllEvents failed:", er);
-            return [];
-          }),
-          getAllCampaigns().catch((er) => {
-            console.warn("getAllCampaigns failed:", er);
-            return [];
-          }),
-        ]);
-
-        const evArr = extractArray(evRes);
-        const campArr = extractArray(campRes);
-
+        // fallback: compute counts from fetched data
         statsObj = {
           volunteers: volunteersArr.length,
           donations: 0,
-        
-          events: evArr.length,
-          campaigns: campArr.length,
+          events: eventsArr.length,
+          campaigns: campaignsArr.length,
           monthlyData: [],
           monthlyUserGrowth: [],
           monthlyAdminGrowth: [],
@@ -168,23 +169,19 @@ const AdminDashboard = () => {
       const monthlyUserGrowth = Array.isArray(statsObj?.monthlyUserGrowth) ? statsObj.monthlyUserGrowth : [];
       const monthlyAdminGrowth = Array.isArray(statsObj?.monthlyAdminGrowth) ? statsObj.monthlyAdminGrowth : [];
 
-      // Finally set state — prefer statsObj numeric values; fallback to array lengths we fetched
+      // Finally set state
       setState((prev) => ({
         ...prev,
         admins: adminsArr,
         users: usersArr,
         volunteers: volunteersArr,
+        events: eventsArr,
+        campaigns: campaignsArr,
         stats: {
-          volunteers:
-            typeof statsObj?.volunteers === "number"
-              ? statsObj.volunteers
-              : Array.isArray(statsObj?.volunteers)
-              ? statsObj.volunteers.length
-              : Number(statsObj?.volunteers) || volunteersArr.length || 0,
+          volunteers: Number(statsObj?.volunteers) || volunteersArr.length || 0,
           donations: Number(statsObj?.donations) || 0,
-          
-          events: Number(statsObj?.events) || 0,
-          campaigns: Number(statsObj?.campaigns) || 0,
+          events: Number(statsObj?.events) || eventsArr.length || 0,
+          campaigns: Number(statsObj?.campaigns) || campaignsArr.length || 0,
           monthlyData,
           totalAdmins: Number(statsObj?.totalAdmins) || adminsArr.length,
           totalUsers: Number(statsObj?.totalUsers) || usersArr.length,
@@ -211,18 +208,34 @@ const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, [location.pathname, fetchEverything]);
 
+  // Use this state to get the current dark mode status from the body class
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  useEffect(() => {
+    // Check for dark mode class on body
+    setIsDarkMode(document.body.classList.contains("dark-mode"));
+    
+    // Set up a mutation observer to detect changes to the body class
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.body.classList.contains("dark-mode"));
+    });
+    
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
+
   // ================= CHART DATA =================
   const statsChartData = useMemo(() => {
     const s = state.stats;
     const baseData = {
-      labels: ["Volunteers", "Donations",  "Events", "Campaigns"],
+      labels: ["Volunteers", "Donations", "Events", "Campaigns"],
       datasets: [
         {
           label: "Statistics",
           data: [
             Number(s.volunteers) || 0,
             Number(s.donations) || 0,
-          
             Number(s.events) || 0,
             Number(s.campaigns) || 0,
           ],
@@ -308,13 +321,23 @@ const AdminDashboard = () => {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: state.darkMode ? "#fff" : "#666" } },
-        title: { display: true, text: title, color: state.darkMode ? "#fff" : "#333", font: { size: 16 } },
-        datalabels: { color: state.darkMode ? "#fff" : "#333", font: { weight: "bold", size: 12 } },
+        legend: { labels: { color: isDarkMode ? "#fff" : "#666" } },
+        title: { display: true, text: title, color: isDarkMode ? "#fff" : "#333", font: { size: 16 } },
+        datalabels: { color: isDarkMode ? "#fff" : "#333", font: { weight: "bold", size: 12 } },
       },
       animation: { duration: 900, easing: "easeInOutQuart" },
+      scales: {
+        x: {
+          ticks: { color: isDarkMode ? "#bbb" : "#666" },
+          grid: { color: isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" },
+        },
+        y: {
+          ticks: { color: isDarkMode ? "#bbb" : "#666" },
+          grid: { color: isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" },
+        },
+      },
     }),
-    [state.darkMode]
+    [isDarkMode]
   );
 
   // Render helpers
@@ -422,15 +445,17 @@ const AdminDashboard = () => {
             } else {
               if (typeof deleteUserProfile === "function") await deleteUserProfile(id).catch((e) => console.warn("deleteUserProfile err", e));
             }
+            showNotification(`${isAdminsTab ? "Admin" : "User"} deleted successfully`);
           } catch (e) {
             console.error("delete API failed:", e);
+            showNotification("Failed to delete");
           } finally {
             setState((prev) => ({ ...prev, undoDelete: null }));
           }
         }
       }, 5000);
     },
-    [state.activeTab, state.admins, state.users, state.stats]
+    [state.activeTab, state.admins, state.users, state.stats, showNotification]
   );
 
   const undoDeleteAction = useCallback(() => {
@@ -446,7 +471,8 @@ const AdminDashboard = () => {
         totalUsers: key === "users" ? prev.stats.totalUsers + 1 : prev.stats.totalUsers,
       },
     }));
-  }, [state.undoDelete]);
+    showNotification("Delete action undone");
+  }, [state.undoDelete, showNotification]);
 
   const handleEditClick = useCallback((item) => {
     setState((prev) => ({
@@ -486,13 +512,15 @@ const AdminDashboard = () => {
         }
 
         setState((prev) => ({ ...prev, editingItemId: null, editData: { id: null, name: "", email: "", file: null } }));
+        showNotification("Profile updated successfully");
         await fetchEverything();
       } catch (err) {
         console.error("update profile error:", err);
         setState((prev) => ({ ...prev, error: err?.message || "Failed to update profile" }));
+        showNotification("Failed to update profile");
       }
     },
-    [state.activeTab, state.editData, fetchEverything]
+    [state.activeTab, state.editData, fetchEverything, showNotification]
   );
 
   const handleBulkSelect = useCallback((id) => {
@@ -506,7 +534,7 @@ const AdminDashboard = () => {
   const handleSelectAll = useCallback(() => {
     setState((prev) => {
       const ids = (prev.activeTab === "admins" ? filteredAdmins : filteredUsers).map((x) => x.id);
-      const s = prev.selectedIds.size === ids.length ? new Set() : new Set(ids);
+      const s = prev.selectedIds.size > 0 && prev.selectedIds.size === ids.length ? new Set() : new Set(ids);
       return { ...prev, selectedIds: s };
     });
   }, [filteredAdmins, filteredUsers, state.activeTab]);
@@ -535,15 +563,16 @@ const AdminDashboard = () => {
         } else {
           await Promise.all(items.map((it) => (typeof deleteUserProfile === "function" ? deleteUserProfile(it.id).catch((e) => console.warn("bulk delete user failed", e)) : Promise.resolve())));
         }
+        showNotification(`Deleted ${items.length} ${isAdminsTab ? 'admins' : 'users'} successfully`);
       }
     } catch (err) {
       console.error("bulk action failed:", err);
       setState((prev) => ({ ...prev, error: "Bulk operation failed" }));
+      showNotification("Bulk operation failed");
       await fetchEverything();
     }
-  }, [state.bulkAction, state.selectedIds, state.activeTab, state.admins, state.users, fetchEverything]);
+  }, [state.bulkAction, state.selectedIds, state.activeTab, state.admins, state.users, fetchEverything, showNotification]);
 
-  // const toggleDarkMode = useCallback(() => setState((p) => ({ ...p, darkMode: !p.darkMode })), []);
   const changeChartType = useCallback((type) => setState((p) => ({ ...p, chartType: type })), []);
   const changeUserAdminChartType = useCallback((type) => setState((p) => ({ ...p, userAdminChartType: type })), []);
   const changeGrowthChartType = useCallback((type) => setState((p) => ({ ...p, growthChartType: type })), []);
@@ -559,25 +588,18 @@ const AdminDashboard = () => {
     link.download = `${state.activeTab}.csv`;
     link.click();
     link.remove();
-  }, [state.admins, state.users, state.activeTab]);
+    showNotification(`Exported ${state.activeTab} data successfully`);
+  }, [state.admins, state.users, state.activeTab, showNotification]);
 
   // ================= RENDER =================
   return (
-    <div className={`admin-dashboard ${state.darkMode ? "dark" : ""}`} style={{ padding: 20 }}>
-      <div style={{
-        width:"100%",
-        padding:"20px",
-        margin:"10px 0",
-        backgroundColor:"#fff",
-        borderRadius:"10px",
-        border:"1px solid red"
-      }}>
-      <h2>Admin Dashboard</h2>
-
-      </div>
+    <div className={`admin-dashboard ${isDarkMode ? "dark" : ""}`} style={{ padding: 20 }}>
+      {state.notification && <Notification message={state.notification} onClose={() => setState(prev => ({ ...prev, notification: null }))} />}
+      
+      <h2 className="admin-dashboard-header">Admin Dashboard</h2>
 
       <div className="dashboard-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
-        <div className="chart-container" style={{ background: "#fff", padding: 12, borderRadius: 8 }}>
+        <div className="chart-container" style={{ background: isDarkMode ? "#333" : "#fff", padding: 12, borderRadius: 8 }}>
           <div className="chart-wrapper" style={{ height: 260 }}>{renderStatsChart()}</div>
           <div className="chart-controls" style={{ marginTop: 8, display: "flex", gap: 8 }}>
             <button className={`chart-btn ${state.chartType === "pie" ? "active" : ""}`} onClick={() => changeChartType("pie")}>Pie</button>
@@ -586,7 +608,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="chart-container" style={{ background: "#fff", padding: 12, borderRadius: 8 }}>
+        <div className="chart-container" style={{ background: isDarkMode ? "#333" : "#fff", padding: 12, borderRadius: 8 }}>
           <div className="chart-wrapper" style={{ height: 260 }}>{renderUserAdminChart()}</div>
           <div className="chart-controls" style={{ marginTop: 8, display: "flex", gap: 8 }}>
             <button className={`chart-btn ${state.userAdminChartType === "pie" ? "active" : ""}`} onClick={() => changeUserAdminChartType("pie")}>Pie</button>
@@ -594,13 +616,13 @@ const AdminDashboard = () => {
             <button className={`chart-btn ${state.userAdminChartType === "doughnut" ? "active" : ""}`} onClick={() => changeUserAdminChartType("doughnut")}>Doughnut</button>
           </div>
           <div className="chart-info" style={{ marginTop: 12 }}>
-            <div className="info-item"><span className="info-label">Total Admins:</span> <span className="info-value">{state.stats.totalAdmins}</span></div>
-            <div className="info-item"><span className="info-label">Total Users:</span> <span className="info-value">{state.stats.totalUsers}</span></div>
-            <div className="info-item"><span className="info-label">Total Volunteers:</span> <span className="info-value">{state.stats.volunteers}</span></div>
+            <div className="info-item"><span className="info-label" style={{ color: isDarkMode ? "#fff" : "#666" }}>Total Admins:</span> <span className="info-value" style={{ color: isDarkMode ? "#fff" : "#333" }}>{state.stats.totalAdmins}</span></div>
+            <div className="info-item"><span className="info-label" style={{ color: isDarkMode ? "#fff" : "#666" }}>Total Users:</span> <span className="info-value" style={{ color: isDarkMode ? "#fff" : "#333" }}>{state.stats.totalUsers}</span></div>
+            <div className="info-item"><span className="info-label" style={{ color: isDarkMode ? "#fff" : "#666" }}>Total Volunteers:</span> <span className="info-value" style={{ color: isDarkMode ? "#fff" : "#333" }}>{state.stats.volunteers}</span></div>
           </div>
         </div>
 
-        <div className="chart-container full-width" style={{ gridColumn: "1 / -1", background: "#fff", padding: 12, borderRadius: 8 }}>
+        <div className="chart-container full-width" style={{ gridColumn: "1 / -1", background: isDarkMode ? "#333" : "#fff", padding: 12, borderRadius: 8 }}>
           <div className="chart-wrapper" style={{ height: 280 }}>{renderGrowthChart()}</div>
           <div className="chart-controls" style={{ marginTop: 8, display: "flex", gap: 8 }}>
             <button className={`chart-btn ${state.growthChartType === "line" ? "active" : ""}`} onClick={() => changeGrowthChartType("line")}>Line</button>
@@ -617,9 +639,8 @@ const AdminDashboard = () => {
 
       {/* Controls */}
       <div className="control-bar" style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
-        <button className="refresh-btn" onClick={fetchEverything}>Refresh</button>
+        <button className="Ads-refresh-btn" onClick={fetchEverything}>Refresh</button>
         <button className="export-btn" onClick={exportCSV}>Export CSV</button>
-        <button className="theme-btn" onClick={() => setState((p) => ({ ...p, darkMode: !p.darkMode }))}>{state.darkMode ? "Light Mode" : "Dark Mode"}</button>
         <input type="text" placeholder={`Search ${state.activeTab}...`} value={state.search} onChange={(e) => setState((prev) => ({ ...prev, search: e.target.value, page: 1 }))} />
       </div>
 
@@ -628,7 +649,7 @@ const AdminDashboard = () => {
         <div className="bulk-actions" style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center" }}>
           <select value={state.bulkAction} onChange={(e) => setState((prev) => ({ ...prev, bulkAction: e.target.value }))}>
             <option value="">Select action</option>
-            <option value="delete">Delete selected</option>
+            {state.activeTab === "users" && <option value="delete">Delete selected</option>}
           </select>
           <button onClick={handleBulkAction}>Apply</button>
           <span>{state.selectedIds.size} selected</span>
@@ -665,7 +686,12 @@ const AdminDashboard = () => {
 
             {paginatedData.map((item) => (
               <div key={item.id} className={`data-item ${state.selectedIds.has(item.id) ? "selected" : ""}`} style={{ display: "grid", gridTemplateColumns: "40px 1fr 1fr 220px", gap: 8, alignItems: "center", padding: "8px 4px", borderBottom: "1px solid #f5f5f5" }}>
-                <input type="checkbox" checked={state.selectedIds.has(item.id)} onChange={() => handleBulkSelect(item.id)} />
+                <input 
+                  type="checkbox" 
+                  checked={state.selectedIds.has(item.id)} 
+                  onChange={() => handleBulkSelect(item.id)} 
+                  disabled={state.activeTab === "admins" && item.email !== loggedInEmail}
+                />
 
                 {state.editingItemId === item.id ? (
                   <>
@@ -685,8 +711,19 @@ const AdminDashboard = () => {
                     <span>{item.name}</span>
                     <span>{item.email}</span>
                     <div className="card-actions" style={{ display: "flex", gap: 6 }}>
-                      <button onClick={() => handleEditClick(item)}>Edit</button>
-                      <button onClick={() => handleDelete(item.id)}>Delete</button>
+                      {/* Permission-based action buttons */}
+                      {state.activeTab === "users" && (
+                        <>
+                          <button onClick={() => handleEditClick(item)}>Edit</button>
+                          <button onClick={() => handleDelete(item.id)}>Delete</button>
+                        </>
+                      )}
+                      {state.activeTab === "admins" && item.email === loggedInEmail && (
+                        <button onClick={() => handleEditClick(item)}>Edit</button>
+                      )}
+                      {state.activeTab === "admins" && item.email !== loggedInEmail && (
+                        <span style={{ color: '#999', fontStyle: 'italic' }}>View only</span>
+                      )}
                     </div>
                   </>
                 )}

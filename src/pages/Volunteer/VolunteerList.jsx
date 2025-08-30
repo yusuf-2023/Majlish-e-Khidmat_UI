@@ -27,6 +27,10 @@ function VolunteerList() {
   const [expandedId, setExpandedId] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
+  // ✅ New: multi-select & undo delete
+  const [selectedVolunteers, setSelectedVolunteers] = useState([]);
+  const [undoDeleteVolunteers, setUndoDeleteVolunteers] = useState([]);
+
   const API_BASE_URL = window.location.origin.includes("localhost")
     ? "http://localhost:8080"
     : window.location.origin;
@@ -88,7 +92,6 @@ function VolunteerList() {
 
   // Edit functions
   const handleEditClick = (volunteer) => {
-    // ✅ only for admin
     if (role !== "ADMIN") {
       showNotification(
         "Only administrators can update volunteer information.",
@@ -115,7 +118,6 @@ function VolunteerList() {
       const file = files[0];
       setEditFormData({ ...editFormData, [name]: file });
 
-      // Create preview for image
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -160,21 +162,37 @@ function VolunteerList() {
     }
   };
 
-  const handleDelete = async (id) => {
+  // ✅ Multi-delete & Undo Delete logic
+  const handleDelete = (id) => {
     if (role !== "ADMIN") {
       showNotification("Only administrators can delete volunteers.", "error");
       return;
     }
-    if (window.confirm("Are you sure you want to delete this volunteer?")) {
+    const volunteerToDelete = volunteers.find((v) => v.id === id);
+    setVolunteers((prev) => prev.filter((v) => v.id !== id));
+    const timeoutId = setTimeout(async () => {
       try {
         await deleteVolunteer(id);
-        setVolunteers((prev) => prev.filter((v) => v.id !== id));
-        showNotification("Volunteer deleted successfully", "success");
-      } catch (err) {
-        console.error("Failed to delete volunteer:", err);
+        setUndoDeleteVolunteers((prev) =>
+          prev.filter((v) => v.id !== id)
+        );
+        showNotification("Volunteer deleted permanently", "success");
+      } catch {
         showNotification("Failed to delete volunteer", "error");
+        setVolunteers((prev) => [...prev, volunteerToDelete]);
       }
-    }
+    }, 5000);
+    setUndoDeleteVolunteers((prev) => [...prev, { ...volunteerToDelete, timeoutId }]);
+    showNotification("Volunteer deleted. Undo available for 5 seconds", "success");
+  };
+
+  const undoDelete = (id) => {
+    const undoVolunteer = undoDeleteVolunteers.find((v) => v.id === id);
+    if (!undoVolunteer) return;
+    clearTimeout(undoVolunteer.timeoutId);
+    setVolunteers((prev) => [...prev, undoVolunteer]);
+    setUndoDeleteVolunteers((prev) => prev.filter((v) => v.id !== id));
+    showNotification("Volunteer deletion undone", "success");
   };
 
   const toggleExpand = (id) => {
@@ -182,6 +200,26 @@ function VolunteerList() {
     if (editId === id) {
       handleCancelEdit();
     }
+  };
+
+  // ✅ Multi-select checkbox handlers
+  const toggleSelectVolunteer = (id) => {
+    setSelectedVolunteers((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedVolunteers.length === volunteers.length) {
+      setSelectedVolunteers([]);
+    } else {
+      setSelectedVolunteers(volunteers.map((v) => v.id));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    selectedVolunteers.forEach((id) => handleDelete(id));
+    setSelectedVolunteers([]);
   };
 
   if (loading) return <div className="vl-loading">Loading volunteers...</div>;
@@ -197,7 +235,6 @@ function VolunteerList() {
         />
       )}
 
-      {/* Header */}
       <div className="vl-header">
         <h2>Volunteer Management</h2>
         <div className="vl-header-actions">
@@ -207,10 +244,17 @@ function VolunteerList() {
           >
             Refresh 🔄
           </button>
+          {selectedVolunteers.length > 0 && (
+            <button
+              className="vl-btn vl-btn-danger"
+              onClick={handleDeleteSelected}
+            >
+              Delete Selected 🗑️
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Search Section */}
       <div className="vl-search-container">
         <div className="vl-search-box">
           <i className="vl-search-icon"></i>
@@ -227,7 +271,6 @@ function VolunteerList() {
         </div>
       </div>
 
-      {/* No Results */}
       {filteredVolunteers.length === 0 ? (
         <div className="vl-no-results">
           <i className="vl-no-results-icon">👥</i>
@@ -235,11 +278,20 @@ function VolunteerList() {
           <p>Try adjusting your search criteria</p>
         </div>
       ) : (
-        /* Volunteer Table */
         <div className="vl-table-container">
           <table className="vl-table">
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    checked={
+                      selectedVolunteers.length === volunteers.length &&
+                      volunteers.length > 0
+                    }
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th>Profile</th>
                 <th>Name</th>
                 <th>Email</th>
@@ -254,12 +306,14 @@ function VolunteerList() {
                 const imageUrl = getImageUrl(volunteer.profilePicture);
                 return (
                   <React.Fragment key={volunteer.id}>
-                    {/* Volunteer Row */}
-                    <tr
-                      className={
-                        expandedId === volunteer.id ? "vl-expanded" : ""
-                      }
-                    >
+                    <tr className={expandedId === volunteer.id ? "vl-expanded" : ""}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedVolunteers.includes(volunteer.id)}
+                          onChange={() => toggleSelectVolunteer(volunteer.id)}
+                        />
+                      </td>
                       <td>
                         {imageUrl ? (
                           <img
@@ -271,8 +325,7 @@ function VolunteerList() {
                               const placeholder = document.getElementById(
                                 `vl-placeholder-${volunteer.id}`
                               );
-                              if (placeholder)
-                                placeholder.style.display = "flex";
+                              if (placeholder) placeholder.style.display = "flex";
                             }}
                           />
                         ) : null}
@@ -292,9 +345,7 @@ function VolunteerList() {
                       <td>{volunteer.email}</td>
                       <td>{volunteer.phone || "N/A"}</td>
                       <td>
-                        <div className="vl-skills">
-                          {volunteer.skills || "N/A"}
-                        </div>
+                        <div className="vl-skills">{volunteer.skills || "N/A"}</div>
                       </td>
                       <td>
                         <span
@@ -312,7 +363,6 @@ function VolunteerList() {
                           >
                             {expandedId === volunteer.id ? "▲" : "▼"}
                           </button>
-                          {/* ✅ only admin can update or delete */}
                           {role === "ADMIN" && (
                             <>
                               <button
@@ -329,16 +379,25 @@ function VolunteerList() {
                               >
                                 🗑️
                               </button>
+                              {undoDeleteVolunteers.some(
+                                (v) => v.id === volunteer.id
+                              ) && (
+                                <button
+                                  className="vl-btn vl-btn-warning"
+                                  onClick={() => undoDelete(volunteer.id)}
+                                >
+                                  Undo ⏪
+                                </button>
+                              )}
                             </>
                           )}
                         </div>
                       </td>
                     </tr>
 
-                    {/* Expanded Details */}
                     {expandedId === volunteer.id && (
                       <tr className="vl-details-row">
-                        <td colSpan="7">
+                        <td colSpan="8">
                           <div className="vl-details">
                             <h4>Volunteer Details</h4>
                             <div className="vl-details-grid">
@@ -368,7 +427,6 @@ function VolunteerList() {
                               </div>
                             </div>
 
-                            {/* Edit Form */}
                             {editId === volunteer.id && (
                               <div className="vl-edit-form">
                                 <h4>Edit Volunteer</h4>

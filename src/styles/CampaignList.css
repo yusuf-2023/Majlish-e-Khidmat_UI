@@ -1,157 +1,231 @@
-/* ============================ */
-
-/* Campaign List Container      */
-
-/* ============================ */
+/* ----------------------------------------------------
+   Basic CSS Variables for Light and Dark Themes
+   ---------------------------------------------------- */
 :root {
-  --bg-light: #fff;
-  --text-light: #1f2937;
-  --accent-color1: #1e40af;
-  --accent-color2: #2563eb;
-  --accent-color3: #22c55e;
-  --input-bg-light: #fff;
-  --input-text-light: #1f2937;
-  --option-bg-light: #fff;
-  --option-text-light: #1f2937;
-  --hover-bg-light: #f3f4f6;
+  /* Light Theme Colors (Default) */
+  --bg-color: #f7f9fc;
+  --text-color: #1a202c;
+  --card-bg: #ffffff;
+  --input-bg: #f0f4f8;
+  --border-color: #e2e8f0;
+  --primary-color: #4a5568;
+  --primary-color-shadow: #cbd5e0;
+  --hover-bg: #e2e8f0;
+  --hover-text-color: #1a202c;
+  --alternate-row-bg: #f2f2f2;
+  --table-header-bg: #e2e8f0;
+  --table-header-text: #1a202c;
+  --button-color: #2e7d32;
+  --button-hover-color: #1b5e20;
 }
 
-body.dark-mode {
-  --bg-light: #111;
-  --text-light: #f1f1f1;
-  --accent-color1: #60a5fa;
-  --accent-color2: #facc15;
-  --accent-color3: #4ade80;
-  --input-bg-light: #222;
-  --input-text-light: #fff;
-  --option-bg-light: #222;
-  --option-text-light: #fff;
-  --hover-bg-light: #222;
+/* Dark Theme Colors */
+[data-theme="dark"] {
+  --bg-color: #1a202c;
+  --text-color: #e2e8f0;
+  --card-bg: #2d3748;
+  --input-bg: #4a5568;
+  --border-color: #4a5568;
+  --primary-color: #a0aec0;
+  --primary-color-shadow: #2d3748;
+  --hover-bg: #4a5568;
+  --hover-text-color: #f7f9fc;
+  --alternate-row-bg: #222c39;
+  --table-header-bg: #4a5568;
+  --table-header-text: #e2e8f0;
+  --button-color: #48bb78;
+  --button-hover-color: #38a169;
 }
 
-.campaign-list-container {
-  background-color: var(--bg-light);
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgb(0 0 0 / 8%);
-  color: var(--text-light);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin: 40px auto;
-  max-width: 1000px;
-  padding: 30px 20px;
-  transition: all 0.3s ease;
+/* ----------------------------------------------------
+   General Layout and Base Styles
+   ---------------------------------------------------- */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Heading */
-.campaign-list-container h2 {
-  color: var(--accent-color1);
-  font-size: 28px;
-  letter-spacing: 0.5px;
-  margin-bottom: 25px;
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Loading text style */
+.loading {
   text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: var(--text-color);
 }
 
-/* Search Box & Input */
-.campaign-search,
-input,
-select {
-  background-color: var(--input-bg-light);
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  color: var(--input-text-light);
+/* Container for the entire campaign list page */
+.campaign-list-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+
+/* Heading style */
+.campaign-list-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2em;
+  color: var(--text-color);
+  position: relative;
+}
+
+/* Underline for the heading */
+.campaign-list-container h2::after {
+  content: "";
   display: block;
-  font-size: 14px;
-  margin: 0 auto 20px;
-  outline: none;
+  width: 50px;
+  height: 4px;
+  background: linear-gradient(to right, #00f, #0f0);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* Search input field */
+.campaign-search {
+  width: 100%;
   padding: 10px 15px;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.campaign-search:focus,
-input:focus,
-select:focus {
-  border-color: var(--accent-color2);
-  box-shadow: 0 0 5px var(--accent-color2);
-}
-
-/* datalist / option */
-option {
-  background-color: var(--option-bg-light);
-  color: var(--option-text-light);
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  font-size: 1em;
+  background-color: var(--input-bg);
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
-/* Table Styles */
+.campaign-search:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px var(--primary-color-shadow);
+}
+
+/* Table wrapper for horizontal scroll */
+.campaign-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styling */
 .campaign-table {
-  border-collapse: collapse;
-  border-radius: 10px;
-  margin-top: 20px;
-  overflow: hidden;
   width: 100%;
-}
-
-.campaign-table th,
-.campaign-table td {
-  border-bottom: 1px solid #e5e7eb;
-  padding: 14px 16px;
-  text-align: left;
-  transition: all 0.3s ease;
+  border-collapse: collapse;
+  background-color: var(--card-bg);
+  color: var(--text-color);
 }
 
 /* Table header */
 .campaign-table th {
-  background-color: var(--bg-light);
-  color: var(--accent-color1);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  background-color: var(--table-header-bg);
+  color: var(--table-header-text);
+  padding: 15px;
+  text-align: left;
+  font-weight: bold;
 }
 
-/* Hover effect for row */
-.campaign-table tr:hover {
-  background-color: var(--hover-bg-light);
-  transform: scale(1.01);
-  transition: all 0.3s ease;
-}
-
-/* Table data */
+/* Table rows */
 .campaign-table td {
- 
-  font-size: 14px;
-  transition: color 0.3s ease;
-  vertical-align: middle;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+color: #161616;
 }
 
-/* Empty state message */
-.campaign-list-container p {
-  color: var(--text-light);
-  font-size: 16px;
-  font-style: italic;
-  margin-top: 30px;
+/* Ensure text color is correct for dark mode */
+.campaign-table tbody tr {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.campaign-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover effect on rows */
+.campaign-table tbody tr:hover {
+  background-color: var(--hover-bg);
+  color: var(--hover-text-color) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Ensure text in hovered rows is visible */
+.campaign-table tbody tr:hover td {
+  color: var(--hover-text-color) !important;
+}
+
+/* Alternate row colors */
+.campaign-table tbody tr.row-0 {
+  background-color: var(--card-bg);
+}
+
+.campaign-table tbody tr.row-1 {
+  background-color: var(--alternate-row-bg);
+}
+
+.campaign-table tbody tr.row-2 {
+  background-color: var(--card-bg);
+}
+
+/* No campaigns message */
+.campaign-list-container > p {
   text-align: center;
+  padding: 40px;
+  color: var(--text-color);
+  font-size: 1.1em;
 }
 
-/* Loading text */
-.loading {
-  color: var(--accent-color2);
-  font-size: 16px;
-  margin-top: 50px;
-  text-align: center;
-}
+/* ------------------ RESPONSIVE STYLES ------------------ */
 
-/* Responsive adjustments */
-@media screen and (width <= 900px) {
+/* Mobile-first adjustments for padding and font size */
+@media (max-width: 600px) {
+  .campaign-list-container {
+    padding: 10px;
+    margin-top: 60px;
+  }
+  
+  .campaign-list-container h2 {
+    font-size: 1.5em;
+  }
+
+  .campaign-search {
+    padding: 8px 12px;
+  }
+
+  /* Keep table columns from becoming too narrow */
   .campaign-table th,
   .campaign-table td {
-    font-size: 13px;
-    padding: 12px 10px;
-  }
-}
-
-@media screen and (width <= 600px) {
-  .campaign-table {
-    display: block;
-    overflow-x: auto;
     white-space: nowrap;
+    padding: 10px 8px;
+  }
+  
+  /* Ensure all columns have enough width to display content */
+  .campaign-table th:nth-child(1),
+  .campaign-table td:nth-child(1) {
+    min-width: 120px;
+  }
+  
+  .campaign-table th:nth-child(2),
+  .campaign-table td:nth-child(2) {
+    min-width: 200px;
+  }
+
+  .campaign-table th:nth-child(3),
+  .campaign-table td:nth-child(3) {
+    min-width: 110px;
+  }
+  
+  .campaign-table th:nth-child(4),
+  .campaign-table td:nth-child(4) {
+    min-width: 110px;
   }
 }

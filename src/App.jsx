@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainRoutes from "./routes/MainRoutes";
-import { AuthProvider } from "./context/AuthContext";
+import AuthProvider from "./context/AuthContext"; // Correct AuthProvider import
+import MainLayout from "./layout/MainLayout"; // Import layout directly
 import "./styles/main.css";
 import "./styles/layout-system.css";
 
@@ -24,7 +25,7 @@ function App() {
   const router = createBrowserRouter([
     {
       ...MainRoutes,
-      loader: () => ({ darkMode, toggleDarkMode }),
+      element: <MainLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />,
     },
   ]);
 
