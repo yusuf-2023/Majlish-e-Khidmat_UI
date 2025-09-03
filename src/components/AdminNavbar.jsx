@@ -25,6 +25,7 @@ import {
   FaComments,
   FaChevronRight,
   FaChevronDown,
+  FaCommentDots,
 } from "react-icons/fa";
 
 import { AuthContext } from "../context/AuthContext";
@@ -41,8 +42,8 @@ const getInitials = (name) => {
 
 function AdminNavbar() {
   const navigate = useNavigate();
-  const { role, logoutUser, name, profilePic } = useContext(AuthContext); // updated names
-
+  
+ const { role, logoutUser, adminName: name, adminImage: profilePic } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -52,11 +53,13 @@ function AdminNavbar() {
     campaign: false,
     event: false,
     inventory: false,
+    activity: false, // Added for new activity section
   });
 
   const dropdownRef = useRef(null);
   const sidebarRef = useRef(null);
 
+  
   const isLoggedIn = role === "ADMIN";
 
   useEffect(() => {
@@ -186,7 +189,47 @@ function AdminNavbar() {
               </Link>
             </div>
           </div>
-
+          
+          {/* Activity Section */}
+          <div className="sidebar-section">
+            <div
+              className="sidebar-header-item"
+              onClick={() => toggleSection("activity")}
+            >
+              <FaCommentDots className="sidebar-icon" />
+              <span className="sidebar-text">Activities</span>
+              <span className="sidebar-arrow">
+                {expandedSections.activity ? (
+                  <FaChevronDown />
+                ) : (
+                  <FaChevronRight />
+                )}
+              </span>
+            </div>
+            <div
+              className={clsx("sidebar-submenu", {
+                open: expandedSections.activity,
+              })}
+            >
+              <Link
+                to="/admin/activities/add"
+                onClick={closeSidebar}
+                className="sidebar-item"
+              >
+                <FaPlusCircle className="sidebar-icon" />
+                <span className="sidebar-text">Add Activity</span>
+              </Link>
+              <Link
+                to="/admin/activities/list"
+                onClick={closeSidebar}
+                className="sidebar-item"
+              >
+                <FaList className="sidebar-icon" />
+                <span className="sidebar-text">Activities List</span>
+              </Link>
+            </div>
+          </div>
+          
           {/* Volunteer Section */}
           <div className="sidebar-section">
             <div
@@ -383,7 +426,6 @@ function AdminNavbar() {
           </button>
         </div>
       </div>
-      {isSidebarOpen && <div className="overlay" onClick={closeSidebar}></div>}
     </>
   );
 
@@ -423,6 +465,8 @@ function AdminNavbar() {
                 <li>
                   <Link to="/admin/feedback/list">Feedback</Link>
                 </li>
+                
+                
               </>
             ) : (
               <>
@@ -475,7 +519,7 @@ function AdminNavbar() {
         </div>
       </nav>
 
-      {isLoggedIn && ReactDOM.createPortal(renderSidebar(), document.body)}
+      {isLoggedIn && isSidebarOpen && ReactDOM.createPortal(renderSidebar(), document.body)}
     </>
   );
 }

@@ -4,6 +4,8 @@ import { getAllEvents, deleteEvent } from "../../api/event/eventApi";
 import Notification from "../../components/Notification";
 import "../../styles/EventList.css";
 import { AuthContext } from "../../context/AuthContext";
+import Loader from "../../components/common/Loader";
+
 
 const EventList = () => {
   const { role } = useContext(AuthContext);
@@ -44,7 +46,7 @@ const EventList = () => {
     setNotification(null);
   };
 
-  if (loading) return <p className="eventlist-loading">Loading events...</p>;
+if (loading) return <Loader text="Loading Events..." />;
 
   return (
     <div className="eventlist-container">

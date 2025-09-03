@@ -24,6 +24,7 @@ function AdminProfile() {
   const navigate = useNavigate();
   const { logoutUser, setAdminImage, setAdminName } = useContext(AuthContext);
 
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {

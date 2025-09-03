@@ -1,20 +1,44 @@
 import React, { useEffect } from "react";
 import "../styles/Notification.css";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaUndo, FaTimesCircle, FaInfoCircle } from "react-icons/fa";
 
-function Notification({ message, onClose, duration = 2000 }) {
+function Notification({ message, type, isUndoable, onUndo, onClose, duration = 3000 }) {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (onClose) onClose();
-    }, duration);
-    return () => clearTimeout(timer);
-  }, [onClose, duration]);
+    if (!isUndoable) {
+      const timer = setTimeout(() => {
+        if (onClose) onClose();
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [onClose, duration, isUndoable]);
+
+  const getIcon = () => {
+    switch(type) {
+      case 'error': return <FaTimesCircle className="error-icon" />;
+      case 'warning': return <FaInfoCircle className="warning-icon" />;
+      case 'info': return <FaInfoCircle className="info-icon" />;
+      default: return <FaCheckCircle className="tick-icon" />;
+    }
+  };
+
+  const notificationClass = `app-notification ${isUndoable ? "undoable" : type}`;
 
   return (
-    <div className="app-notification">
-      <FaCheckCircle className="tick-icon" />
-      <span>{message}</span>
-      <div className="progress-bar"></div>
+    <div className={notificationClass}>
+      <div className="notification-content">
+        {getIcon()}
+        <span>{message}</span>
+      </div>
+      {isUndoable && (
+        <button className="undo-btn" onClick={onUndo}>
+          <FaUndo /> Undo
+        </button>
+      )}
+      {!isUndoable && (
+        <div className="progress-bar-container">
+          <div className="progress-bar" style={{ animationDuration: `${duration}ms` }}></div>
+        </div>
+      )}
     </div>
   );
 }

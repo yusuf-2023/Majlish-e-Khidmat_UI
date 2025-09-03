@@ -1,73 +1,112 @@
-Container for the spinner and text
-.spinner-container {
+/* Main container for the whole loader */
+.extraordinary-loader-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh; /* Takes full viewport height */
-  width: 100%;
-  background-color: transparent;
-  position: fixed; /* Stays on top of other content */
-  top: 0;
-  left: 0;
-  z-index: 9999; /* Ensures it's always on top */
-  animation: fadeIn 0.5s ease-in-out;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
 }
 
-/* The Loader Spinner Itself */
-.simple-loader {
-  width: 60px;
-  height: 60px;
+/* Wrapper to hold the dot circle and the percentage text together */
+.dot-circle-wrapper {
+  position: relative; /* This allows absolute positioning for its children */
+  width: 120px; /* Smaller size for the wrapper */
+  height: 120px; /* Smaller size for the wrapper */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Space between circle and outside text */
+}
+
+/* Container for the rotating dot circle - smaller size */
+.dot-circle-container {
+  width: 100px; /* Smaller circle size */
+  height: 100px; /* Smaller circle size */
+  position: relative;
+  animation: rotate-circle 8s linear infinite; /* Smooth rotation for the whole circle */
+}
+
+/* Individual dot styling */
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px; /* Smaller dots */
+  height: 8px; /* Smaller dots */
+  background-color: #28a745; /* Green color */
   border-radius: 50%;
-  border: 5px solid rgba(255, 255, 255, 0.2); /* Base color of the ring */
-  border-top-color: #007bff; /* The primary color of the spinner */
-  animation: spin 1.2s cubic-bezier(0.5, 0.2, 0.5, 0.8) infinite;
-  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 4px rgba(40, 167, 69, 0.5); /* Green shadow */
+  animation: pulse-dot 1.5s infinite alternate; /* Pulsing effect for each dot */
 }
 
-/* Hover and active states for added interactivity */
-.simple-loader:hover {
-  border-top-color: #0056b3; /* Darker blue on hover */
-  transform: scale(1.1);
+/* This is how we create the circle pattern for 15 dots */
+/* translateY value adjusted for smaller circle */
+.dot-circle-container > div:nth-child(1) { transform: rotate(calc(360deg / 15 * 1)) translateY(-50px); }
+.dot-circle-container > div:nth-child(2) { transform: rotate(calc(360deg / 15 * 2)) translateY(-50px); }
+.dot-circle-container > div:nth-child(3) { transform: rotate(calc(360deg / 15 * 3)) translateY(-50px); }
+.dot-circle-container > div:nth-child(4) { transform: rotate(calc(360deg / 15 * 4)) translateY(-50px); }
+.dot-circle-container > div:nth-child(5) { transform: rotate(calc(360deg / 15 * 5)) translateY(-50px); }
+.dot-circle-container > div:nth-child(6) { transform: rotate(calc(360deg / 15 * 6)) translateY(-50px); }
+.dot-circle-container > div:nth-child(7) { transform: rotate(calc(360deg / 15 * 7)) translateY(-50px); }
+.dot-circle-container > div:nth-child(8) { transform: rotate(calc(360deg / 15 * 8)) translateY(-50px); }
+.dot-circle-container > div:nth-child(9) { transform: rotate(calc(360deg / 15 * 9)) translateY(-50px); }
+.dot-circle-container > div:nth-child(10) { transform: rotate(calc(360deg / 15 * 10)) translateY(-50px); }
+.dot-circle-container > div:nth-child(11) { transform: rotate(calc(360deg / 15 * 11)) translateY(-50px); }
+.dot-circle-container > div:nth-child(12) { transform: rotate(calc(360deg / 15 * 12)) translateY(-50px); }
+.dot-circle-container > div:nth-child(13) { transform: rotate(calc(360deg / 15 * 13)) translateY(-50px); }
+.dot-circle-container > div:nth-child(14) { transform: rotate(calc(360deg / 15 * 14)) translateY(-50px); }
+.dot-circle-container > div:nth-child(15) { transform: rotate(calc(360deg / 15 * 15)) translateY(-50px); }
+
+
+/* The percentage number in the center of the circle */
+.counter-text {
+  position: absolute; /* Positioned relative to .dot-circle-wrapper */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-/* Text Styles */
-.spinner-container p {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  font-family: 'Inter', sans-serif;
-  color: #555; /* A subtle grey for text */
-  animation: pulseText 2s infinite;
+.counter-text p {
+  font-size: 2.2rem; /* Slightly smaller font size */
+  font-weight: bold;
+  color: #333;
+  margin: 0;
 }
 
-/* Keyframe Animations */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Loading text displayed outside the circle */
+.outside-loading-text {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-top: 15px; /* Space between the circle and this text */
+  text-align: center;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Animations */
+@keyframes pulse-dot {
+  0% {
+    transform: scale(1);
+    background-color: #28a745; /* Green */
+  }
+  50% {
+    transform: scale(1.4); /* Slightly smaller pulse for smaller dots */
+    background-color: #218838; /* Darker green */
+  }
+  100% {
+    transform: scale(1);
+    background-color: #28a745;
+  }
 }
 
-@keyframes pulseText {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+@keyframes rotate-circle {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
-
-/* Optional: Dark theme adjustments */
-body.dark-mode .simple-loader {
-  border: 5px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #FFD700; /* Gold color for dark mode */
-}
-
-body.dark-mode .simple-loader:hover {
-  border-top-color: #FFC107;
-}
-
-body.dark-mode .spinner-container p {
-  color: #aaa;
-}
-
-

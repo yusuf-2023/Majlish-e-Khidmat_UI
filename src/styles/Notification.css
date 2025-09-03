@@ -1,70 +1,124 @@
+/* =======================================
+   -- Notification Component Styles --
+   ======================================= */
+
+/* Main Notification Container */
 .app-notification {
-  align-items: center;
-  animation: slide-in var(--transition-normal) ease-out;
-  background: var(--bg-secondary);
-  border-left: 5px solid var(--success);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
-  color: var(--text-primary);
-  display: flex;
-  font-size: 14px;
-  font-weight: 500;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
   position: fixed;
-  right: var(--spacing-lg);
-  top: var(--spacing-lg);
-  width: max-content;
-  z-index: var(--z-tooltip);
+  top: 20px;
+  right: 20px;
+  max-width: 400px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  z-index: 1000;
+  animation: slideInFromRight 0.5s ease-out;
+  border-left: 5px solid var(--success-color);
+}
+
+/* Specific Style for Undoable Notifications */
+.app-notification.undoable {
+  background: var(--danger-color);
+  color: white;
+  border-left: 5px solid white;
+}
+
+/* Notification Content */
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
 }
 
 .tick-icon {
-  color: #43a047;
-  flex-shrink: 0;
   font-size: 20px;
+  color: var(--success-color);
+}
+.app-notification.undoable .tick-icon {
+    color: white;
+}
+
+.error-icon {
+  font-size: 20px;
+  color: white;
+}
+
+/* Undo Button */
+.undo-btn {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.undo-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Progress Bar for regular notifications */
+.progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
 }
 
 .progress-bar {
-  animation: progress 2s linear forwards;
-  background: #43a047;
-  border-radius: 0 0 8px 8px;
-  bottom: 0;
-  height: 3px;
-  left: 0;
-  position: absolute;
+  height: 100%;
+  background-color: var(--success-color);
   width: 100%;
+  animation: progressBarShrink linear forwards;
 }
 
-@keyframes slide-in {
+.app-notification.undoable .progress-bar {
+    background-color: white;
+}
+
+
+/* Animations */
+@keyframes slideInFromRight {
   from {
-    opacity: 0;
     transform: translateX(100%);
+    opacity: 0;
   }
-
   to {
-    opacity: 1;
     transform: translateX(0);
+    opacity: 1;
   }
 }
 
-@keyframes progress {
-  from {
-    width: 100%;
-  }
-
-  to {
-    width: 0%;
-  }
+@keyframes progressBarShrink {
+  from { width: 100%; }
+  to { width: 0; }
 }
 
-/* Dark Mode */
-body.dark-mode .app-notification {
-  background: #2e2e2e;
-  border-left: 5px solid #81c784;
-  color: #e0e0e0;
+/* --- Responsive Design --- */
+@media (max-width: 600px) {
+    .app-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        width: auto;
+    }
 }
-
-body.dark-mode .progress-bar {
-  background: #81c784;
-}
-

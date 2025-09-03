@@ -9,7 +9,8 @@ import MainLayout from "../layout/MainLayout";
 // Pages & Features
 import Home from "../pages/Home";
 import UserProfile from "../pages/User/UserProfile";
-import ActivityPage from "../pages/ActivityPage";
+import ActivityAddPage from "../pages/activity/ActivityAddPage"; // Corrected import path
+import ActivityListPage from "../pages/activity/ActivityListPage";
 import DonationForm from "../pages/Donation/DonationForm";
 import DonationDashboard from "../pages/Donation/DonationDashboard";
 import AdminDashboard from "../pages/Admin/AdminDashboard";
@@ -34,8 +35,10 @@ const MainRoutes = {
   path: "/",
   element: <MainLayout />,
   children: [
+    // Public Routes
     { path: "/", element: <Home /> },
-    AuthRoutes, // Auth pages: login, register, forgot-password, verify-otp
+    { path: "activities", element: <ActivityListPage /> },
+    AuthRoutes,
 
     // Admin Routes
     {
@@ -64,6 +67,8 @@ const MainRoutes = {
         { path: "inventory/add", element: <InventoryForm /> },
         { path: "inventory/list", element: <InventoryList /> },
         { path: "feedback/list", element: <FeedbackList /> },
+        { path: "activities/add", element: <ActivityAddPage /> },
+        { path: "activities/list", element: <ActivityListPage /> },
       ],
     },
 
@@ -81,7 +86,7 @@ const MainRoutes = {
         { path: "", element: <Navigate to="dashboard" replace /> },
         { path: "dashboard", element: <Home /> },
         { path: "profile", element: <UserProfile /> },
-        { path: "activities", element: <ActivityPage /> },
+        { path: "activities", element: <ActivityListPage /> },
         { path: "donation", element: <DonationForm /> },
         { path: "campaign/list", element: <CampaignList /> },
         { path: "events/list", element: <EventList /> },
@@ -91,6 +96,7 @@ const MainRoutes = {
       ],
     },
 
+    // Catch-all route
     { path: "*", element: <Navigate to="/" replace /> },
   ],
 };

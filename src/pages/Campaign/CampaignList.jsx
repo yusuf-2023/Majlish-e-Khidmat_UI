@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllCampaigns } from "../../api/Campaign/campaignApi";
 import "../../styles/CampaignList.css";
+import Loader from "../../components/common/Loader"; 
 
 function CampaignList() {
     const [campaigns, setCampaigns] = useState([]);
@@ -29,7 +30,7 @@ function CampaignList() {
             c.description.toLowerCase().includes(search.toLowerCase())
     );
 
-    if (loading) return <div className="loading">Loading campaigns...</div>;
+    if (loading) return <Loader text="Loading Campaigns..." />;
 
     return (
         <div className="campaign-list-container">

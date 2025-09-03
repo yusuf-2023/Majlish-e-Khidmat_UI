@@ -9,7 +9,7 @@ import {
   FaBars, FaTimes, FaSun, FaMoon, FaUserCircle, FaDonate,
   FaSignOutAlt, FaTachometerAlt, FaUser, FaHandsHelping,
   FaUsers, FaCalendarAlt, FaChevronRight, FaChevronDown,
-  FaPlusCircle, FaComment, FaList, FaBullhorn
+  FaPlusCircle, FaComment, FaList, FaBullhorn, FaCommentDots
 } from "react-icons/fa";
 
 import "../styles/navbar.css";
@@ -27,7 +27,8 @@ const normalizePic = (pic, baseUrl) => {
 
 const UserNavbar = () => {
   const navigate = useNavigate();
-  const { name: contextName, profilePic, logoutUser } = useContext(AuthContext);
+ const { name: userNameContext, profilePic: userImageContext, logoutUser } = useContext(AuthContext);
+
   const [userName, setUserName] = useState(null);
   const [userImage, setUserImage] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -47,26 +48,27 @@ const UserNavbar = () => {
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    const storedName = localStorage.getItem("userName");
-    const storedPic = localStorage.getItem("userProfilePic");
+  const token = localStorage.getItem("accessToken");
+  const storedName = localStorage.getItem("userName");
+  const storedPic = localStorage.getItem("userProfilePic");
 
-    if (token) {
-      try {
-        const decoded = jwtDecode.default(token);
-        setUserName(contextName || storedName || decoded?.name || "User");
-        setUserImage(
-          normalizePic(contextName ? profilePic : storedPic || decoded?.profileImage, baseUrl)
-        );
-      } catch {
-        setUserName(contextName || storedName || "User");
-        setUserImage(normalizePic(profilePic || storedPic, baseUrl));
-      }
-    } else {
-      setUserName(contextName || storedName || null);
-      setUserImage(normalizePic(profilePic || storedPic, baseUrl));
+  if (token) {
+    try {
+      const decoded = jwtDecode.default(token);
+      setUserName(userNameContext || storedName || decoded?.name || "User");
+      setUserImage(
+        normalizePic(userImageContext || storedPic || decoded?.profileImage, baseUrl)
+      );
+    } catch {
+      setUserName(userNameContext || storedName || "User");
+      setUserImage(normalizePic(userImageContext || storedPic, baseUrl));
     }
-  }, [contextName, profilePic]);
+  } else {
+    setUserName(userNameContext || storedName || null);
+    setUserImage(normalizePic(userImageContext || storedPic, baseUrl));
+  }
+}, [userNameContext, userImageContext]);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -143,6 +145,11 @@ const UserNavbar = () => {
               <Link to="/user/donation" onClick={closeSidebar} className="sidebar-item">
                 <FaDonate className="sidebar-icon" />
                 <span className="sidebar-text">Donation History</span>
+              </Link>
+              {/* ✅ Activity Page Link in Sidebar */}
+              <Link to="/user/activities" onClick={closeSidebar} className="sidebar-item">
+                <FaCommentDots className="sidebar-icon" />
+                <span className="sidebar-text">Activities</span>
               </Link>
             </div>
           </div>
@@ -248,6 +255,8 @@ const UserNavbar = () => {
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/user/campaign/list">Campaigns</Link></li>
                 <li><Link to="/user/volunteers/list">Volunteers</Link></li>
+                {/* ✅ Activity Page Link in Top Navbar */}
+                <li><Link to="/user/activities">Activities</Link></li>
               </>
             ) : (
               <li><Link to="/auth/login">Login</Link></li>

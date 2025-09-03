@@ -1,15 +1,18 @@
 import React, { createContext, useState, useEffect } from "react";
 import { getAdminProfile } from "../api/admin/adminApi";
-import { getUserProfile } from "../api/user/userApi"; // User API import
+import { getUserProfile } from "../api/user/userApi";
+import { jwtDecode } from "jwt-decode"; 
 
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(localStorage.getItem("userRole") || null);
-  const [name, setName] = useState(localStorage.getItem("userName") || "");
-  const [profilePic, setProfilePic] = useState(localStorage.getItem("userProfilePic") || "");
-  const [email, setEmail] = useState(localStorage.getItem("userEmail") || "");
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // ✅ Added for AdminProfile
+  const [adminName, setAdminName] = useState("");
+  const [adminImage, setAdminImage] = useState("");
 
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -27,6 +30,42 @@ const AuthProvider = ({ children }) => {
     return `${baseUrl}/${pic}`;
   };
 
+  const updateUserProfile = (profile, savedRole, token) => {
+    try {
+      const decoded = jwtDecode(token);
+      const username = decoded.sub || decoded.username;
+      
+      if (profile && username) {
+        const userObj = {
+          id: profile.id,
+          name: profile.name || "",
+          profilePic: normalizePic(profile.profilePic || profile.profileImage),
+          email: profile.email || "",
+          username: username,
+        };
+        setUser(userObj);
+        setRole(savedRole);
+
+        // ✅ For AdminProfile usage
+        if (savedRole === "ADMIN") {
+          setAdminName(userObj.name);
+          setAdminImage(userObj.profilePic);
+        }
+        
+        localStorage.setItem("userName", userObj.name);
+        localStorage.setItem("userProfilePic", userObj.profilePic);
+        localStorage.setItem("userEmail", userObj.email);
+        localStorage.setItem("userRole", savedRole);
+        console.log("AuthContext: User profile loaded successfully", userObj);
+      } else {
+        throw new Error("User profile or username missing from token.");
+      }
+    } catch (error) {
+      console.error("Failed to update user profile:", error);
+      logoutUser();
+    }
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("accessToken");
@@ -38,41 +77,25 @@ const AuthProvider = ({ children }) => {
       }
 
       try {
+        let res;
         if (savedRole === "ADMIN") {
-          const res = await getAdminProfile();
-          const profile = res?.data?.data || res?.data || (Array.isArray(res.data) ? res.data[0] : res.data);
-          if (profile) {
-            setName(profile.name || "");
-            setProfilePic(normalizePic(profile.profilePic));
-            setEmail(profile.email || "");
-            localStorage.setItem("userName", profile.name || "");
-            localStorage.setItem("userProfilePic", normalizePic(profile.profilePic));
-            localStorage.setItem("userEmail", profile.email || "");
-          }
+          res = await getAdminProfile();
         } else if (savedRole === "USER") {
-          const res = await getUserProfile();
-          const profile = res?.data?.data || res?.data || res;
-          if (profile) {
-            setName(profile.name || "");
-            setProfilePic(normalizePic(profile.profilePic));
-            setEmail(profile.email || "");
-            localStorage.setItem("userName", profile.name || "");
-            localStorage.setItem("userProfilePic", normalizePic(profile.profilePic));
-            localStorage.setItem("userEmail", profile.email || "");
-          }
+          res = await getUserProfile();
+        } else {
+          setLoading(false);
+          return;
         }
-        setRole(savedRole);
+
+        const profile = res?.data?.data || res?.data || res;
+        updateUserProfile(profile, savedRole, token);
       } catch (error) {
         console.error("Failed to fetch profile:", error);
-        localStorage.clear();
-        setRole(null);
-        setName("");
-        setProfilePic("");
-        setEmail("");
+        logoutUser();
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-
     fetchProfile();
   }, []);
 
@@ -80,40 +103,53 @@ const AuthProvider = ({ children }) => {
     if (!data) return;
     const normRole = normalizeRole(data.role);
     setRole(normRole);
-    setName(data.name || "");
-    setProfilePic(normalizePic(data.profilePic));
-    setEmail(data.email || "");
 
-    localStorage.setItem("accessToken", data.accessToken || "");
+    const token = data.accessToken || localStorage.getItem("accessToken");
+    const decoded = jwtDecode(token);
+    const username = decoded.sub || decoded.username;
+
+    const userObj = {
+      id: data.id,
+      name: data.name || "",
+      profilePic: normalizePic(data.profilePic),
+      email: data.email || "",
+      username: username,
+    };
+    setUser(userObj);
+
+    // ✅ Admin data set
+    if (normRole === "ADMIN") {
+      setAdminName(userObj.name);
+      setAdminImage(userObj.profilePic);
+    }
+
+    localStorage.setItem("accessToken", token || "");
     localStorage.setItem("userRole", normRole || "");
-    localStorage.setItem("userName", data.name || "");
-    localStorage.setItem("userProfilePic", normalizePic(data.profilePic));
-    localStorage.setItem("userEmail", data.email || "");
-
-    setLoading(false);
+    localStorage.setItem("userName", userObj.name || "");
+    localStorage.setItem("userProfilePic", userObj.profilePic);
+    localStorage.setItem("userEmail", userObj.email);
+    console.log("AuthContext: User logged in successfully", userObj);
   };
 
   const logoutUser = () => {
     setRole(null);
-    setName("");
-    setProfilePic("");
-    setEmail("");
+    setUser(null);
+    setAdminName("");
+    setAdminImage("");
     localStorage.clear();
+    console.log("AuthContext: User logged out");
   };
 
   const contextValue = {
     role,
-    name,
-    profilePic,
-    email,
+    user,
     loading,
     loginUser,
     logoutUser,
-    setName,
-    setProfilePic,
-    setEmail,
-    setAdminName: setName,
-    setAdminImage: setProfilePic
+    adminName,
+    setAdminName,
+    adminImage,
+    setAdminImage,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllDonations } from "../../api/donationApi";
 import "../../styles/Donation.css";
+import Loader from "../../components/common/Loader";
 
 function DonationList() {
   const [donations, setDonations] = useState([]);
@@ -21,7 +22,7 @@ function DonationList() {
     loadDonations();
   }, []);
 
-  if (loading) return <div>Loading donations...</div>;
+  if (loading) return <Loader text="Loading Donations..." />;
 
   return (
     <div className="donation-list-container">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
   getAllVolunteers,
   deleteVolunteer,
@@ -6,6 +6,7 @@ import {
 } from "../../api/Volunteer/volunteerApi";
 import Notification from "../../components/Notification";
 import "../../styles/VolunteerList.css";
+import Loader from "../../components/common/Loader"; 
 
 // AuthContext
 import { AuthContext } from "../../context/AuthContext";
@@ -36,21 +37,22 @@ function VolunteerList() {
     : window.location.origin;
 
   // Fetch volunteers
-  useEffect(() => {
-    const loadVolunteers = async () => {
-      setLoading(true);
-      try {
-        const data = await getAllVolunteers();
-        setVolunteers(data);
-        setFilteredVolunteers(data);
-      } catch (err) {
-        console.error("Error fetching volunteers:", err);
-        showNotification("Failed to load volunteers", "error");
-      }
-      setLoading(false);
-    };
-    loadVolunteers();
+  const loadVolunteers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getAllVolunteers();
+      setVolunteers(data);
+      setFilteredVolunteers(data);
+    } catch (err) {
+      console.error("Error fetching volunteers:", err);
+      showNotification("Failed to load volunteers", "error");
+    }
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    loadVolunteers();
+  }, [loadVolunteers]);
 
   // Search filter
   useEffect(() => {
@@ -222,7 +224,7 @@ function VolunteerList() {
     setSelectedVolunteers([]);
   };
 
-  if (loading) return <div className="vl-loading">Loading volunteers...</div>;
+  if (loading) return <Loader text="Loading Volunteers..." />;
 
   return (
     <div className="vl-admin-container">
@@ -240,7 +242,7 @@ function VolunteerList() {
         <div className="vl-header-actions">
           <button
             className="vl-btn vl-btn-primary"
-            onClick={() => window.location.reload()}
+            onClick={loadVolunteers}
           >
             Refresh 🔄
           </button>
@@ -320,24 +322,16 @@ function VolunteerList() {
                             src={imageUrl}
                             alt={volunteer.name}
                             className="vl-avatar"
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                              const placeholder = document.getElementById(
-                                `vl-placeholder-${volunteer.id}`
-                              );
-                              if (placeholder) placeholder.style.display = "flex";
-                            }}
+                            loading="lazy"
+                            onError={(e) => (e.target.style.display = "none")}
                           />
-                        ) : null}
-                        <div
-                          id={`vl-placeholder-${volunteer.id}`}
-                          className="vl-avatar-placeholder"
-                          style={{ display: imageUrl ? "none" : "flex" }}
-                        >
-                          {volunteer.name
-                            ? volunteer.name.charAt(0).toUpperCase()
-                            : "V"}
-                        </div>
+                        ) : (
+                          <div className="vl-avatar-placeholder">
+                            {volunteer.name
+                              ? volunteer.name.charAt(0).toUpperCase()
+                              : "V"}
+                          </div>
+                        )}
                       </td>
                       <td>
                         <div className="vl-name">{volunteer.name}</div>

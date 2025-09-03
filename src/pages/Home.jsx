@@ -6,25 +6,23 @@ import { getAllCampaigns } from "../api/Campaign/campaignApi";
 import { listAllDonations } from "../api/donationApi";
 import { getAllVolunteers } from "../api/Volunteer/volunteerApi";
 import { getAllEvents } from "../api/event/eventApi";
+import { getAllActivities } from "../api/activity/activityApi"; // Import activity API
 import StatCard from "../components/StatCard";
+import ActivityCard from "./activity/ActivityCard"; // Import ActivityCard component
 import "../styles/home.css";
+import Loader from "../components/common/Loader";
 
 function Home() {
   const { role } = useAuth();
   const isAdmin = role === "ADMIN";
   const isUser = role === "USER";
-  const [stats, setStats] = useState({
-    activeVolunteers: 0,
-    totalUsers: 0,
-    donationsCollected: 0,
-    campaigns: 0,
-    inventoryItems: 0,
-    feedbacks: 0,
-  });
-  const [campaigns, setCampaigns] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [topDonors, setTopDonors] = useState([]);
-  const [allVolunteers, setAllVolunteers] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [campaigns, setCampaigns] = useState(null);
+  const [events, setEvents] = useState(null);
+  const [activities, setActivities] = useState(null); // State for activities
+  const [topDonors, setTopDonors] = useState(null);
+  const [allVolunteers, setAllVolunteers] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [quote, setQuote] = useState("");
@@ -169,66 +167,119 @@ function Home() {
     setImageLoading((prev) => ({ ...prev, [id]: false }));
   };
 
+  // Function to fetch activities
+  const fetchActivities = async () => {
+    try {
+      const activitiesData = await getAllActivities();
+      if (mountedRef.current) {
+        // Corrected line
+        setActivities(activitiesData.data);
+      }
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+    }
+  };
+
   // ✅ BATCHED loader — single render-cycle updates
   const loadAll = async () => {
+    setLoading(true);
     setRefreshing(true);
     try {
-      const [statsRes, campaignsRes, donationsRes, volunteersRes, eventsRes] =
-        await Promise.all([
-          // each call is isolated so a single failure doesn't break all
-          fetchStats().catch(() => null),
-          getAllCampaigns().catch(() => []),
-          listAllDonations().catch(() => []),
-          getAllVolunteers().catch(() => []),
-          getAllEvents().catch(() => []),
-        ]);
+      // Use Promise.allSettled to ensure all promises complete, regardless of success or failure
+      const [
+        statsRes,
+        campaignsRes,
+        donationsRes,
+        volunteersRes,
+        eventsRes,
+        activitiesRes,
+      ] = await Promise.allSettled([
+        fetchStats(),
+        getAllCampaigns(),
+        listAllDonations(),
+        getAllVolunteers(),
+        getAllEvents(),
+        getAllActivities(), // Fetch activities
+      ]);
 
       if (!mountedRef.current) return;
 
       // Stats
-      setStats(
-        statsRes || {
-          activeVolunteers: 0,
-          totalUsers: 0,
-          donationsCollected: 0,
-          campaigns: 0,
-          inventoryItems: 0,
-          feedbacks: 0,
-        }
-      );
+      if (statsRes.status === "fulfilled") {
+        setStats(statsRes.value || {});
+      } else {
+        setStats({});
+        console.error("Error fetching stats:", statsRes.reason);
+      }
 
       // Campaigns (max 3)
-      const c =
-        Array.isArray(campaignsRes) && campaignsRes.length
-          ? campaignsRes.slice(0, 3)
-          : [];
-      setCampaigns(c);
+      if (campaignsRes.status === "fulfilled") {
+        const c =
+          Array.isArray(campaignsRes.value) && campaignsRes.value.length
+            ? campaignsRes.value.slice(0, 3)
+            : [];
+        setCampaigns(c);
+      } else {
+        setCampaigns([]);
+        console.error("Error fetching campaigns:", campaignsRes.reason);
+      }
 
       // Donors (top 3 by amount)
-      const donations = Array.isArray(donationsRes) ? donationsRes : [];
-      const top3 = donations
-        .slice()
-        .sort((a, b) => (b.amount || 0) - (a.amount || 0))
-        .slice(0, 3);
-      setTopDonors(top3);
+      if (donationsRes.status === "fulfilled") {
+        const donations = Array.isArray(donationsRes.value)
+          ? donationsRes.value
+          : [];
+        const top3 = donations
+          .slice()
+          .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+          .slice(0, 3);
+        setTopDonors(top3);
+      } else {
+        setTopDonors([]);
+        console.error("Error fetching donations:", donationsRes.reason);
+      }
 
-      // Volunteers (all)
-      const v = Array.isArray(volunteersRes) ? volunteersRes : [];
-      setAllVolunteers(v);
+      // ✅ Volunteers (all)
+      if (volunteersRes.status === "fulfilled") {
+        const v = Array.isArray(volunteersRes.value) ? volunteersRes.value : [];
+        setAllVolunteers(v);
+      } else {
+        setAllVolunteers([]);
+        console.error("Error fetching volunteers:", volunteersRes.reason);
+      }
 
       // Events (max 5)
-      const e =
-        Array.isArray(eventsRes) && eventsRes.length
-          ? eventsRes.slice(0, 5)
-          : [];
-      setEvents(e);
+      if (eventsRes.status === "fulfilled") {
+        const e =
+          Array.isArray(eventsRes.value) && eventsRes.value.length
+            ? eventsRes.value.slice(0, 5)
+            : [];
+        setEvents(e);
+      } else {
+        setEvents([]);
+        console.error("Error fetching events:", eventsRes.reason);
+      }
+
+      // Activities (max 5)
+      if (activitiesRes.status === "fulfilled") {
+        // Corrected line
+        const a =
+          Array.isArray(activitiesRes.value.data) &&
+          activitiesRes.value.data.length
+            ? activitiesRes.value.data.slice(0, 5)
+            : [];
+        setActivities(a);
+      } else {
+        setActivities([]);
+        console.error("Error fetching activities:", activitiesRes.reason);
+      }
 
       // random quote
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     } catch (err) {
       console.error("Error loading home data:", err);
     } finally {
-      if (!mountedRef.current) return; // eslint-disable-line
+      if (!mountedRef.current) return;
       setLoading(false);
       // small delay to avoid rapid state flip-flop
       setTimeout(() => mountedRef.current && setRefreshing(false), 300);
@@ -254,6 +305,11 @@ function Home() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ✅ Show the main loader only on initial page load
+  if (loading) {
+    return <Loader text="Loading Initial Data..." />;
+  }
 
   return (
     <div>
@@ -324,31 +380,35 @@ function Home() {
           <h2>Our Impact</h2>
           <p className="muted">Working together to build better communities</p>
           <div className="impact-grid">
-            <StatCard
-              label="Active Volunteers"
-              value={loading ? "..." : stats.activeVolunteers}
-            />
-            <StatCard
-              label="Users"
-              value={loading ? "..." : stats.totalUsers}
-            />
-            <StatCard
-              label="Donations Collected"
-              value={loading ? "..." : stats.donationsCollected}
-              suffix="₹"
-            />
-            <StatCard
-              label="Campaigns"
-              value={loading ? "..." : stats.campaigns}
-            />
-            <StatCard
-              label="Inventory Items"
-              value={loading ? "..." : stats.inventoryItems}
-            />
-            <StatCard
-              label="Feedbacks"
-              value={loading ? "..." : stats.feedbacks}
-            />
+            {stats ? (
+              <>
+                <StatCard
+                  label="Active Volunteers"
+                  value={stats.activeVolunteers}
+                />
+                <StatCard label="Users" value={stats.totalUsers} />
+                <StatCard
+                  label="Donations Collected"
+                  value={stats.donationsCollected}
+                  suffix="₹"
+                />
+                <StatCard label="Campaigns" value={stats.campaigns} />
+                <StatCard
+                  label="Inventory Items"
+                  value={stats.inventoryItems}
+                />
+                <StatCard label="Feedbacks" value={stats.feedbacks} />
+              </>
+            ) : (
+              <div className="placeholder-grid">
+                <div className="placeholder-card" />
+                <div className="placeholder-card" />
+                <div className="placeholder-card" />
+                <div className="placeholder-card" />
+                <div className="placeholder-card" />
+                <div className="placeholder-card" />
+              </div>
+            )}
           </div>
 
           <div className="refresh-row">
@@ -364,6 +424,41 @@ function Home() {
         </div>
       </section>
 
+      {/* ACTIVITY SECTION */}
+      <section
+        className="activities container section-lg"
+        style={{ willChange: "transform, opacity", padding: "1rem" }}
+      >
+        <div>
+          <h2>Our Activity Work</h2>
+          <p className="muted">
+            See what we've been doing to help our community
+          </p>
+
+          {activities && activities.length > 0 ? (
+            <div className="activities-list">
+              {activities.map((activity) => (
+                <ActivityCard
+                  key={activity.id}
+                  activity={activity}
+                  fetchActivities={fetchActivities}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="no-activities">
+              <p>No activities available currently.</p>
+            </div>
+          )}
+
+          <div className="activities-cta">
+            <Link to="/user/activities" className="btn primary">
+              View All Activities
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CAMPAIGNS / CAUSES */}
       <section
         className="campaigns container section-lg"
@@ -372,13 +467,7 @@ function Home() {
         <div>
           <h2>You Can Help Lots of People By Donating Little</h2>
           <div className="campaign-grid">
-            {loading ? (
-              <div className="placeholder-grid">
-                <div className="placeholder-card" />
-                <div className="placeholder-card" />
-                <div className="placeholder-card" />
-              </div>
-            ) : campaigns.length > 0 ? (
+            {campaigns && campaigns.length > 0 ? (
               campaigns.map((c, idx) => (
                 <article key={c.id ?? idx} className="campaign-card">
                   {c.imageUrl ? (
@@ -509,129 +598,134 @@ function Home() {
           <p className="muted">
             Meet the dedicated individuals making a difference in our community
           </p>
+          {allVolunteers ? (
+            allVolunteers.length === 0 ? (
+              <div className="no-volunteers">
+                <p>No active volunteers at the moment.</p>
+                <Link
+                  to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
+                  className="btn primary"
+                >
+                  Become Our First Volunteer
+                </Link>
+              </div>
+            ) : (
+              <div className="volunteers-grid">
+                {allVolunteers.map((volunteer, index) => {
+                  const imageUrl = getImageUrl(
+                    volunteer.profileImage || volunteer.profilePicture
+                  );
+                  const volunteerId = volunteer.id || index;
 
-          {loading ? (
+                  return (
+                    <div key={volunteerId} className="volunteer-card">
+                      <div className="volunteer-image">
+                        {imageUrl ? (
+                          <>
+                            {imageLoading[volunteerId] && (
+                              <div className="volunteer-image-loading">
+                                Loading...
+                              </div>
+                            )}
+                            <img
+                              src={imageUrl}
+                              alt={volunteer.name || "Volunteer"}
+                              onLoad={() => handleImageLoad(volunteerId)}
+                              onError={() => handleImageError(volunteerId)}
+                              style={{
+                                display:
+                                  imageLoading[volunteerId] === false
+                                    ? "block"
+                                    : "none",
+                              }}
+                              // kick off loading state on first render if not set
+                              ref={(el) => {
+                                if (
+                                  el &&
+                                  imageLoading[volunteerId] === undefined
+                                ) {
+                                  setImageLoading((prev) => ({
+                                    ...prev,
+                                    [volunteerId]: true,
+                                  }));
+                                }
+                              }}
+                            />
+                          </>
+                        ) : null}
+                        <div
+                          className="volunteer-avatar"
+                          style={{
+                            display:
+                              imageUrl && imageLoading[volunteerId] !== false
+                                ? "none"
+                                : "flex",
+                          }}
+                        >
+                          <i className="fas fa-user"></i>
+                        </div>
+                      </div>
+                      <div className="volunteer-details">
+                        <h3>
+                          {volunteer.name || volunteer.fullName || "Volunteer"}
+                        </h3>
+                        <p className="volunteer-role">
+                          {volunteer.role || "Community Volunteer"}
+                        </p>
+                        <p className="volunteer-bio">
+                          {volunteer.bio ||
+                            volunteer.description ||
+                            "Dedicated to making a difference in the community."}
+                        </p>
+
+                        <div className="volunteer-contact">
+                          {volunteer.email && (
+                            <p>
+                              <i className="fas fa-envelope"></i>{" "}
+                              {volunteer.email}
+                            </p>
+                          )}
+                          {volunteer.phone && (
+                            <p>
+                              <i className="fas fa-phone"></i> {volunteer.phone}
+                            </p>
+                          )}
+                          {volunteer.location && (
+                            <p>
+                              <i className="fas fa-map-marker-alt"></i>{" "}
+                              {volunteer.location}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="volunteer-skills">
+                          {volunteer.skills &&
+                          Array.isArray(volunteer.skills) ? (
+                            volunteer.skills.slice(0, 3).map((skill, i) => (
+                              <span key={i} className="skill-tag">
+                                {skill}
+                              </span>
+                            ))
+                          ) : volunteer.skills ? (
+                            <span
+                              className="skill-tag"
+                              style={{ background: "orange", color: "#fff" }}
+                            >
+                              {volunteer.skills}
+                            </span>
+                          ) : (
+                            <span className="skill-tag">Community Service</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          ) : (
             <div className="volunteers-loading">
               <p>Loading volunteers...</p>
-            </div>
-          ) : allVolunteers.length === 0 ? (
-            <div className="no-volunteers">
-              <p>No active volunteers at the moment.</p>
-              <Link
-                to={isAdmin ? "/admin/volunteers/add" : "/auth/login"}
-                className="btn primary"
-              >
-                Become Our First Volunteer
-              </Link>
-            </div>
-          ) : (
-            <div className="volunteers-grid">
-              {allVolunteers.map((volunteer, index) => {
-                const imageUrl = getImageUrl(
-                  volunteer.profileImage || volunteer.profilePicture
-                );
-                const volunteerId = volunteer.id || index;
-
-                return (
-                  <div key={volunteerId} className="volunteer-card">
-                    <div className="volunteer-image">
-                      {imageUrl ? (
-                        <>
-                          {imageLoading[volunteerId] && (
-                            <div className="volunteer-image-loading">
-                              Loading...
-                            </div>
-                          )}
-                          <img
-                            src={imageUrl}
-                            alt={volunteer.name || "Volunteer"}
-                            onLoad={() => handleImageLoad(volunteerId)}
-                            onError={() => handleImageError(volunteerId)}
-                            style={{
-                              display:
-                                imageLoading[volunteerId] === false
-                                  ? "block"
-                                  : "none",
-                            }}
-                            // kick off loading state on first render if not set
-                            ref={(el) => {
-                              if (
-                                el &&
-                                imageLoading[volunteerId] === undefined
-                              ) {
-                                setImageLoading((prev) => ({
-                                  ...prev,
-                                  [volunteerId]: true,
-                                }));
-                              }
-                            }}
-                          />
-                        </>
-                      ) : null}
-                      <div
-                        className="volunteer-avatar"
-                        style={{
-                          display:
-                            imageUrl && imageLoading[volunteerId] !== false
-                              ? "flex"
-                              : imageUrl
-                              ? "none"
-                              : "flex",
-                        }}
-                      >
-                        <i className="fas fa-user"></i>
-                      </div>
-                    </div>
-                    <div className="volunteer-details">
-                      <h3>
-                        {volunteer.name || volunteer.fullName || "Volunteer"}
-                      </h3>
-                      <p className="volunteer-role">
-                        {volunteer.role || "Community Volunteer"}
-                      </p>
-                      <p className="volunteer-bio">
-                        {volunteer.bio ||
-                          volunteer.description ||
-                          "Dedicated to making a difference in the community."}
-                      </p>
-
-                      <div className="volunteer-contact">
-                        {volunteer.email && (
-                          <p>
-                            <i className="fas fa-envelope"></i>{" "}
-                            {volunteer.email}
-                          </p>
-                        )}
-                        {volunteer.phone && (
-                          <p>
-                            <i className="fas fa-phone"></i> {volunteer.phone}
-                          </p>
-                        )}
-                        {volunteer.location && (
-                          <p>
-                            <i className="fas fa-map-marker-alt"></i>{" "}
-                            {volunteer.location}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="volunteer-skills">
-                        {volunteer.skills && Array.isArray(volunteer.skills) ? (
-                          volunteer.skills.slice(0, 3).map((skill, i) => (
-                            <span key={i} className="skill-tag">
-                              {skill}
-                            </span>
-                          ))
-                        ) : volunteer.skills ? (
-                          <span className="skill-tag" style={{ background: "orange", color: "#fff" }}>{volunteer.skills}</span>
-                        ) : (
-                          <span className="skill-tag">Community Service</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           )}
 
@@ -656,11 +750,9 @@ function Home() {
       >
         <div>
           <h2>Upcoming Events</h2>
-          {loading ? (
-            <p className="muted">Loading events...</p>
-          ) : events.length === 0 ? (
+          {events && events.length === 0 ? (
             <p className="muted">No events available currently.</p>
-          ) : (
+          ) : events ? (
             <div className="events-grid">
               {events.map((ev) => (
                 <div key={ev.id} className="event-card">
@@ -676,6 +768,8 @@ function Home() {
                 </div>
               ))}
             </div>
+          ) : (
+            <p className="muted">Loading events...</p>
           )}
           <Link to="/user/events" className="btn primary small">
             View All Events
@@ -692,7 +786,7 @@ function Home() {
           <div>
             <h3>Top Donors</h3>
             <ul className="list">
-              {topDonors.length > 0 ? (
+              {topDonors && topDonors.length > 0 ? (
                 topDonors.map((d, i) => (
                   <li key={d.id ?? i}>
                     <strong>{d.name ?? d.donorName}</strong> — ₹{d.amount ?? 0}
@@ -722,7 +816,7 @@ function Home() {
           <div>
             <h3>Recent Volunteers</h3>
             <ul className="list">
-              {allVolunteers.length > 0 ? (
+              {allVolunteers && allVolunteers.length > 0 ? (
                 allVolunteers.slice(0, 5).map((v, i) => {
                   const imageUrl = getImageUrl(
                     v.profileImage || v.profilePicture
@@ -735,6 +829,7 @@ function Home() {
                         <img
                           src={imageUrl}
                           alt={v.name}
+                          loading="lazy"
                           onError={(e) => {
                             e.target.style.display = "none";
                             const placeholder = e.target.nextSibling;
